@@ -13,6 +13,7 @@ class Position(
     }
 
     constructor(x: Int, y: Int) : this(x.toFloat(), y.toFloat())
+    constructor(x: Double, y: Double) : this(x.toFloat(), y.toFloat())
 
 
     fun set(x: Float?, y: Float?) {
@@ -50,7 +51,7 @@ class Position(
         }
         return super.equals(other)
     }
-    override fun toString(): String = "Position(x=$x,y=$y)"
+    override fun toString(): String = "Position(x=%.2f,y=%.2f)".format(x, y)
     override fun hashCode(): Int {
         var result = x.hashCode()
         result = 31 * result + y.hashCode()
