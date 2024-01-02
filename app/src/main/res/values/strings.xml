@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">AndroidVirtualJoystick</string>
+    <string name="joystick_direction">Direction: %s</string>
+    <string name="joystick_position">Position, x: %.2f y: %.2f</string>
+    <string name="joystick_angle">Angle: %.2f</string>
+</resources>
