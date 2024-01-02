@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.models
+package com.yoimerdr.android.virtualjoystick.geometry
 
 data class Size(
     val width: Int,

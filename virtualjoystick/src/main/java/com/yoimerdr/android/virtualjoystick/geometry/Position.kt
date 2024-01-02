@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.models
+package com.yoimerdr.android.virtualjoystick.geometry
 
 class Position(
     var x: Float = 0f,

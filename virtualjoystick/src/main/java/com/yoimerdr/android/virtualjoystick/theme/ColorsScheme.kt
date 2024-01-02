@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.models
+package com.yoimerdr.android.virtualjoystick.theme
 
 import androidx.annotation.ColorInt
 
