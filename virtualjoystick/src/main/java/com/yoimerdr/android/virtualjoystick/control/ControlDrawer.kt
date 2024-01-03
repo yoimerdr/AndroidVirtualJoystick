@@ -11,7 +11,7 @@ import com.yoimerdr.android.virtualjoystick.geometry.Size
 abstract class ControlDrawer(
     protected val paint: Paint,
     val position: Position,
-    protected val invalidRadius: Float,
+    protected val invalidRadius: Int,
 ) {
     protected val center: Position
     protected val inCircle: Circle

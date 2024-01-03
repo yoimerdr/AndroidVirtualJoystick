@@ -11,8 +11,8 @@ import com.yoimerdr.android.virtualjoystick.geometry.Size
 open class CircleControlDrawer(
     protected open val colors: ColorsScheme,
     position: Position,
-    innerRadius: Float
-) : ControlDrawer(Paint(Paint.ANTI_ALIAS_FLAG), position, innerRadius) {
+    invalidRadius: Int
+) : ControlDrawer(Paint(Paint.ANTI_ALIAS_FLAG), position, invalidRadius) {
 
     /**
      * Set radius restrictions based on the view size.
