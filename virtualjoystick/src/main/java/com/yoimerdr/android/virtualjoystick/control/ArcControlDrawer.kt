@@ -14,11 +14,10 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 open class ArcControlDrawer(
     protected open val colors: ColorsScheme,
     position: Position,
-    innerRadius: Float,
+    invalidRadius: Int,
     protected open val strokeWidth: Float,
     protected open val sweepAngle: Float,
-) : ControlDrawer(Paint(Paint.ANTI_ALIAS_FLAG), position, innerRadius) {
-
+) : ControlDrawer(Paint(Paint.ANTI_ALIAS_FLAG), position, invalidRadius) {
 
     protected open val viewRadius: Float get() = outCircle.radius
 
@@ -31,6 +30,11 @@ open class ArcControlDrawer(
     }
 
     companion object {
+        val MIN_SWEEP_ANGLE: Float get() = 30.0f
+        val MAX_SWEEP_ANGLE: Float get() = 180.0f
+
+        val MIN_STROKE_WIDTH: Float get() = 5f
+
         private fun Canvas.drawArrow(x: Float, y: Float, angle: Float, size: Float, paint: Paint) {
             val arrowPath = Path()
             arrowPath.moveTo(x, y)
@@ -72,25 +76,25 @@ open class ArcControlDrawer(
                 style = Paint.Style.STROKE
             }
             val oval = RectF(viewRadius - radius, viewRadius - radius, viewRadius + radius, viewRadius + radius)
-
-            arcAngle.toFloat().also {
-                canvas.drawArc(oval, it, sweepAngle, false, paint)
-                drawArcArrow(canvas, angle, it)
-            }
+            canvas.drawArc(oval, arcAngle.toFloat(), sweepAngle, false, paint)
+            drawArcArrow(canvas, angle)
         }
     }
 
-    protected open fun drawArcArrow(canvas: Canvas, angle: Double, arcAngle: Float) {
+    protected open fun drawArcArrow(canvas: Canvas, angle: Double) {
 
         outCircle.apply {
             val outRadius = radius
             radius = outRadius - strokeWidth
+
             val position = parametricPositionFrom(angle)
             paint.apply {
                 style = Paint.Style.FILL_AND_STROKE
             }
+
+            val arrowSweepAngle = (Math.toDegrees(angle) - angleFrom(position)) - 90
             position.apply {
-                canvas.drawArrow(x, y, arcAngle - 45, strokeWidth, paint)
+                canvas.drawArrow(x, y, arrowSweepAngle.toFloat(), strokeWidth, paint)
             }
             radius = outRadius
         }
