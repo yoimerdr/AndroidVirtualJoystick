@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="JoystickView">
         <attr name="maxViewWidth" format="dimension" />
-        <attr name="innerRadius" format="float" />
+        <attr name="invalidRadius" format="dimension" />
         <attr name="background" format="reference" />
         <attr name="controlDrawer_primaryColor" format="color" />
         <attr name="controlDrawer_accentColor" format="color" />
@@ -10,5 +10,8 @@
             <enum name="circle" value="0" />
             <enum name="arc" value="1" />
         </attr>
+
+        <attr name="arcControlDrawer_sweepAngle" format="float"/>
+        <attr name="arcControlDrawer_strokeWidth" format="float"/>
     </declare-styleable>
 </resources>
