@@ -15,25 +15,36 @@ open class ArcControlDrawer(
     protected open val colors: ColorsScheme,
     position: Position,
     invalidRadius: Int,
-    protected open val strokeWidth: Float,
-    protected open val sweepAngle: Float,
+    strokeWidth: Float,
+    sweepAngle: Float,
 ) : ControlDrawer(Paint(Paint.ANTI_ALIAS_FLAG), position, invalidRadius) {
 
     protected open val viewRadius: Float get() = outCircle.radius
-
+    protected val strokeWidth: Float
+    protected val sweepAngle: Float
     init {
+        this.sweepAngle = if(sweepAngle > MAX_SWEEP_ANGLE)
+            MAX_SWEEP_ANGLE
+        else if(sweepAngle < MIN_SWEEP_ANGLE)
+            MIN_SWEEP_ANGLE
+        else sweepAngle
+
+        this.strokeWidth = if(strokeWidth < MIN_STROKE_WIDTH)
+            MIN_STROKE_WIDTH
+        else strokeWidth
+
         paint.apply {
             style = Paint.Style.STROKE
-            this.color = colors.primary
-            strokeWidth = this@ArcControlDrawer.strokeWidth
+            color = colors.primary
+            this.strokeWidth = this@ArcControlDrawer.strokeWidth
         }
     }
 
     companion object {
-        val MIN_SWEEP_ANGLE: Float get() = 30.0f
-        val MAX_SWEEP_ANGLE: Float get() = 180.0f
+        const val MIN_SWEEP_ANGLE: Float = 30.0f
+        const val MAX_SWEEP_ANGLE: Float = 180.0f
 
-        val MIN_STROKE_WIDTH: Float get() = 5f
+        const val MIN_STROKE_WIDTH: Float = 5f
 
         private fun Canvas.drawArrow(x: Float, y: Float, angle: Float, size: Float, paint: Paint) {
             val arrowPath = Path()
@@ -72,7 +83,7 @@ open class ArcControlDrawer(
 
         inCircle.apply {
             paint.apply {
-                shader = paintShader(angle)
+                shader = paintShader(angle, arcAngle)
                 style = Paint.Style.STROKE
             }
             val oval = RectF(viewRadius - radius, viewRadius - radius, viewRadius + radius, viewRadius + radius)
@@ -89,6 +100,7 @@ open class ArcControlDrawer(
 
             val position = parametricPositionFrom(angle)
             paint.apply {
+                color = colors.accent
                 style = Paint.Style.FILL_AND_STROKE
             }
 
@@ -101,12 +113,12 @@ open class ArcControlDrawer(
     }
 
 
-    protected open fun paintShader(angle: Double): Shader {
+    protected open fun paintShader(angle: Double, arcAngle: Double): Shader {
         val position = inCircle.parametricPositionFrom(angle)
         return RadialGradient(
             position.x, position.y,
             inCircle.radius,
-            intArrayOf(colors.primary, colors.accent),
+            intArrayOf(colors.accent, colors.primary),
             null,
             Shader.TileMode.CLAMP
         )
