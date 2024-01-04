@@ -106,14 +106,6 @@ abstract class ControlDrawer(
     fun toCenterPosition() = position.set(center)
 
     /**
-     * Sets the current paint of drawer
-     * @param paint The new drawer paint
-     */
-    fun setPaint(paint: Paint) {
-        this.paint.set(paint)
-    }
-
-    /**
      * Calculates the difference in the x-coordinate between the current position and the plant.
      * @return The calculated difference.
      */
