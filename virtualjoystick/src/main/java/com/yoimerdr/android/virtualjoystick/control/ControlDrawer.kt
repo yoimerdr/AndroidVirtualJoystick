@@ -8,13 +8,41 @@ import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.Position
 import com.yoimerdr.android.virtualjoystick.geometry.Size
 
+/**
+ * Abstract class used to draw and obtain information about the virtual joystick control.
+ *
+ * Custom control drawers must inherit from this class.
+ */
 abstract class ControlDrawer(
+    /**
+     * The drawer paint.
+     */
     protected val paint: Paint,
+    /**
+     * The current control drawer position.
+     */
     val position: Position,
+    /**
+     * Invalid radius to be taken into account when obtaining control direction
+     */
     protected val invalidRadius: Int,
 ) {
+
+    /**
+     * Center of the view.
+     */
     protected val center: Position
+
+    /**
+     * Inner area of the view for draw the control.
+     */
     protected val inCircle: Circle
+
+    /**
+     * Total area of the view.
+     *
+     * Used to validate the maximum zone that the current [position] of the control can take.
+     */
     protected val outCircle: Circle
 
     init {
@@ -59,7 +87,7 @@ abstract class ControlDrawer(
 
     /**
      * Abstract method to draw the control
-     * @param canvas The canvas on which the background will be drawn
+     * @param canvas The canvas on which the control will be drawn
      * @param size The size of the view.
      *
      * This method should be implemented in subclasses to define the drawing behavior for the custom control drawer.
@@ -67,9 +95,9 @@ abstract class ControlDrawer(
     abstract fun onDraw(canvas: Canvas, size: Size)
 
     /**
-     * Determines the directional orientation based on the angle and distance from the center.
+     * Determines the directional orientation based on the angle and distance of the drawer position from the center.
      *
-     * If the distance from the center is less than the inner radius specified, the
+     * If the distance from the center is less than the invalid radius specified, the
      * direction is considered as [Direction.NONE].
      * @return A [Direction] enum representing the computed direction.
      */
@@ -106,13 +134,13 @@ abstract class ControlDrawer(
     fun toCenterPosition() = position.set(center)
 
     /**
-     * Calculates the difference in the x-coordinate between the current position and the plant.
+     * Calculates the difference in the x-coordinate between the current position and the center.
      * @return The calculated difference.
      */
     protected open fun deltaX(): Float = position.deltaX(center)
 
     /**
-     * Calculates the difference in the y-coordinate between the current position and the plant.
+     * Calculates the difference in the y-coordinate between the current position and the center.
      * @return The calculated difference.
      */
     protected open fun deltaY(): Float = position.deltaY(center)
@@ -133,7 +161,7 @@ abstract class ControlDrawer(
     protected open fun getRadianAngle(): Double = inCircle.angleFrom(position)
 
     /**
-     * Check if the distance at the current position and the center is greater than the set maximum radius.
+     * Check if the distance at the current position and the center is greater than the maximum view radius.
      * If so, change the position to the extreme maximum at that position.
      */
     protected open fun validatePositionLimits() {
