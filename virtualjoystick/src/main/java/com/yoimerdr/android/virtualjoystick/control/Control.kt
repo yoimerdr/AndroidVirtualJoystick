@@ -1,7 +1,7 @@
 package com.yoimerdr.android.virtualjoystick.control
 
 import android.graphics.Canvas
-import android.graphics.Paint
+import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.enums.Direction
 import com.yoimerdr.android.virtualjoystick.exceptions.ControlDrawerPositionException
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
@@ -13,19 +13,15 @@ import com.yoimerdr.android.virtualjoystick.geometry.Size
  *
  * Custom control drawers must inherit from this class.
  */
-abstract class ControlDrawer(
+abstract class Control(
     /**
-     * The drawer paint.
-     */
-    protected val paint: Paint,
-    /**
-     * The current control drawer position.
+     * The current control control position.
      */
     val position: Position,
     /**
      * Invalid radius to be taken into account when obtaining control direction
      */
-    protected val invalidRadius: Int,
+    val invalidRadius: Int,
 ) {
 
     /**
@@ -44,6 +40,8 @@ abstract class ControlDrawer(
      * Used to validate the maximum zone that the current [position] of the control can take.
      */
     protected val outCircle: Circle
+
+    var drawer: ControlDrawer? = null
 
     init {
         validatePositionValues()
@@ -86,13 +84,14 @@ abstract class ControlDrawer(
     }
 
     /**
-     * Abstract method to draw the control
+     * Method to draw the control
      * @param canvas The canvas on which the control will be drawn
-     * @param size The size of the view.
      *
      * This method should be implemented in subclasses to define the drawing behavior for the custom control drawer.
      */
-    abstract fun onDraw(canvas: Canvas, size: Size)
+    open fun onDraw(canvas: Canvas) {
+        drawer?.draw(canvas, this)
+    }
 
     /**
      * Determines the directional orientation based on the angle and distance of the drawer position from the center.
@@ -123,7 +122,7 @@ abstract class ControlDrawer(
      * Sets the current position of the drawer to the provided position and performs additional validations with [validatePositionLimits].
      * @param position The new position to be assigned.
      */
-    fun setPosition(position: Position) {
+    open fun setPosition(position: Position) {
         this.position.set(position)
         validatePositionLimits()
     }
@@ -132,6 +131,13 @@ abstract class ControlDrawer(
      * Sets the current position to center.
      */
     fun toCenterPosition() = position.set(center)
+
+    /**
+     * Checks if current position is center.
+     *
+     * @return True if is position is equals to center; otherwise, false.
+     */
+    fun isInCenter(): Boolean = position == center
 
     /**
      * Calculates the difference in the x-coordinate between the current position and the center.
@@ -149,7 +155,7 @@ abstract class ControlDrawer(
      * Calculates the Euclidean distance between current position and center
      * @return The calculated distance.
      */
-    protected open fun distanceFromCenter(): Float = inCircle.distanceFrom(position)
+    open fun distanceFromCenter(): Float = inCircle.distanceFrom(position)
     /**
      * @return The angle formed from the current position and the center position (sexagesimal degrees clockwise).
      */
@@ -158,17 +164,10 @@ abstract class ControlDrawer(
     /**
      * @return The angle formed from the current position and the center position. (angle in the range from 0 to 2PI radians clockwise)
      */
-    protected open fun getRadianAngle(): Double = inCircle.angleFrom(position)
+    open fun getRadianAngle(): Double = inCircle.angleFrom(position)
 
     /**
-     * Check if the distance at the current position and the center is greater than the maximum view radius.
-     * If so, change the position to the extreme maximum at that position.
+     * Abstract method for validate the position when is changed with [setPosition]
      */
-    protected open fun validatePositionLimits() {
-        val distance = distanceFromCenter()
-        if (distance > outCircle.radius) {
-            val proportion = outCircle.radius / distance
-            position.set(deltaX() * proportion + center.x, deltaY() * proportion + center.y)
-        }
-    }
+    abstract fun validatePositionLimits()
 }

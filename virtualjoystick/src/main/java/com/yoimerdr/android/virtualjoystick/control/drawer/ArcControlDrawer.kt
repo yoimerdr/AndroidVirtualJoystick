@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.control
+package com.yoimerdr.android.virtualjoystick.control.drawer
 
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -6,25 +6,17 @@ import android.graphics.Path
 import android.graphics.RadialGradient
 import android.graphics.RectF
 import android.graphics.Shader
-import com.yoimerdr.android.virtualjoystick.geometry.Position
-import com.yoimerdr.android.virtualjoystick.geometry.Size
+import com.yoimerdr.android.virtualjoystick.control.Control
+import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
-/**
- * [ControlDrawer] that draws an arc on the perimeter of the outer circle as a Joystick Control.
- */
 open class ArcControlDrawer(
-    /**
-     * Scheme with the circle colors.
-     *
-     * Used for the [RadialGradient] shader for the [paint]
-     */
+    protected open val inCircle: Circle,
+    protected open val outCircle: Circle,
     protected open val colors: ColorsScheme,
-    position: Position,
-    invalidRadius: Int,
     strokeWidth: Float,
     sweepAngle: Float,
-) : ControlDrawer(Paint(Paint.ANTI_ALIAS_FLAG), position, invalidRadius) {
+) : ControlDrawer {
 
     /**
      * View radius.
@@ -32,6 +24,19 @@ open class ArcControlDrawer(
      * Short getter for outer circle radius.
      */
     protected open val viewRadius: Float get() = outCircle.radius
+
+    /**
+     * Control radius.
+     *
+     * Short getter for inner circle radius.
+     */
+    protected open val controlRadius: Float get() = inCircle.radius
+
+    protected open val oval: RectF get() = RectF(viewRadius - controlRadius, viewRadius - controlRadius, viewRadius + controlRadius, viewRadius + controlRadius)
+
+    protected open val arrowCircle: Circle get() = outCircle
+
+    protected val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     /**
      * Paint stroke width.
@@ -44,17 +49,10 @@ open class ArcControlDrawer(
      * Arc sweep angle.
      */
     protected val sweepAngle: Float
+
     init {
-        this.sweepAngle = if(sweepAngle > MAX_SWEEP_ANGLE)
-            MAX_SWEEP_ANGLE
-        else if(sweepAngle < MIN_SWEEP_ANGLE)
-            MIN_SWEEP_ANGLE
-        else sweepAngle
-
-        this.strokeWidth = if(strokeWidth < MIN_STROKE_WIDTH)
-            MIN_STROKE_WIDTH
-        else strokeWidth
-
+        this.sweepAngle = getValidSweepAngle(sweepAngle)
+        this.strokeWidth = getValidStrokeWidth(strokeWidth)
         paint.apply {
             style = Paint.Style.STROKE
             color = colors.primary
@@ -78,15 +76,20 @@ open class ArcControlDrawer(
          */
         const val MIN_STROKE_WIDTH: Float = 5f
 
-        /**
-         * Extension method for [Canvas] that draw an arrow.
-         *
-         * @param x The x coordinate of arrow.
-         * @param y The y coordinate of arrow.
-         * @param angle The angle for rotate the arrow.
-         * @param size The arrow size.
-         * @param paint The draw pain.
-         */
+        fun getValidSweepAngle(sweepAngle: Float): Float {
+            return if(sweepAngle > MAX_SWEEP_ANGLE)
+                MAX_SWEEP_ANGLE
+            else if(sweepAngle < MIN_SWEEP_ANGLE)
+                MIN_SWEEP_ANGLE
+            else sweepAngle
+        }
+
+        fun getValidStrokeWidth(strokeWidth: Float): Float {
+            return if(strokeWidth < MIN_STROKE_WIDTH)
+                MIN_STROKE_WIDTH
+            else strokeWidth
+        }
+
         private fun Canvas.drawArrow(x: Float, y: Float, angle: Float, size: Float, paint: Paint) {
             val arrowPath = Path()
             arrowPath.moveTo(x, y)
@@ -100,32 +103,14 @@ open class ArcControlDrawer(
             drawPath(arrowPath, paint)
             restore()
         }
-
     }
-
-    /**
-     * Set radius restrictions based on the view size.
-     *
-     * The inner circle occupies almost half of the maximum width of the view, while the outer circle occupies the entire half.
-     * @param size The size of the view.
-     */
-    override fun setRadiusRestriction(size: Size) {
-        size.apply {
-            (width.coerceAtMost(height) / 2f)
-                .also {
-                    outCircle.radius = it
-                    inCircle.radius = it - strokeWidth * 2
-                }
-        }
-    }
-
     /**
      * Draw the control if the distance from the current position to the center is greater than the invalid radius.
      */
-    override fun onDraw(canvas: Canvas, size: Size) {
-        if(distanceFromCenter() < invalidRadius)
+    override fun draw(canvas: Canvas, control: Control) {
+        if(control.distanceFromCenter() < control.invalidRadius)
             return
-        drawArc(canvas)
+        drawArc(canvas, control)
     }
 
     /**
@@ -133,8 +118,8 @@ open class ArcControlDrawer(
      *
      * @param canvas The view canvas.
      */
-    protected open fun drawArc(canvas: Canvas) {
-        val angle: Double = getRadianAngle()
+    protected open fun drawArc(canvas: Canvas, control: Control) {
+        val angle: Double = control.getRadianAngle()
         val arcAngle: Double = Math.toDegrees(angle) - sweepAngle / 2
 
         inCircle.apply {
@@ -142,7 +127,6 @@ open class ArcControlDrawer(
                 shader = paintShader(angle, arcAngle)
                 style = Paint.Style.STROKE
             }
-            val oval = RectF(viewRadius - radius, viewRadius - radius, viewRadius + radius, viewRadius + radius)
             canvas.drawArc(oval, arcAngle.toFloat(), sweepAngle, false, paint)
             drawArcArrow(canvas, angle)
         }
@@ -156,7 +140,7 @@ open class ArcControlDrawer(
      */
     protected open fun drawArcArrow(canvas: Canvas, angle: Double) {
 
-        outCircle.apply {
+        arrowCircle.apply {
             val outRadius = radius
             radius = outRadius - strokeWidth
 
@@ -191,5 +175,4 @@ open class ArcControlDrawer(
             Shader.TileMode.CLAMP
         )
     }
-
 }
