@@ -9,6 +9,7 @@
         <attr name="controlDrawer" format="enum">
             <enum name="circle" value="0" />
             <enum name="arc" value="1" />
+            <enum name="circe_arc" value="2"/>
         </attr>
 
         <attr name="arcControlDrawer_sweepAngle" format="float"/>
