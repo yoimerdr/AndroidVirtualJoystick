@@ -1,8 +1,6 @@
 package com.yoimerdr.android.virtualjoystick.control
 
-import android.graphics.RadialGradient
 import com.yoimerdr.android.virtualjoystick.control.drawer.ArcControlDrawer
-import com.yoimerdr.android.virtualjoystick.geometry.Position
 import com.yoimerdr.android.virtualjoystick.geometry.Size
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
@@ -10,17 +8,11 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
  * [Control] that draws an arc on the perimeter of the outer circle as a Joystick Control.
  */
 open class ArcControl(
-    /**
-     * Scheme with the circle colors.
-     *
-     * Used for the [RadialGradient] shader for the [paint]
-     */
     colors: ColorsScheme,
-    position: Position,
-    invalidRadius: Int,
+    invalidRadius: Float,
     strokeWidth: Float,
     sweepAngle: Float,
-) : Control(position, invalidRadius) {
+) : Control(invalidRadius) {
 
     /**
      * Paint stroke width.
@@ -32,7 +24,7 @@ open class ArcControl(
 
     init {
         this.strokeWidth = ArcControlDrawer.getValidStrokeWidth(strokeWidth)
-        drawer = ArcControlDrawer(inCircle, outCircle, colors, this.strokeWidth, sweepAngle)
+        drawer = ArcControlDrawer(colors, this.strokeWidth, sweepAngle)
     }
 
     /**
@@ -52,7 +44,8 @@ open class ArcControl(
     }
 
     override fun validatePositionLimits() {
-
+        if(distanceFromCenter > outerRadius)
+            this.position.set(outParametricPosition)
     }
 
 }
