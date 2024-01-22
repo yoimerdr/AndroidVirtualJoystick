@@ -4,7 +4,7 @@ import androidx.annotation.ColorInt
 
 data class ColorsScheme(
     @ColorInt
-    val primary: Int,
+    var primary: Int,
     @ColorInt
-    val accent: Int
+    var accent: Int
 )
