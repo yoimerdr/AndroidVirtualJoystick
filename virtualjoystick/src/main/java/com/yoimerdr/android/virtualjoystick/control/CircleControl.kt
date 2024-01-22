@@ -5,13 +5,21 @@ import com.yoimerdr.android.virtualjoystick.geometry.Size
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
- * [Control] that draws a circle as a Joystick Control.
+ * [Control] that defines the methods to use a [drawer] that draws something similar to a circle.
+ *
+ * By default, the [drawer] is [CircleControlDrawer].
  */
 open class CircleControl(
     colors: ColorsScheme,
     invalidRadius: Float,
     radiusProportion: Float
 ) : Control(invalidRadius) {
+
+    /**
+     * The circle radius proportion.
+     *
+     * Must be a value in the range from [MIN_RADIUS_PROPORTION] to [MAX_RADIUS_PROPORTION]
+     */
     protected val proportion: Float
 
     init {
@@ -20,9 +28,23 @@ open class CircleControl(
     }
 
     companion object {
+        /**
+         * The minimum valid radius proportion.
+         */
         const val MIN_RADIUS_PROPORTION = 0.1f
+
+        /**
+         * The maximum valid radius proportion.
+         */
         const val MAX_RADIUS_PROPORTION = 0.80f
 
+        /**
+         * Checks if the [proportion] value meets the valid range.
+         *
+         * @param proportion The proportion value.
+         *
+         * @return A valid radius proportion in the range [MIN_RADIUS_PROPORTION] to [MAX_RADIUS_PROPORTION]
+         */
         fun getValidRadiusProportion(proportion: Float): Float {
             return if(proportion > MAX_RADIUS_PROPORTION)
                 MAX_RADIUS_PROPORTION
@@ -33,9 +55,10 @@ open class CircleControl(
     }
 
     /**
-     * Set radius restrictions based on the view size.
+     * Sets radius restrictions of the control.
      *
-     * The inner circle occupies 25% of half of the maximum view width, while the outer circle occupies 75%.
+     * The restrictions are set according to the circle radius [proportion]
+     *
      * @param size The size of the view.
      */
     override fun setRadiusRestriction(size: Size) {
@@ -49,13 +72,12 @@ open class CircleControl(
     }
 
     /**
-     * Check if the distance at the current position and the center is greater than the maximum view radius.
-     * If so, change the position to the extreme maximum at that position.
+     * Checks if [distanceFromCenter] is greater than the [outerRadius].
+     * If so, changes the position to the [outParametricPosition].
      */
     override fun validatePositionLimits() {
-        if (distanceFromCenter > outerRadius) {
+        if (distanceFromCenter > outerRadius)
             position.set(outParametricPosition)
-        }
     }
 
 }

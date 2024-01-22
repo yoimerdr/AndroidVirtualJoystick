@@ -5,7 +5,9 @@ import com.yoimerdr.android.virtualjoystick.geometry.Size
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
- * [Control] that draws an arc on the perimeter of the outer circle as a Joystick Control.
+ * [Control] that defines the methods to use a [drawer] that draws something similar to an arc.
+ *
+ * By default, the [drawer] is [ArcControlDrawer].
  */
 open class ArcControl(
     colors: ColorsScheme,
@@ -15,7 +17,7 @@ open class ArcControl(
 ) : Control(invalidRadius) {
 
     /**
-     * Paint stroke width.
+     * The paint stroke width.
      *
      * Used for the stroke of arc arrow.
      */
@@ -28,9 +30,10 @@ open class ArcControl(
     }
 
     /**
-     * Set radius restrictions based on the view size.
+     * Sets radius restrictions of the control.
      *
-     * The inner circle occupies almost half of the maximum width of the view, while the outer circle occupies the entire half.
+     * The restrictions are set according to the arrow [strokeWidth].
+     *
      * @param size The size of the view.
      */
     override fun setRadiusRestriction(size: Size) {
@@ -43,6 +46,10 @@ open class ArcControl(
         }
     }
 
+    /**
+     * Checks if [distanceFromCenter] is greater than the [outerRadius].
+     * If so, changes the position to the [outParametricPosition].
+     */
     override fun validatePositionLimits() {
         if(distanceFromCenter > outerRadius)
             this.position.set(outParametricPosition)

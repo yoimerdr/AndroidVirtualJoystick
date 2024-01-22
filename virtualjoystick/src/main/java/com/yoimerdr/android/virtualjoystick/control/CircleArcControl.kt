@@ -5,29 +5,50 @@ import com.yoimerdr.android.virtualjoystick.control.drawer.CircleArcControlDrawe
 import com.yoimerdr.android.virtualjoystick.geometry.Size
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
-class CircleArcControl(
+/**
+ * [Control] that defines the methods to use a [drawer] that draws something similar to an circle with an arc.
+ *
+ * By default, the [drawer] is [CircleArcControlDrawer].
+ */
+open class CircleArcControl(
     colors: ColorsScheme,
     invalidRadius: Float,
     strokeWidth: Float,
     sweepAngle: Float,
     radiusProportion: Float
-) : CircleControl(colors, invalidRadius, radiusProportion), CircleArcControlDrawer.BeforeDraw {
+) : CircleControl(colors, invalidRadius, radiusProportion) {
 
     /**
-     * Paint stroke width.
+     * The paint stroke width.
      *
      * Used for the stroke of arc arrow.
      */
     private val strokeWidth: Float
 
+    /**
+     * The size of the view where the control is used.
+     */
     private val viewSize: Size = Size()
+
+    /**
+     * The radius of the view where the control is used.
+     *
+     * @return The half of the [viewSize] width or height.
+     */
     private val viewRadius: Float get() = viewSize.width.coerceAtMost(viewSize.height) / 2f
 
     init {
         this.strokeWidth = ArcControlDrawer.getValidStrokeWidth(strokeWidth)
-        drawer = CircleArcControlDrawer(colors, strokeWidth, sweepAngle, this)
+        drawer = CircleArcControlDrawer(colors, strokeWidth, sweepAngle)
     }
 
+    /**
+     * Sets radius restrictions of the control.
+     *
+     * The restrictions are set according to the circle radius [proportion] and arrow [strokeWidth]
+     *
+     * @param size The size of the view.
+     */
     override fun setRadiusRestriction(size: Size) {
         super.setRadiusRestriction(size)
         outCircle.radius -= strokeWidth * 2
@@ -39,12 +60,4 @@ class CircleArcControl(
         viewSize.set(size)
     }
 
-    override fun beforeArc(control: Control) {
-        inCircle.radius = distanceFromCenter + inCircle.radius
-        outCircle.radius = viewRadius
-    }
-
-    override fun beforeCircle(control: Control) {
-        setRadiusRestriction(viewSize)
-    }
 }
