@@ -8,11 +8,15 @@ import android.graphics.RectF
 import android.graphics.Shader
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
+import com.yoimerdr.android.virtualjoystick.geometry.Position
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 open class ArcControlDrawer(
-    protected open val inCircle: Circle,
-    protected open val outCircle: Circle,
+    /**
+     * Scheme with the circle colors.
+     *
+     * Used for the [RadialGradient] shader for the [paint]
+     */
     protected open val colors: ColorsScheme,
     strokeWidth: Float,
     sweepAngle: Float,
@@ -23,18 +27,24 @@ open class ArcControlDrawer(
      *
      * Short getter for outer circle radius.
      */
-    protected open val viewRadius: Float get() = outCircle.radius
+    protected open fun getViewRadius(control: Control): Float = control.outerRadius
 
     /**
      * Control radius.
      *
      * Short getter for inner circle radius.
      */
-    protected open val controlRadius: Float get() = inCircle.radius
+    protected open fun getControlRadius(control: Control): Float = control.innerRadius
 
-    protected open val oval: RectF get() = RectF(viewRadius - controlRadius, viewRadius - controlRadius, viewRadius + controlRadius, viewRadius + controlRadius)
+    protected open fun getOval(control: Control, arcCircle: Circle): RectF {
+        val controlRadius = getControlRadius(control)
+        val center = control.immutableCenter
+        return RectF(center.x - controlRadius, center.y - controlRadius, center.x + controlRadius, center.y + controlRadius)
+    }
 
-    protected open val arrowCircle: Circle get() = outCircle
+    protected open fun getArcCircle(control: Control): Circle {
+        return Circle(getViewRadius(control), Position(control.immutableCenter))
+    }
 
     protected val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
@@ -108,7 +118,7 @@ open class ArcControlDrawer(
      * Draw the control if the distance from the current position to the center is greater than the invalid radius.
      */
     override fun draw(canvas: Canvas, control: Control) {
-        if(control.distanceFromCenter() < control.invalidRadius)
+        if(control.distanceFromCenter < control.invalidRadius)
             return
         drawArc(canvas, control)
     }
@@ -119,17 +129,17 @@ open class ArcControlDrawer(
      * @param canvas The view canvas.
      */
     protected open fun drawArc(canvas: Canvas, control: Control) {
-        val angle: Double = control.getRadianAngle()
+        val angle: Double = control.anglePosition
         val arcAngle: Double = Math.toDegrees(angle) - sweepAngle / 2
 
-        inCircle.apply {
-            paint.apply {
-                shader = paintShader(angle, arcAngle)
-                style = Paint.Style.STROKE
-            }
-            canvas.drawArc(oval, arcAngle.toFloat(), sweepAngle, false, paint)
-            drawArcArrow(canvas, angle)
+        val arcCircle = getArcCircle(control)
+
+        paint.apply {
+            shader = paintShader(control, angle, arcAngle)
+            style = Paint.Style.STROKE
         }
+        canvas.drawArc(getOval(control, arcCircle), arcAngle.toFloat(), sweepAngle, false, paint)
+        drawArcArrow(arcCircle, canvas, control, angle)
     }
 
     /**
@@ -138,12 +148,9 @@ open class ArcControlDrawer(
      * @param canvas The view canvas
      * @param angle The angle formed between the current position and the center measured in the range of 0 to 2PI radians clockwise.
      */
-    protected open fun drawArcArrow(canvas: Canvas, angle: Double) {
-
-        arrowCircle.apply {
-            val outRadius = radius
-            radius = outRadius - strokeWidth
-
+    protected open fun drawArcArrow(arcCircle: Circle, canvas: Canvas, control: Control, angle: Double) {
+        arcCircle.apply {
+            radius -= strokeWidth
             val position = parametricPositionFrom(angle)
             paint.apply {
                 color = colors.accent
@@ -154,7 +161,6 @@ open class ArcControlDrawer(
             position.apply {
                 canvas.drawArrow(x, y, arrowSweepAngle.toFloat(), strokeWidth, paint)
             }
-            radius = outRadius
         }
     }
 
@@ -165,11 +171,11 @@ open class ArcControlDrawer(
      * @param angle The angle formed between the current position and the center measured in the range of 0 to 2PI radians clockwise.
      * @param arcAngle The start arc sweep angle measured in the range 0 to 360 degrees clockwise
      */
-    protected open fun paintShader(angle: Double, arcAngle: Double): Shader {
-        val position = inCircle.parametricPositionFrom(angle)
+    protected open fun paintShader(control: Control, angle: Double, arcAngle: Double): Shader {
+        val position = control.inParametricPosition
         return RadialGradient(
             position.x, position.y,
-            inCircle.radius,
+            control.innerRadius,
             intArrayOf(colors.accent, colors.primary),
             null,
             Shader.TileMode.CLAMP

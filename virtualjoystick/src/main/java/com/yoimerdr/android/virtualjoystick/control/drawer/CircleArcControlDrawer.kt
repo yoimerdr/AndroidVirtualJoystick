@@ -7,32 +7,38 @@ import com.yoimerdr.android.virtualjoystick.geometry.Position
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 open class CircleArcControlDrawer(
-    protected val position: Position,
-    inCircle: Circle,
-    outCircle: Circle,
     colors: ColorsScheme,
     strokeWidth: Float,
     sweepAngle: Float,
-    protected val beforeDraw: BeforeDraw? = null
-) : ArcControlDrawer(inCircle, outCircle, colors, strokeWidth, sweepAngle) {
+    protected open val beforeDraw: BeforeDraw?
+) : ArcControlDrawer(colors, strokeWidth, sweepAngle) {
 
-    protected open val circleDrawer: ControlDrawer = CircleControlDrawer(position, colors, inCircle)
+    protected open val circleDrawer: ControlDrawer = CircleControlDrawer(colors)
+    protected open val cCircle: Circle = Circle(1f, Position())
 
-    protected open val cCircle: Circle = Circle(inCircle.radius, inCircle.center)
-
-    override val arrowCircle: Circle get() = cCircle
+    constructor(colors: ColorsScheme, strokeWidth: Float, sweepAngle: Float) : this(colors, strokeWidth, sweepAngle, null)
+    override fun getArcCircle(control: Control): Circle {
+        return control.immutableCenter.let {
+            cCircle.apply {
+                if(center != it)
+                    setCenter(it)
+            }
+        }
+    }
 
     interface BeforeDraw {
-        fun beforeArc(control: Control, arrowCircle: Circle): Boolean
+        fun beforeArc(control: Control)
         fun beforeCircle(control: Control)
     }
 
 
     override fun draw(canvas: Canvas, control: Control) {
-        if(beforeDraw?.beforeArc(control, cCircle) == true)
+        if(!control.isInCenter()) {
+            beforeDraw?.beforeArc(control)
+            cCircle.radius = control.innerRadius + strokeWidth * 2
             drawArc(canvas, control)
+        }
         beforeDraw?.beforeCircle(control)
         circleDrawer.draw(canvas, control)
-
     }
 }
