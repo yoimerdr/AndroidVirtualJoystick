@@ -30,13 +30,6 @@ open class CircleArcControl(
      */
     private val viewSize: Size = Size()
 
-    /**
-     * The radius of the view where the control is used.
-     *
-     * @return The half of the [viewSize] width or height.
-     */
-    private val viewRadius: Float get() = viewSize.width.coerceAtMost(viewSize.height) / 2f
-
     init {
         this.strokeWidth = ArcControlDrawer.getValidStrokeWidth(strokeWidth)
         drawer = CircleArcControlDrawer(colors, strokeWidth, sweepAngle)
