@@ -11,32 +11,41 @@ import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.Position
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
+/**
+ * A [ControlDrawer] that draws an arc.
+ *
+ * By default, it draws the arc positioned at the value of the inner radius of [Control].
+ */
 open class ArcControlDrawer(
     /**
-     * Scheme with the circle colors.
-     *
-     * Used for the [RadialGradient] shader for the [paint]
+     * The arc colors.
      */
     protected open val colors: ColorsScheme,
     strokeWidth: Float,
     sweepAngle: Float,
 ) : ControlDrawer {
 
+    /**
+     * A [Circle] representation for the arc position.
+     */
     protected open val arcCircle: Circle = Circle(1f, Position())
 
+    /**
+     * The drawer paint.
+     */
     protected val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     /**
      * Paint stroke width.
      *
-     * Used for the stroke of arc arrow.
+     * A value where minimum value can be [MIN_STROKE_WIDTH].
      */
     protected val strokeWidth: Float
 
     /**
      * Arc sweep angle.
      *
-     * A sexagesimal degree in the range [MIN_SWEEP_ANGLE] to [MAX_SWEEP_ANGLE]
+     * A sexagesimal degree in the range [MIN_SWEEP_ANGLE] to [MAX_SWEEP_ANGLE].
      */
     protected val sweepAngle: Float
 
@@ -71,8 +80,9 @@ open class ArcControlDrawer(
          *
          * @param sweepAngle The angle value.
          *
-         * @return A valid sexagesimal degree value in the range [MIN_SWEEP_ANGLE] to [MAX_SWEEP_ANGLE]
+         * @return A valid sexagesimal degree value in the range [MIN_SWEEP_ANGLE] to [MAX_SWEEP_ANGLE].
          */
+        @JvmStatic
         fun getValidSweepAngle(sweepAngle: Float): Float {
             return if(sweepAngle > MAX_SWEEP_ANGLE)
                 MAX_SWEEP_ANGLE
@@ -86,8 +96,9 @@ open class ArcControlDrawer(
          *
          * @param strokeWidth The angle value.
          *
-         * @return A valid radius proportion in the range [MIN_STROKE_WIDTH] to [strokeWidth]
+         * @return A valid stroke width in the range [MIN_STROKE_WIDTH] to [strokeWidth].
          */
+        @JvmStatic
         fun getValidStrokeWidth(strokeWidth: Float): Float {
             return if(strokeWidth < MIN_STROKE_WIDTH)
                 MIN_STROKE_WIDTH
@@ -110,14 +121,14 @@ open class ArcControlDrawer(
     }
 
     /**
-     * Gets the control innerRadius.
+     * Gets the radius value for arc position.
+     * @param control The [Control] from where the drawer is used.
      */
     protected open fun getInnerRadius(control: Control): Float = control.innerRadius
 
     /**
      * The bounds of oval used to define the shape and size of the arc.
-     * @param control The control where drawer is used.
-     * @return A new [RectF] instance.
+     * @param control The [Control] from where the drawer is used.
      */
     protected open fun getOval(control: Control): RectF {
         val radius = getInnerRadius(control)
@@ -164,7 +175,7 @@ open class ArcControlDrawer(
      *
      * @param canvas The view canvas.
      * @param control The [Control] from where the drawer is used.
-     * @param angle The angle formed between the current position and the center measured in the range of 0 to 2PI radians clockwise.
+     * @param angle The angle formed between the current position and the center in the range of 0 to 2PI radians clockwise.
      */
     protected open fun drawArcArrow(canvas: Canvas, control: Control, angle: Double) {
         arcCircle.apply {
@@ -184,10 +195,11 @@ open class ArcControlDrawer(
 
 
     /**
-     * The [RadialGradient] for the arc paint.
+     * The [Shader] for the drawer paint.
      *
-     * @param angle The angle formed between the current position and the center measured in the range of 0 to 2PI radians clockwise.
-     * @param arcAngle The start arc sweep angle measured in the range 0 to 360 degrees clockwise
+     * @param control The [Control] from where the drawer is used.
+     * @param angle The angle formed between the current position and the center in the range of 0 to 2PI radians clockwise.
+     * @param arcAngle The starting angle of the arc sweep angle in the range of 0 to 360 degrees clockwise.
      */
     protected open fun getPaintShader(control: Control, angle: Double, arcAngle: Double): Shader {
         val position = arcCircle.parametricPositionFrom(control.anglePosition)

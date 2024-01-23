@@ -9,38 +9,60 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.yoimerdr.android.virtualjoystick.control.Control
-import java.security.InvalidParameterException
 
+/**
+ * A [ControlDrawer] that draws an drawable resource.
+ */
 open class DrawableControlDrawer(
+    /**
+     * The drawable to draw.
+     */
     protected open val drawable: Drawable,
+    /**
+     * The drawer paint.
+     */
     protected open val paint: Paint?
 ) : ControlDrawer {
 
+    /**
+     * Gets the drawable half width
+     */
     protected open val halfWidth: Float get() = drawable.intrinsicWidth / 2f
 
+    /**
+     * Gets the drawable half height
+     */
     protected open val halfHeight: Float get() = drawable.intrinsicHeight / 2f
 
     constructor(drawable: Drawable) : this(drawable, null)
 
-    constructor(context: Context, @DrawableRes resourceId: Int, paint: Paint?) :
-            this(getValidDrawable(context, resourceId), paint)
-
-    constructor(context: Context, @DrawableRes resourceId: Int) : this(context, resourceId, null)
-
     companion object {
-        @Throws(InvalidParameterException::class)
+        @JvmStatic
+        @Throws(IllegalArgumentException::class)
         fun getValidDrawable(context: Context, @DrawableRes resourceId: Int): Drawable {
             val drawable = ContextCompat.getDrawable(context, resourceId)
             if(drawable != null)
                 return drawable
-            throw InvalidParameterException("Don't exists a valid drawable for given resource id")
+            throw IllegalArgumentException("Don't exists a valid drawable for given resource id")
+        }
+
+        @JvmStatic
+        @Throws(IllegalArgumentException::class)
+        fun fromDrawableRes(context: Context, @DrawableRes id: Int, paint: Paint?): DrawableControlDrawer {
+            return DrawableControlDrawer(getValidDrawable(context, id), paint)
+        }
+
+        @JvmStatic
+        @Throws(IllegalArgumentException::class)
+        fun fromDrawableRes(context: Context, @DrawableRes id: Int): DrawableControlDrawer {
+            return fromDrawableRes(context, id, null)
         }
     }
 
-    override fun draw(canvas: Canvas, control: Control) {
-        canvas.drawBitmap(drawable.toBitmap(), null, getDestination(control), paint)
-    }
-
+    /**
+     * The rectangle that the drawable will be scaled/translated to fit into.
+     * @param control The [Control] from where the drawer is used.
+     */
     protected open fun getDestination(control: Control): RectF {
         val halfX = halfWidth
         val halfY = halfHeight
@@ -52,5 +74,9 @@ open class DrawableControlDrawer(
             RectF(x - halfX, y - halfY, x + halfX, y + halfY)
         }
 
+    }
+
+    override fun draw(canvas: Canvas, control: Control) {
+        canvas.drawBitmap(drawable.toBitmap(), null, getDestination(control), paint)
     }
 }
