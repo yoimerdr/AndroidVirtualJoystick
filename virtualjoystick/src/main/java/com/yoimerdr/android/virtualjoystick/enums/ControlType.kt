@@ -9,6 +9,7 @@ enum class ControlType(val id: Int) {
          * @param id The id for the enum value
          * @return The enum value for the given id. If not found, returns the value [CIRCLE].
          */
+        @JvmStatic
         fun fromId(id: Int): ControlType {
             for(type in entries)
                 if(type.id == id)

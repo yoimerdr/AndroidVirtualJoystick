@@ -45,6 +45,7 @@ open class CircleControl(
          *
          * @return A valid radius proportion in the range [MIN_RADIUS_PROPORTION] to [MAX_RADIUS_PROPORTION]
          */
+        @JvmStatic
         fun getValidRadiusProportion(proportion: Float): Float {
             return if(proportion > MAX_RADIUS_PROPORTION)
                 MAX_RADIUS_PROPORTION
