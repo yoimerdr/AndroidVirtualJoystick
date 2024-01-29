@@ -7,12 +7,18 @@ import com.yoimerdr.android.virtualjoystick.control.CircleArcControl
 import com.yoimerdr.android.virtualjoystick.control.CircleControl
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.control.drawer.ArcControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.CircleControlDrawer
 import com.yoimerdr.android.virtualjoystick.enums.ControlType
+import com.yoimerdr.android.virtualjoystick.enums.DirectionType
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
+/**
+ * A builder class to build the controls defined in the package.
+ */
 class ControlBuilder {
     private val colors: ColorsScheme = ColorsScheme(Color.RED, Color.WHITE)
     private var type: ControlType = ControlType.CIRCLE
+    private var directionType: DirectionType = DirectionType.EIGHT
     private var invalidRadius: Float = 70f
 
     // for arc type
@@ -32,9 +38,13 @@ class ControlBuilder {
         return this
     }
 
+    fun colors(@ColorInt primary: Int, @ColorInt accent: Int): ControlBuilder {
+        return primaryColor(primary)
+            .accentColor(accent)
+    }
+
     fun colors(scheme: ColorsScheme): ControlBuilder {
-        return primaryColor(scheme.primary)
-            .accentColor(scheme.accent)
+        return colors(scheme.primary, scheme.accent)
     }
 
     fun invalidRadius(radius: Float): ControlBuilder {
@@ -63,7 +73,7 @@ class ControlBuilder {
     fun arcSweepAngle(angle: Int) = arcSweepAngle(angle.toFloat())
 
     fun circleRadiusProportion(proportion: Float): ControlBuilder {
-        circleRadiusProportion = CircleControl.getValidRadiusProportion(proportion)
+        circleRadiusProportion = CircleControlDrawer.getRadiusProportion(proportion)
         return this
     }
 
@@ -74,22 +84,36 @@ class ControlBuilder {
         return this
     }
 
+    fun directionType(type: DirectionType): ControlBuilder {
+        this.directionType = type
+        return this
+    }
+
     fun build(): Control {
         return when (type) {
             ControlType.ARC -> ArcControl(
                 colors,
                 invalidRadius,
+                directionType,
                 arcStrokeWidth,
                 arcSweepAngle
             )
+
             ControlType.CIRCLE_ARC -> CircleArcControl(
                 colors,
                 invalidRadius,
+                directionType,
                 arcStrokeWidth,
                 arcSweepAngle,
                 circleRadiusProportion
             )
-            ControlType.CIRCLE -> CircleControl(colors, invalidRadius, circleRadiusProportion)
+
+            ControlType.CIRCLE -> CircleControl(
+                colors,
+                invalidRadius,
+                directionType,
+                circleRadiusProportion
+            )
         }
     }
 }
