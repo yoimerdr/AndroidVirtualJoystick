@@ -2,7 +2,6 @@ package com.yoimerdr.android.virtualjoystick.geometry
 
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
-import kotlin.jvm.Throws
 import kotlin.math.atan2
 import kotlin.math.hypot
 
