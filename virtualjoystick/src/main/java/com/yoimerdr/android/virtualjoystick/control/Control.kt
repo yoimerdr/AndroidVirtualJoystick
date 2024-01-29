@@ -3,10 +3,12 @@ package com.yoimerdr.android.virtualjoystick.control
 import android.graphics.Canvas
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.enums.Direction
+import com.yoimerdr.android.virtualjoystick.enums.DirectionType
 import com.yoimerdr.android.virtualjoystick.exceptions.InvalidControlPositionException
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.MutablePosition
+import com.yoimerdr.android.virtualjoystick.geometry.Plane
 import com.yoimerdr.android.virtualjoystick.geometry.Position
 import com.yoimerdr.android.virtualjoystick.geometry.Size
 
@@ -17,33 +19,37 @@ import com.yoimerdr.android.virtualjoystick.geometry.Size
  *
  */
 abstract class Control(
-    /**
-     * Invalid radius to be taken into account when obtaining control direction
-     */
     invalidRadius: Float,
+    /**
+     * The control directions type.
+     *
+     * Used to determine how many directions, in addition to [Direction.NONE],
+     * will be taken into account when calling [direction].
+     */
+    var directionType: DirectionType
 ) {
 
     /**
      * The control position.
      */
-    protected val position: MutablePosition
+    private val mPosition: MutablePosition
 
     /**
      * The center of the view.
      */
-    protected val center: MutablePosition
+    private val mCenter: MutablePosition
+
 
     /**
-     * Control's inner circle.
+     * Circle representing the area of the view where the control is used.
      */
-    protected val inCircle: Circle
+    private val viewCircle: Circle
+
 
     /**
-     * Control's outer circle.
+     * Invalid radius to be taken into account when obtaining control [direction].
      */
-    protected val outCircle: Circle
-
-     var invalidRadius: Float = invalidRadius
+    var invalidRadius: Float = invalidRadius
         set(value) {
             field = value
             validateInvalidRadius()
@@ -54,24 +60,108 @@ abstract class Control(
      *
      * Must be initialized in classes that inherit from [Control].
      */
-    lateinit var drawer: ControlDrawer
+    abstract var drawer: ControlDrawer
 
     init {
-        center = Position()
-        position = Position()
-        inCircle = Circle(1f, center)
-        outCircle = Circle(1f, center)
+        mCenter = Position()
+        mPosition = Position()
+        viewCircle = Circle(1f, mCenter)
         validateInvalidRadius()
     }
 
     /**
-     * Validates the control [position] values.
+     * Gets the direction of the control.
      *
-     * @throws InvalidControlPositionException If any of the [position] values is negative.
+     * The direction is based on the [anglePosition] value.
+     *
+     * If the distance from the center is less than the [invalidRadius], the
+     * direction is considered as [Direction.NONE].
+     *
+     * @return A [Direction] enum representing the direction.
+     *
+     * If [directionType] is [DirectionType.FOUR] possible values are:
+     * [Direction.NONE], [Direction.LEFT], [Direction.RIGHT], [Direction.UP] and [Direction.DOWN].
+     *
+     * Otherwise, possible values are all [Direction] enum entries.
+     */
+
+    open val direction: Direction get() {
+        if (distanceFromCenter <= invalidRadius)
+            return Direction.NONE
+
+        val angleDegrees = Math.toDegrees(anglePosition)
+
+        if(directionType == DirectionType.EIGHT)
+            return when(Plane.quadrantOf(angleDegrees, Plane.MaxQuadrants.EIGHT,true)) {
+                1 -> Direction.RIGHT
+                2 -> Direction.DOWN_RIGHT
+                3 -> Direction.DOWN
+                4 -> Direction.DOWN_LEFT
+                5 -> Direction.LEFT
+                6 -> Direction.UP_LEFT
+                7 -> Direction.UP
+                8 -> Direction.UP_RIGHT
+                else -> Direction.NONE
+            }
+
+        return when(Plane.quadrantOf(angleDegrees, true)) {
+            1 -> Direction.RIGHT
+            2 -> Direction.DOWN
+            3 -> Direction.LEFT
+            4 -> Direction.UP
+            else -> Direction.NONE
+        }
+    }
+
+    /**
+     * Gets the immutable position of control center.
+     *
+     * @return A new instance of the control center as [ImmutablePosition].
+     */
+    val center: ImmutablePosition get() = mCenter.toImmutable()
+
+    /**
+     * Gets the immutable position of control position.
+     *
+     * @return A new instance of the control position as [ImmutablePosition].
+     */
+    open val position: ImmutablePosition get() = mPosition.toImmutable()
+
+
+    /**
+     * Calculates the distance between current position and center.
+     * @return The calculated distance.
+     */
+    val distanceFromCenter: Float get() = viewCircle.distanceTo(mPosition)
+
+    /**
+     * Calculates the angle (clockwise) formed from the current position and center.
+     * @return A double value in the range from 0 to 2PI radians.
+     */
+    val anglePosition: Double get() = viewCircle.angleTo(mPosition)
+
+    /**
+     * Gets the parametric position of current position in the view circle.
+     *
+     * @return A new instance of the parametric position.
+     */
+
+    val viewParametricPosition: ImmutablePosition get() = viewCircle.parametricPositionOf(anglePosition)
+
+
+    /**
+     * Gets the radius of the view where the control is used.
+     */
+    val viewRadius: Double get() = viewCircle.radius
+
+    /**
+     * Validates the control position values.
+     *
+     * @throws InvalidControlPositionException If any of the position values is negative.
      */
     @Throws(InvalidControlPositionException::class)
     protected fun validatePositionValues() {
-        if(position.x < 0 || position.y < 0)
+        if(mPosition.x < 0 || mPosition.y < 0)
             throw InvalidControlPositionException("None of the position values can be negative.")
     }
 
@@ -81,37 +171,36 @@ abstract class Control(
      * @throws IllegalArgumentException If [invalidRadius] value is negative.
      */
     @Throws(IllegalArgumentException::class)
-    protected fun validateInvalidRadius() {
+    private fun validateInvalidRadius() {
         if(invalidRadius < 0)
             throw IllegalArgumentException("Invalid radius value must be positive.")
     }
 
     /**
-     * Abstract method to set radius restrictions of the control.
-     *
-     * This method should be implemented in subclasses to define specific radius restrictions
-     * based on the view size.
-     * @param size The size of the view.
+     * Checks if [distanceFromCenter] is greater than the [viewRadius].
+     * If so, changes the position to the [viewParametricPosition].
      */
-    protected abstract fun setRadiusRestriction(size: Size)
-
-    /**
-     * Abstract method for validate the position when is changed with [setPosition] methods.
-     */
-    abstract fun validatePositionLimits()
+    private fun validatePositionLimits() {
+        if (distanceFromCenter > viewRadius)
+            mPosition.set(viewParametricPosition)
+    }
 
     /**
      * Called (or call it) when the size of the view changes.
-     * It updates the drawer position and center, and applies radius restrictions from [setRadiusRestriction].
+     *
+     * It updates the drawer position and center.
      * @param size The size of the view.
+     * @throws InvalidControlPositionException If any of the position values is negative.
      */
-    open fun onSizeChanged(size: Size) {
-        (size.width / 2f).also {
-            this.center.set(it, it)
-            this.toCenter()
+    @Throws(InvalidControlPositionException::class)
+    fun onSizeChanged(size: Size) {
+        size.apply {
+            (width.coerceAtMost(height) / 2f).also {
+                mCenter.set(it, it)
+                viewCircle.radius = it.toDouble()
+                toCenter()
+            }
         }
-
-        setRadiusRestriction(size)
     }
 
     /**
@@ -124,95 +213,12 @@ abstract class Control(
     }
 
     /**
-     * Gets the direction of the control.
-     *
-     * The direction is based on the angle and distance of the control [position] from the [center].
-     *
-     *
-     * If the distance from the center is less than the [invalidRadius], the
-     * direction is considered as [Direction.NONE].
-     *
-     * @return A [Direction] enum representing the direction.
-     */
-
-    open val direction: Direction get() {
-        if (distanceFromCenter <= invalidRadius)
-            return Direction.NONE
-
-        val angleDegrees = Math.toDegrees(anglePosition)
-        return when {
-            angleDegrees <= 22.5 || angleDegrees >= 337.6 -> Direction.RIGHT
-            angleDegrees in 22.6..67.5 -> Direction.BOTTOM_RIGHT
-            angleDegrees in 67.6 .. 112.5 -> Direction.BOTTOM
-            angleDegrees in 112.6 .. 157.5 -> Direction.BOTTOM_LEFT
-            angleDegrees in 157.6 .. 202.5 -> Direction.LEFT
-            angleDegrees in 202.6 .. 247.5 -> Direction.UP_LEFT
-            angleDegrees in 247.6 .. 292.5 -> Direction.UP
-            angleDegrees in 292.6 .. 337.5 -> Direction.UP_RIGHT
-            else -> Direction.NONE
-        }
-    }
-
-    /**
-     * Gets the immutable position of control center.
-     *
-     * @return A new instance of the control [center] as [ImmutablePosition].
-     */
-    val immutableCenter: ImmutablePosition get() = center.toImmutable()
-
-    /**
-     * Gets the immutable position of control position.
-     *
-     * @return A new instance of the control [position] as [ImmutablePosition].
-     */
-    val immutablePosition: ImmutablePosition get() = position.toImmutable()
-
-    /**
-     * Gets the radius of the control's inner circle.
-     */
-    val innerRadius: Float get() = inCircle.radius
-
-    /**
-     * Gets the radius of the control's outer circle.
-     */
-    val outerRadius: Float get() = outCircle.radius
-
-    /**
-     * Gets the euclidean distance between current [position] and [center].
-     * @return The calculated distance.
-     */
-    val distanceFromCenter: Float get() = inCircle.distanceFrom(position)
-
-    /**
-     * Gets the angle (clockwise) formed from the current [position] and the [center].
-     * @return A double value in the range from 0 to 2PI radians
-     */
-    val anglePosition: Double get() = inCircle.angleFrom(position)
-
-    /**
-     * Gets the parametric position of current position in the control's outer circle.
-     *
-     * @return A new instance of the parametric position
-     */
-
-    val outParametricPosition: ImmutablePosition get() = outCircle.parametricPositionFrom(anglePosition)
-
-    /**
-     * Gets the parametric position of current [position] in the control's inner circle.
-     *
-     * @return A new instance of the parametric position
-     */
-    val inParametricPosition: ImmutablePosition get() = inCircle.parametricPositionFrom(anglePosition)
-
-    /**
      * Sets the current position of the control.
      *
      * This method performs additional validations with [validatePositionLimits] & [validatePositionValues]
      *
-     * If you want set the position from [validatePositionLimits],
-     * use the set methods of control position.
-     *
      * @param position The new position to be assigned.
+     * @throws InvalidControlPositionException If any of the position values is negative.
      */
     @Throws(InvalidControlPositionException::class)
     fun setPosition(position: ImmutablePosition) {
@@ -226,40 +232,41 @@ abstract class Control(
      *
      * This method performs additional validations with [validatePositionLimits] & [validatePositionValues]
      *
-     * If you want set the position from [validatePositionLimits],
-     * use the set methods of control [position].
-     *
      * @param x The x coordinate to be assigned.
      * @param y The y coordinate to be assigned.
+     *
+     * @throws InvalidControlPositionException If any of the position values is negative.
      */
     @Throws(InvalidControlPositionException::class)
     fun setPosition(x: Float, y: Float) {
-        position.set(x, y)
+        mPosition.set(x, y)
         validatePositionLimits()
         validatePositionValues()
     }
 
     /**
-     * Sets the current [position] to [center].
+     * Sets the current position to center.
+     * @throws InvalidControlPositionException If any of the position values is negative.
      */
-    fun toCenter() = setPosition(center)
+    @Throws(InvalidControlPositionException::class)
+    fun toCenter() = setPosition(mCenter)
 
     /**
-     * Checks if current [position] is [center].
+     * Checks if current position is an the same center coordinates.
      *
      * @return True if is position is equals to center; otherwise, false.
      */
-    fun isInCenter(): Boolean = position == center
+    fun isInCenter(): Boolean = mPosition == mCenter
 
     /**
      * Calculates the difference in the x-coordinate between the current position and the center.
      * @return The calculated difference.
      */
-    protected fun deltaX(): Float = position.deltaX(center)
+    protected fun deltaX(): Float = mPosition.deltaX(mCenter)
 
     /**
      * Calculates the difference in the y-coordinate between the current position and the center.
      * @return The calculated difference.
      */
-    protected fun deltaY(): Float = position.deltaY(center)
+    protected fun deltaY(): Float = mPosition.deltaY(mCenter)
 }
