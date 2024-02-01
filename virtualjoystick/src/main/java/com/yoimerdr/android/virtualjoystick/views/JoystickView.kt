@@ -16,7 +16,9 @@ import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.control.drawer.ColorfulControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.exceptions.InvalidControlPositionException
+import com.yoimerdr.android.virtualjoystick.geometry.FixedPosition
 import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
+import com.yoimerdr.android.virtualjoystick.geometry.Plane
 import com.yoimerdr.android.virtualjoystick.geometry.Size
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.log.Logger
@@ -34,6 +36,8 @@ class JoystickView @JvmOverloads constructor(
      * The [Size] representation of the view size.
      */
     private val viewSize: Size get() = Size(width, height)
+
+    private val viewRadius: Double get() = viewSize.width / 2.0
 
     /**
      * The control movement listener.
@@ -327,25 +331,28 @@ class JoystickView @JvmOverloads constructor(
         if(event == null)
             return false
 
-        event.apply {
-            try {
-                control.setPosition(x, y)
-            } catch (e: InvalidControlPositionException) {
-                Logger.error(this@JoystickView, e)
-                return false
-            }
+        val touchPosition = FixedPosition(event.x, event.y)
+        if(Plane.distanceBetween(touchPosition, center) > viewRadius)
+            return false
 
-            return when(action) {
-                MotionEvent.ACTION_UP -> touchHandler.holdUp()
-                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> touchHandler.holdDown()
-                else -> {
-                    touchHandler.holdUp()
-                    super.onTouchEvent(this)
-                }
-            }.let {
-                invalidate()
-                it
+
+        try {
+            control.setPosition(touchPosition)
+        } catch (e: InvalidControlPositionException) {
+            Logger.error(this@JoystickView, e)
+            return false
+        }
+
+        return when(event.action) {
+            MotionEvent.ACTION_UP -> touchHandler.holdUp()
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> touchHandler.holdDown()
+            else -> {
+                touchHandler.holdUp()
+                super.onTouchEvent(event)
             }
+        }.let {
+            invalidate()
+            it
         }
 
     }
@@ -382,7 +389,7 @@ class JoystickView @JvmOverloads constructor(
             val size = viewSize
             if(!size.isEmpty()) {
                 onSizeChanged(size)
-                setPosition(position)
+                setPosition(this@JoystickView.position)
             }
         }
     }
