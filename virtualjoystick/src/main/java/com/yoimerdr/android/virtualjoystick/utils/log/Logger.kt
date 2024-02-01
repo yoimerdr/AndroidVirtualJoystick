@@ -5,14 +5,20 @@ import kotlin.reflect.KClass
 
 object Logger {
     @JvmStatic
-    fun <T : Any> warn(from: KClass<T>, message: String) = Log.w(from.simpleName, message)
+    fun log(tag: String, message: Any) = Log.d(tag, message.toString())
 
     @JvmStatic
-    fun <T : Any> warn(from: T, message: String) = Logger.warn(from::class, message)
+    fun log(message: Any) = Logger.log("LOG", message.toString())
 
     @JvmStatic
-    fun <T : Any> error(from: KClass<T>, message: String) = Log.e(from.simpleName, message)
+    fun <T : Any> warn(from: KClass<T>, message: Any) = Log.w(from.simpleName, message.toString())
 
     @JvmStatic
-    fun <T : Any> error(from: T, message: String) = Logger.error(from::class, message)
+    fun <T : Any> warn(from: T, message: Any) = Logger.warn(from::class, message)
+
+    @JvmStatic
+    fun <T : Any> error(from: KClass<T>, message: Any) = Log.e(from.simpleName, message.toString())
+
+    @JvmStatic
+    fun <T : Any> error(from: T, message: Any) = Logger.error(from::class, message.toString())
 }

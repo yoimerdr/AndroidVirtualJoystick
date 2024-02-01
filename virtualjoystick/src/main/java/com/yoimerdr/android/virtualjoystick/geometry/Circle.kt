@@ -67,8 +67,10 @@ class Circle(
          * The [center] is converted to [MutablePosition] with [Position] class.
          * @param radius The circle radius.
          * @param center The circle center.
+         * @throws IllegalArgumentException If the radius value is lower or equal than zero.
          */
         @JvmStatic
+        @Throws(IllegalArgumentException::class)
         fun fromImmutableCenter(radius: Double, center: ImmutablePosition): Circle {
             return Circle(radius, Position(center))
         }
