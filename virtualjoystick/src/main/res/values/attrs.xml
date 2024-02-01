@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="JoystickView">
-        <attr name="maxViewWidth" format="dimension" />
-        <attr name="invalidRadius" format="dimension" />
         <attr name="background" format="reference" />
-        <attr name="controlDrawer_primaryColor" format="color" />
-        <attr name="controlDrawer_accentColor" format="color" />
-        <attr name="controlDrawer" format="enum">
+        <attr name="moveInterval" format="integer" />
+        <attr name="invalidRadius" format="dimension" />
+        <attr name="controlType" format="enum">
             <enum name="circle" value="0" />
             <enum name="arc" value="1" />
-            <enum name="circe_arc" value="2"/>
+            <enum name="circe_arc" value="2" />
+        </attr>
+        <attr name="directionType" format="enum">
+            <enum name="complete" value="0" />
+            <enum name="simple" value="1" />
         </attr>
 
-        <attr name="arcControlDrawer_sweepAngle" format="float"/>
-        <attr name="arcControlDrawer_strokeWidth" format="float"/>
+        <attr name="controlDrawer_primaryColor" format="color" />
+        <attr name="controlDrawer_accentColor" format="color" />
+
+        <attr name="arcControlDrawer_sweepAngle" format="float" />
+        <attr name="arcControlDrawer_strokeWidth" format="float" />
+
+        <attr name="circleControlDrawer_radiusProportion" format="float" />
     </declare-styleable>
 </resources>

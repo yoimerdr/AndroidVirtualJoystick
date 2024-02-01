@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="maxWidth">200dp</dimen>
+    <dimen name="width">200dp</dimen>
     <dimen name="invalidRadius">35dp</dimen>
 
     <item format="float" type="dimen" name="arc_sweepAngle">90</item>
     <dimen format="float" type="dimen" name="arc_strokeWidth">13</dimen>
+    <dimen format="float" type="dimen" name="circle_radiusRatio">0.25</dimen>
 </resources>

@@ -1,9 +1,11 @@
 package com.yoimerdr.android.virtualjoystick.control
 
 import android.graphics.Canvas
+import android.graphics.Color
+import androidx.annotation.ColorInt
+import com.yoimerdr.android.virtualjoystick.control.drawer.ArcControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.CircleControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
-import com.yoimerdr.android.virtualjoystick.enums.Direction
-import com.yoimerdr.android.virtualjoystick.enums.DirectionType
 import com.yoimerdr.android.virtualjoystick.exceptions.InvalidControlPositionException
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
@@ -11,6 +13,10 @@ import com.yoimerdr.android.virtualjoystick.geometry.MutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.Plane
 import com.yoimerdr.android.virtualjoystick.geometry.Position
 import com.yoimerdr.android.virtualjoystick.geometry.Size
+import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
+import com.yoimerdr.android.virtualjoystick.views.JoystickView
+import com.yoimerdr.android.virtualjoystick.views.JoystickView.Direction
+import com.yoimerdr.android.virtualjoystick.views.JoystickView.DirectionType
 
 /**
  * Abstract class that represents a virtual joystick control.
@@ -69,6 +75,136 @@ abstract class Control(
         validateInvalidRadius()
     }
 
+    enum class DefaultType(val id: Int) {
+        CIRCLE(0),
+        ARC(1),
+        CIRCLE_ARC(2);
+        companion object {
+            /**
+             * @param id The id for the enum value
+             * @return The enum value for the given id. If not found, returns the value [CIRCLE].
+             */
+            @JvmStatic
+            fun fromId(id: Int): Control.DefaultType {
+                for(type in entries)
+                    if(type.id == id)
+                        return type
+
+                return CIRCLE
+            }
+        }
+    }
+
+    /**
+     * A builder class to build a control for the default ones.
+     *
+     * @see [ArcControl]
+     * @see [CircleControl]
+     * @see [CircleArcControl]
+     */
+    class Builder {
+        private val colors: ColorsScheme = ColorsScheme(Color.RED, Color.WHITE)
+        private var type: Control.DefaultType = Control.DefaultType.CIRCLE
+        private var directionType: JoystickView.DirectionType = JoystickView.DirectionType.COMPLETE
+        private var invalidRadius: Float = 70f
+
+        // for arc type
+        private var arcStrokeWidth: Float = 13f
+        private var arcSweepAngle: Float = 90f
+
+        // for circle type
+        private var circleRadiusProportion: Float = 0.25f
+
+        fun primaryColor(@ColorInt color: Int): Builder {
+            colors.primary = color
+            return this
+        }
+
+        fun accentColor(@ColorInt color: Int): Builder {
+            colors.accent = color
+            return this
+        }
+
+        fun colors(@ColorInt primary: Int, @ColorInt accent: Int): Builder {
+            return primaryColor(primary)
+                .accentColor(accent)
+        }
+
+        fun colors(scheme: ColorsScheme): Builder {
+            return colors(scheme.primary, scheme.accent)
+        }
+
+        fun invalidRadius(radius: Float): Builder {
+            invalidRadius = radius
+            return this
+        }
+
+        fun invalidRadius(radius: Double): Builder = invalidRadius(radius.toFloat())
+
+        fun arcStrokeWidth(width: Float): Builder {
+            arcStrokeWidth = ArcControlDrawer.getValidStrokeWidth(width)
+            return this
+        }
+
+        fun arcStrokeWidth(width: Double) = arcStrokeWidth(width.toFloat())
+
+        fun arcStrokeWidth(width: Int) = arcStrokeWidth(width.toFloat())
+
+        fun arcSweepAngle(angle: Float): Builder {
+            arcSweepAngle = ArcControlDrawer.getValidSweepAngle(angle)
+            return this
+        }
+
+        fun arcSweepAngle(angle: Double) = arcSweepAngle(angle.toFloat())
+
+        fun arcSweepAngle(angle: Int) = arcSweepAngle(angle.toFloat())
+
+        fun circleRadiusProportion(proportion: Float): Builder {
+            circleRadiusProportion = CircleControlDrawer.getRadiusProportion(proportion)
+            return this
+        }
+
+        fun circleRadiusProportion(proportion: Double) = circleRadiusProportion(proportion.toFloat())
+
+        fun type(type: Control.DefaultType): Builder {
+            this.type = type
+            return this
+        }
+
+        fun directionType(type: JoystickView.DirectionType): Builder {
+            this.directionType = type
+            return this
+        }
+
+        fun build(): Control {
+            return when (type) {
+                Control.DefaultType.ARC -> ArcControl(
+                    colors,
+                    invalidRadius,
+                    directionType,
+                    arcStrokeWidth,
+                    arcSweepAngle
+                )
+
+                Control.DefaultType.CIRCLE_ARC -> CircleArcControl(
+                    colors,
+                    invalidRadius,
+                    directionType,
+                    arcStrokeWidth,
+                    arcSweepAngle,
+                    circleRadiusProportion
+                )
+
+                Control.DefaultType.CIRCLE -> CircleControl(
+                    colors,
+                    invalidRadius,
+                    directionType,
+                    circleRadiusProportion
+                )
+            }
+        }
+    }
+
     /**
      * Gets the direction of the control.
      *
@@ -79,19 +215,21 @@ abstract class Control(
      *
      * @return A [Direction] enum representing the direction.
      *
-     * If [directionType] is [DirectionType.FOUR] possible values are:
-     * [Direction.NONE], [Direction.LEFT], [Direction.RIGHT], [Direction.UP] and [Direction.DOWN].
+     * If [directionType] is [DirectionType.SIMPLE] possible values are:
+     * [Direction.NONE], [Direction.LEFT], [Direction.RIGHT],
+     * [Direction.UP] and [Direction.DOWN].
      *
      * Otherwise, possible values are all [Direction] enum entries.
      */
 
-    open val direction: Direction get() {
+    open val direction: Direction
+        get() {
         if (distanceFromCenter <= invalidRadius)
             return Direction.NONE
 
         val angleDegrees = Math.toDegrees(anglePosition)
 
-        if(directionType == DirectionType.EIGHT)
+        if(directionType == DirectionType.COMPLETE)
             return when(Plane.quadrantOf(angleDegrees, Plane.MaxQuadrants.EIGHT,true)) {
                 1 -> Direction.RIGHT
                 2 -> Direction.DOWN_RIGHT
@@ -136,7 +274,7 @@ abstract class Control(
 
     /**
      * Calculates the angle (clockwise) formed from the current position and center.
-     * @return A double value in the range from 0 to 2PI radians.
+     * @return A value in the range from 0 to 2PI radians.
      */
     val anglePosition: Double get() = viewCircle.angleTo(mPosition)
 

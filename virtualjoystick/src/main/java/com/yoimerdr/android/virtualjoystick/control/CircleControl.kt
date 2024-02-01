@@ -2,8 +2,8 @@ package com.yoimerdr.android.virtualjoystick.control
 
 import com.yoimerdr.android.virtualjoystick.control.drawer.CircleControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
-import com.yoimerdr.android.virtualjoystick.enums.DirectionType
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
+import com.yoimerdr.android.virtualjoystick.views.JoystickView
 
 /**
  * [Control] that defines the methods to use a [drawer] that draws something similar to a circle.
@@ -13,7 +13,7 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 open class CircleControl(
     colors: ColorsScheme,
     invalidRadius: Float,
-    directionType: DirectionType,
+    directionType: JoystickView.DirectionType,
     radiusProportion: Float
 ) : Control(invalidRadius, directionType) {
 
