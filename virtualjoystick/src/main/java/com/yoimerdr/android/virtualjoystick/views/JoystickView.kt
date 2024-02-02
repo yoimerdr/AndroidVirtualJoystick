@@ -47,9 +47,9 @@ class JoystickView @JvmOverloads constructor(
     /**
      * The interval for the joystick listener call when it is hold.
      */
-    private var interval: Long = DEFAULT_MOVE_INTERVAL
+    private var interval: Long = HOLD_INTERVAL
         set(value) {
-            field = getMoveInterval(value)
+            field = getHoldInterval(value)
         }
 
     /**
@@ -88,11 +88,6 @@ class JoystickView @JvmOverloads constructor(
      * @return A value in the range from 0 to 2PI radians.
      */
     val angle: Double get() = control.anglePosition
-
-    /**
-     * Gets the default max view width value.
-     */
-    private val defaultMaxViewWidth: Int get() = resources.getDimensionPixelSize(R.dimen.width)
 
     init {
         var primaryColor = ContextCompat.getColor(context, R.color.drawer_primary)
@@ -141,7 +136,7 @@ class JoystickView @JvmOverloads constructor(
             .invalidRadius(invalidRadius)
             .arcStrokeWidth(arcStrokeWidth)
             .arcSweepAngle(arcSweepAngle)
-            .circleRadiusProportion(circleRadiusProportion)
+            .circleRadiusRatio(circleRadiusProportion)
             .type(controlType)
             .directionType(directionType)
             .build()
@@ -163,18 +158,16 @@ class JoystickView @JvmOverloads constructor(
         /**
          * The default interval in ms for the joystick [listener] call.
          */
-        const val DEFAULT_MOVE_INTERVAL: Long = 100
+        const val HOLD_INTERVAL: Long = 100
 
         /**
          * Checks if the value of [interval] is not less than zero.
          * @param interval A interval value in ms.
-         * @return [DEFAULT_MOVE_INTERVAL] if interval is less than zero; otherwise, the interval value.
+         * @return [HOLD_INTERVAL] if interval is less than zero; otherwise, the interval value.
          */
         @JvmStatic
-        fun getMoveInterval(interval: Long): Long {
-            return if(interval < 0)
-                DEFAULT_MOVE_INTERVAL
-            else interval
+        fun getHoldInterval(interval: Long): Long {
+            return interval.coerceAtLeast(HOLD_INTERVAL)
         }
 
         /**
@@ -275,6 +268,11 @@ class JoystickView @JvmOverloads constructor(
             return true
         }
 
+        fun holdMove(): Boolean {
+            joystick.move()
+            return true
+        }
+
         private fun post() {
             joystick.postDelayed(this, joystick.interval)
         }
@@ -339,13 +337,14 @@ class JoystickView @JvmOverloads constructor(
         try {
             control.setPosition(touchPosition)
         } catch (e: InvalidControlPositionException) {
-            Logger.error(this@JoystickView, e)
+            Logger.errorFromClass(this@JoystickView, e)
             return false
         }
 
         return when(event.action) {
             MotionEvent.ACTION_UP -> touchHandler.holdUp()
-            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> touchHandler.holdDown()
+            MotionEvent.ACTION_DOWN -> touchHandler.holdDown()
+            MotionEvent.ACTION_MOVE -> touchHandler.holdMove()
             else -> {
                 touchHandler.holdUp()
                 super.onTouchEvent(event)
@@ -369,7 +368,7 @@ class JoystickView @JvmOverloads constructor(
      * Changes the current interval for the joystick listener call when the control is hold.
      * @param interval An interval value in ms.
      */
-    fun setMoveInterval(interval: Long) {
+    fun setHoldInterval(interval: Long) {
         this.interval = interval
     }
 
@@ -377,7 +376,7 @@ class JoystickView @JvmOverloads constructor(
      * Changes the current interval for the joystick listener call when the control is hold.
      * @param interval An interval value in ms.
      */
-    fun setMoveInterval(interval: Int) = setMoveInterval(interval.toLong())
+    fun setHoldInterval(interval: Int) = setHoldInterval(interval.toLong())
 
     /**
      * Changes the current joystick control.
