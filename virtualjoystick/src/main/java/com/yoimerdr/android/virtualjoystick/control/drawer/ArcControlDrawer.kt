@@ -10,57 +10,81 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
+import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.Position
 import com.yoimerdr.android.virtualjoystick.geometry.factory.RectFFactory
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
  * A [ControlDrawer] that draws an arc.
- *
- * By default, it draws the arc positioned at the value of the inner radius of [Control].
+ * Draws the arc positioned almost in [Control.viewParametricPosition].
  */
 open class ArcControlDrawer(
+    /**
+     * The arc drawer properties.
+     */
    private val properties: ArcProperties
 ) : ColorfulControlDrawer(properties) {
 
+    /**
+     * @param colors The colors for the drawer.
+     * @param strokeWidth The stroke width of the paint.
+     * @param sweepAngle The arc sweep angle.
+     */
     constructor(colors: ColorsScheme, strokeWidth: Float, sweepAngle: Float) : this(ArcProperties(colors, strokeWidth, sweepAngle))
+
+    /**
+     * @param color The unique initial color for the drawer.
+     * @param strokeWidth The stroke width of the paint.
+     * @param sweepAngle The arc sweep angle.
+     */
     constructor(@ColorInt color: Int, strokeWidth: Float, sweepAngle: Float) : this(ColorsScheme(color), strokeWidth, sweepAngle)
+
     /**
      * A [Circle] representation for the arc position.
      */
     protected open val arcCircle: Circle = Circle(1f, Position())
 
-    /**
-     * Paint stroke width.
-     *
-     * A value where minimum value can be [MIN_STROKE_WIDTH].
-     */
-    var strokeWidth: Float
-        get() = properties.strokeWidth
-        set(value) {
-            properties.strokeWidth = getValidStrokeWidth(value)
-        }
-
-    /**
-     * Arc sweep angle.
-     *
-     * A sexagesimal degree in the range [MIN_SWEEP_ANGLE] to [MAX_SWEEP_ANGLE].
-     */
-    var sweepAngle: Float
-        get() = properties.sweepAngle
-        set(value) {
-            properties.sweepAngle = getValidSweepAngle(value)
-        }
-
     init {
-        this.sweepAngle = getValidSweepAngle(sweepAngle)
-        this.strokeWidth = getValidStrokeWidth(strokeWidth)
+        properties.apply {
+            this.sweepAngle = getSweepAngle(sweepAngle)
+            this.strokeWidth = getStrokeWidth(strokeWidth)
+        }
+
         paint.apply {
             style = Paint.Style.STROKE
             color = colors.primary
-            this.strokeWidth = this@ArcControlDrawer.strokeWidth
+            this.strokeWidth = properties.strokeWidth
         }
     }
+
+    var strokeWidth: Float
+        /**
+         * Gets the stroke width of the paint.
+         */
+        get() = properties.strokeWidth
+        /**
+         * Sets the stroke width of the paint.
+         *
+         * @param strokeWidth The new stroke width. The minimum value must be [MIN_STROKE_WIDTH].
+         */
+        set(strokeWidth) {
+            properties.strokeWidth = getStrokeWidth(strokeWidth)
+        }
+
+    var sweepAngle: Float
+        /**
+         * Gets the arc sweep angle.
+         */
+        get() = properties.sweepAngle
+        /**
+         * Sets the arc sweep angle.
+         *
+         * @param angle The new sweep angle. Must be a sexagesimal degree in the range [MIN_SWEEP_ANGLE] to [MAX_SWEEP_ANGLE].
+         */
+        set(angle) {
+            properties.sweepAngle = getSweepAngle(angle)
+        }
 
     open class ArcProperties(colors: ColorsScheme, var strokeWidth: Float, var sweepAngle: Float) : ColorfulProperties(colors)
 
@@ -83,13 +107,13 @@ open class ArcControlDrawer(
         /**
          * Checks if the [sweepAngle] value meets the valid range.
          *
-         * @param sweepAngle The angle value.
+         * @param sweepAngle The angle (degrees) value.
          *
          * @return A valid sexagesimal degree value in the range [MIN_SWEEP_ANGLE] to [MAX_SWEEP_ANGLE].
          */
         @JvmStatic
         @FloatRange(from = MIN_SWEEP_ANGLE.toDouble(), to = MAX_SWEEP_ANGLE.toDouble())
-        fun getValidSweepAngle(sweepAngle: Float): Float {
+        fun getSweepAngle(sweepAngle: Float): Float {
             return sweepAngle.coerceIn(MIN_SWEEP_ANGLE, MAX_SWEEP_ANGLE)
         }
 
@@ -102,22 +126,111 @@ open class ArcControlDrawer(
          */
         @JvmStatic
         @FloatRange(from = MIN_SWEEP_ANGLE.toDouble())
-        fun getValidStrokeWidth(strokeWidth: Float): Float {
+        fun getStrokeWidth(strokeWidth: Float): Float {
             return strokeWidth.coerceAtLeast(MIN_STROKE_WIDTH)
         }
 
-        private fun Canvas.drawArrow(x: Float, y: Float, angle: Float, size: Float, paint: Paint) {
-            val arrowPath = Path()
-            arrowPath.moveTo(x, y)
-            arrowPath.lineTo(x + size, y - size)
-            arrowPath.lineTo(x, y - size / 2)
-            arrowPath.lineTo(x - size, y - size)
-            arrowPath.close()
+        /**
+         * Creates a path for an simple arrow.
+         *
+         * @param x The x-coordinate where the arrow will be.
+         * @param y The y-coordinate where the arrow will be.
+         * @param length The arrow length.
+         *
+         * @return The path of the arrow. Already closed.
+         */
+        @JvmStatic
+        fun pathArrow(x: Float, y: Float, length: Float): Path {
+            return Path().apply {
+                moveTo(x, y)
+                lineTo(x + length, y - length)
+                lineTo(x, y - length / 2)
+                lineTo(x - length, y - length)
+                close()
+            }
+        }
 
-            save()
-            rotate(angle, x, y)
-            drawPath(arrowPath, paint)
-            restore()
+        /**
+         * Creates a path for an simple arrow.
+         *
+         * @param position The position where the arrow will be.
+         * @param length The arrow length.
+         *
+         * @return The path of the arrow. Already closed.
+         */
+        @JvmStatic
+        fun pathArrow(position: ImmutablePosition, length: Float): Path {
+            return position.let {
+                pathArrow(it.x, it.y, length)
+            }
+        }
+
+        /**
+         * Draws an arrow path with the give canvas.
+         * @param canvas The canvas on which to draw the path.
+         * @param x The x-coordinate where the arrow will be.
+         * @param y The y-coordinate where the arrow will be.
+         * @param arrowLength The arrow length.
+         * @param rotateAngle The angle to rotate the canvas.
+         * @param paint The paint to be used on the canvas.
+         * @see [pathArrow]
+         * @see [Canvas.rotate]
+         */
+        @JvmStatic
+        fun drawArrow(canvas: Canvas, x: Float, y: Float, arrowLength: Float, rotateAngle: Float, paint: Paint) {
+            val arrowPath = pathArrow(x, y, arrowLength)
+            canvas.apply {
+                save()
+                rotate(rotateAngle, x, y)
+                drawPath(arrowPath, paint)
+                restore()
+            }
+        }
+
+        /**
+         * Draws an arrow path with the give canvas.
+         * @param canvas The canvas on which to draw the path.
+         * @param x The x-coordinate where the arrow will be.
+         * @param y The y-coordinate where the arrow will be.
+         * @param arrowLength The arrow length.
+         * @param paint The paint to be used on the canvas.
+         * @see [pathArrow]
+         * @see [Canvas.rotate]
+         */
+        @JvmStatic
+        fun drawArrow(canvas: Canvas, x: Float, y: Float, arrowLength: Float, paint: Paint) {
+            drawArrow(canvas, x, y, arrowLength, 0f, paint)
+        }
+
+        /**
+         * Draws an arrow path with the give canvas.
+         * @param canvas The canvas on which to draw the path.
+         * @param position The position where the arrow will be.
+         * @param arrowLength The arrow length.
+         * @param rotateAngle The angle to rotate the canvas.
+         * @param paint The paint to be used on the canvas.
+         * @see [pathArrow]
+         * @see [Canvas.rotate]
+         */
+        @JvmStatic
+        fun drawArrow(canvas: Canvas, position: ImmutablePosition, arrowLength: Float, rotateAngle: Float, paint: Paint) {
+            position.apply {
+                drawArrow(canvas, x, y, arrowLength, rotateAngle, paint)
+            }
+        }
+
+        /**
+         * Draws an arrow path with the give canvas.
+         * @param canvas The canvas on which to draw the path.
+         * @param position The position where the arrow will be.
+         * @param arrowLength The arrow length.
+         * @param paint The paint to be used on the canvas.
+         * @see [pathArrow]
+         * @see [Canvas.rotate]
+         */
+        @JvmStatic
+        fun drawArrow(canvas: Canvas, position: ImmutablePosition, arrowLength: Float, paint: Paint) {
+            drawArrow(canvas, position, arrowLength, 0f, paint)
         }
     }
 
@@ -125,7 +238,7 @@ open class ArcControlDrawer(
      * Gets the distance value between the arc position and the control center.
      * @param control The [Control] from where the drawer is used.
      */
-    protected open fun getArcDistance(control: Control): Double = control.viewRadius - strokeWidth * 2
+    protected open fun getDistance(control: Control): Double = control.viewRadius - strokeWidth * 2
 
     /**
      * The bounds of oval used to define the shape and size of the arc.
@@ -139,19 +252,19 @@ open class ArcControlDrawer(
         if(control.distanceFromCenter < control.invalidRadius)
             return
 
-        drawControl(canvas, control)
+        drawShapes(canvas, control)
     }
 
     /**
-     * Draw the arc and arc arrow shapes.
+     * Draws the arc and arc arrow shapes.
      *
      * @param canvas The view canvas.
      * @param control The [Control] from where the drawer is used.
      */
-    protected open fun drawControl(canvas: Canvas, control: Control) {
+    protected open fun drawShapes(canvas: Canvas, control: Control) {
         arcCircle.apply {
             setCenter(control.center)
-            radius = getArcDistance(control)
+            radius = getDistance(control)
         }
 
         val angle: Double = control.anglePosition
@@ -163,15 +276,17 @@ open class ArcControlDrawer(
         }
 
         drawArc(canvas, control, startAngle.toFloat())
-        drawArcArrow(canvas, control, angle)
+        drawArrow(canvas, control, angle)
     }
 
     /**
-     * Draw the arc at the [getOval] position.
+     * Draws the arc shape.
      *
      * @param canvas The view canvas.
      * @param control The [Control] from where the drawer is used.
-     * @param startArcAngle The starting angle (degrees) where the arc begins
+     * @param startArcAngle The starting angle (degrees) where the arc begins.
+     *
+     * @see [getOval]
      */
     protected open fun drawArc(canvas: Canvas, control: Control, startArcAngle: Float) {
         val oval = getOval(control)
@@ -179,13 +294,13 @@ open class ArcControlDrawer(
     }
 
     /**
-     * Draw the arc arrow in the center of the arc pointing outward.
+     * Draws the arc arrow in the center of the arc pointing outward.
      *
      * @param canvas The view canvas.
      * @param control The [Control] from where the drawer is used.
      * @param angle The angle formed between the current position and the center in the range of 0 to 2PI radians clockwise.
      */
-    protected open fun drawArcArrow(canvas: Canvas, control: Control, angle: Double) {
+    protected open fun drawArrow(canvas: Canvas, control: Control, angle: Double) {
         arcCircle.apply {
             radius += strokeWidth
             val position = parametricPositionOf(angle)
@@ -195,9 +310,7 @@ open class ArcControlDrawer(
             }
 
             val arrowSweepAngle = Math.toDegrees(angle) - 90
-            position.apply {
-                canvas.drawArrow(x, y, arrowSweepAngle.toFloat(), strokeWidth, paint)
-            }
+            ArcControlDrawer.drawArrow(canvas, position, arrowSweepAngle.toFloat(), strokeWidth, paint)
         }
     }
 
@@ -213,7 +326,7 @@ open class ArcControlDrawer(
         val position = arcCircle.parametricPositionOf(control.anglePosition)
         return RadialGradient(
             position.x, position.y,
-            getArcDistance(control).toFloat(),
+            getDistance(control).toFloat(),
             colorsArray,
             null,
             Shader.TileMode.CLAMP

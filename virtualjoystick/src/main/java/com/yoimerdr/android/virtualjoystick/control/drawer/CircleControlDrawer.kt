@@ -20,55 +20,68 @@ open class CircleControlDrawer(
     private val properties: CircleProperties
 ) : ColorfulControlDrawer(properties) {
 
-    constructor(colors: ColorsScheme, proportion: Float) : this(CircleProperties(colors, proportion))
-    constructor(@ColorInt color: Int, proportion: Float) : this(ColorsScheme(color), proportion)
+    /**
+     * @param colors The colors for the drawer.
+     * @param ratio The ratio value for the circle radius length.
+     */
+    constructor(colors: ColorsScheme, ratio: Float) : this(CircleProperties(colors, ratio))
 
     /**
-     * The circle radius proportion.
-     *
-     * Must be a value in the range from [MIN_RADIUS_PROPORTION] to [MAX_RADIUS_PROPORTION]
+     * @param color The unique initial color for the drawer.
+     * @param ratio The ratio value for the circle radius length.
      */
-    var proportion: Float
-        get() = properties.proportion
-        set(value) {
-            properties.proportion = getRadiusProportion(value)
-        }
+    constructor(@ColorInt color: Int, ratio: Float) : this(ColorsScheme(color), ratio)
 
     init {
-        this.proportion = properties.proportion
+        properties.apply {
+            ratio = getRadiusRatio(ratio)
+        }
     }
 
-    open class CircleProperties(colors: ColorsScheme, var proportion: Float) : ColorfulProperties(colors)
+    var ratio: Float
+        /**
+         * Gets the circle radius ratio.
+         */
+        get() = properties.ratio
+        /**
+         * Sets the circle radius ratio.
+         * @param ratio The new circle radius ratio. Must be a value in the range from [MIN_RADIUS_RATIO] to [MAX_RADIUS_RATIO]
+         */
+        set(ratio) {
+            properties.ratio = getRadiusRatio(ratio)
+        }
+
+    open class CircleProperties(colors: ColorsScheme, var ratio: Float) : ColorfulProperties(colors)
 
     companion object {
         /**
-         * The minimum valid radius proportion.
+         * The minimum valid radius ratio value.
          */
-        const val MIN_RADIUS_PROPORTION = 0.1f
+        const val MIN_RADIUS_RATIO = 0.1f
 
         /**
-         * The maximum valid radius proportion.
+         * The maximum valid radius ratio value.
          */
-        const val MAX_RADIUS_PROPORTION = 0.80f
+        const val MAX_RADIUS_RATIO = 0.80f
 
         /**
-         * Checks if the [proportion] value meets the valid range.
+         * Checks if the [ratio] value meets the valid range.
          *
-         * @param proportion The proportion value.
+         * @param ratio The ratio value.
          *
-         * @return A valid radius proportion in the range [MIN_RADIUS_PROPORTION] to [MAX_RADIUS_PROPORTION]
+         * @return A valid radius ratio in the range [MIN_RADIUS_RATIO] to [MAX_RADIUS_RATIO]
          */
         @JvmStatic
-        @FloatRange(from = MIN_RADIUS_PROPORTION.toDouble(), to = MAX_RADIUS_PROPORTION.toDouble())
-        fun getRadiusProportion(proportion: Float): Float {
-            return proportion.coerceIn(MIN_RADIUS_PROPORTION, MAX_RADIUS_PROPORTION)
+        @FloatRange(from = MIN_RADIUS_RATIO.toDouble(), to = MAX_RADIUS_RATIO.toDouble())
+        fun getRadiusRatio(ratio: Float): Float {
+            return ratio.coerceIn(MIN_RADIUS_RATIO, MAX_RADIUS_RATIO)
         }
     }
 
     /**
      * The [Shader] for the drawer paint.
      * @param control The [Control] from where the drawer is used.
-     * @param position The current (or parametric) position where the control is.
+     * @param position The position where the center of the circle is.
      */
     protected open fun getPaintShader(control: Control, position: ImmutablePosition): Shader {
         return position.let {
@@ -85,12 +98,12 @@ open class CircleControlDrawer(
      * Gets the circle radius.
      * @param control The [Control] from where the drawer is used.
      */
-    protected open fun getCircleRadius(control: Control): Double = control.viewRadius * proportion
+    protected open fun getCircleRadius(control: Control): Double = control.viewRadius * ratio
 
     /**
-     * Gets the maximum radius to where the drawer center position can be.
+     * Gets the maximum distance to where the center position of the circle can be.
      */
-    protected open fun getMaxCircleRadius(control: Control): Double = control.viewRadius - getCircleRadius(control)
+    protected open fun getMaxDistance(control: Control): Double = control.viewRadius - getCircleRadius(control)
 
     /**
      * Gets the current position where the control is located
@@ -98,7 +111,7 @@ open class CircleControlDrawer(
      * @param control The [Control] from where the drawer is used.
      */
     protected open fun getPosition(control: Control): ImmutablePosition {
-        val maxRadius = getMaxCircleRadius(control)
+        val maxRadius = getMaxDistance(control)
         return if(control.distanceFromCenter > maxRadius) {
             Circle.fromImmutableCenter(maxRadius, control.center)
                 .parametricPositionOf(control.anglePosition)

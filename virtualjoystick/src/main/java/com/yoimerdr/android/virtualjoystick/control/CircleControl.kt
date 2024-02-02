@@ -6,17 +6,15 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.views.JoystickView
 
 /**
- * [Control] that defines the methods to use a [drawer] that draws something similar to a circle.
- *
- * By default, the [drawer] is [CircleControlDrawer].
+ * [Control] that uses by default by the [CircleControlDrawer].
  */
 open class CircleControl(
     colors: ColorsScheme,
     invalidRadius: Float,
     directionType: JoystickView.DirectionType,
-    radiusProportion: Float
+    radiusRatio: Float
 ) : Control(invalidRadius, directionType) {
 
-    override var drawer: ControlDrawer = CircleControlDrawer(colors, radiusProportion)
+    override var drawer: ControlDrawer = CircleControlDrawer(colors, radiusRatio)
 
 }

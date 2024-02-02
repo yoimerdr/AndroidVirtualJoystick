@@ -13,12 +13,9 @@ class Position(
 
     constructor(position: ImmutablePosition) : this(position.x, position.y)
 
-    override fun set(x: Float?, y: Float?) {
-        if(x != null)
-            this.x = x
-
-        if(y != null)
-            this.y = y
+    override fun set(x: Float, y: Float) {
+        this.x = x
+        this.y = y
     }
 
     override fun set(position: ImmutablePosition) = set(position.x, position.y)
@@ -35,12 +32,9 @@ class Position(
         this.y += dy
     }
 
-    override fun offset(dx: Float?, dy: Float?) {
-        if(dx != null)
-            xOffset(dx)
-
-        if(dy != null)
-            yOffset(dy)
+    override fun offset(dx: Float, dy: Float) {
+        xOffset(dx)
+        yOffset(dy)
     }
     override fun offset(position: ImmutablePosition) = offset(position.x, position.y)
     override fun toImmutable(): ImmutablePosition = FixedPosition(this)

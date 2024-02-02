@@ -34,32 +34,52 @@ abstract class ColorfulControlDrawer(
         @ColorInt
         get() = intArrayOf(primaryColor, accentColor)
 
-    /**
-     * Short getter and setter for [colors].primary
-     */
+
     open var primaryColor: Int
+        /**
+         * Gets the primary color of [colors].
+         */
         @ColorInt
         get() = colors.primary
+        /**
+         * Sets the primary color of [colors] and paint.
+         * @param color The new primary color.
+         */
         set(@ColorInt color) {
             colors.primary = color
             paint.color = color
         }
 
-    /**
-     * Short getter and setter for colors.accent
-     */
     open var accentColor: Int
+        /**
+         * Gets the accent color of [colors].
+         */
         @ColorInt
         get() = colors.accent
+        /**
+         * Sets the accent color of [colors].
+         * @param color The new accent color.
+         */
         set(@ColorInt color) {
             colors.accent = color
         }
 
+    /**
+     * Sets the primary and accent colors of drawer.
+     *
+     * @param primary The new primary color.
+     * @param accent The new accent color.
+     */
     open fun setColors(@ColorInt primary: Int, @ColorInt accent: Int) {
         primaryColor = primary
         accentColor = accent
     }
 
+    /**
+     * Sets the primary and accent colors of drawer based on a schema.
+     *
+     * @param colors The schema from which the colors are to be set.
+     */
     open fun setColors(colors: ColorsScheme) {
         colors.apply {
             setColors(primary, accent)

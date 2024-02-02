@@ -6,9 +6,7 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.views.JoystickView
 
 /**
- * [Control] that defines the methods to use a [drawer] that draws something similar to an circle with an arc.
- *
- * By default, the [drawer] is [CircleArcControlDrawer].
+ * [Control] that uses by default by the [CircleArcControlDrawer].
  */
 open class CircleArcControl(
     colors: ColorsScheme,

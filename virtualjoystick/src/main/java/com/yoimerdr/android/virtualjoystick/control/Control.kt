@@ -19,10 +19,9 @@ import com.yoimerdr.android.virtualjoystick.views.JoystickView.Direction
 import com.yoimerdr.android.virtualjoystick.views.JoystickView.DirectionType
 
 /**
- * Abstract class that represents a virtual joystick control.
+ * Represents a virtual joystick control.
  *
  * Custom control must inherit from this class.
- *
  */
 abstract class Control(
     invalidRadius: Float,
@@ -53,7 +52,9 @@ abstract class Control(
 
 
     /**
-     * Invalid radius to be taken into account when obtaining control [direction].
+     * Invalid radius to be taken into account when obtaining control direction.
+     *
+     * @see [Control.direction]
      */
     var invalidRadius: Float = invalidRadius
         set(value) {
@@ -113,7 +114,7 @@ abstract class Control(
         private var arcSweepAngle: Float = 90f
 
         // for circle type
-        private var circleRadiusProportion: Float = 0.25f
+        private var circleRadiusRatio: Float = 0.25f
 
         fun primaryColor(@ColorInt color: Int): Builder {
             colors.primary = color
@@ -142,7 +143,7 @@ abstract class Control(
         fun invalidRadius(radius: Double): Builder = invalidRadius(radius.toFloat())
 
         fun arcStrokeWidth(width: Float): Builder {
-            arcStrokeWidth = ArcControlDrawer.getValidStrokeWidth(width)
+            arcStrokeWidth = ArcControlDrawer.getStrokeWidth(width)
             return this
         }
 
@@ -151,7 +152,7 @@ abstract class Control(
         fun arcStrokeWidth(width: Int) = arcStrokeWidth(width.toFloat())
 
         fun arcSweepAngle(angle: Float): Builder {
-            arcSweepAngle = ArcControlDrawer.getValidSweepAngle(angle)
+            arcSweepAngle = ArcControlDrawer.getSweepAngle(angle)
             return this
         }
 
@@ -159,12 +160,12 @@ abstract class Control(
 
         fun arcSweepAngle(angle: Int) = arcSweepAngle(angle.toFloat())
 
-        fun circleRadiusProportion(proportion: Float): Builder {
-            circleRadiusProportion = CircleControlDrawer.getRadiusProportion(proportion)
+        fun circleRadiusRatio(ratio: Float): Builder {
+            circleRadiusRatio = CircleControlDrawer.getRadiusRatio(ratio)
             return this
         }
 
-        fun circleRadiusProportion(proportion: Double) = circleRadiusProportion(proportion.toFloat())
+        fun circleRadiusRatio(ratio: Double) = circleRadiusRatio(ratio.toFloat())
 
         fun type(type: Control.DefaultType): Builder {
             this.type = type
@@ -192,25 +193,22 @@ abstract class Control(
                     directionType,
                     arcStrokeWidth,
                     arcSweepAngle,
-                    circleRadiusProportion
+                    circleRadiusRatio
                 )
 
                 Control.DefaultType.CIRCLE -> CircleControl(
                     colors,
                     invalidRadius,
                     directionType,
-                    circleRadiusProportion
+                    circleRadiusRatio
                 )
             }
         }
     }
 
     /**
-     * Gets the direction of the control.
-     *
-     * The direction is based on the [anglePosition] value.
-     *
-     * If the distance from the center is less than the [invalidRadius], the
+     * Gets the direction to which the control is pointing.
+     * It is based on the [anglePosition] value, but if [distanceFromCenter] is less than [invalidRadius], the
      * direction is considered as [Direction.NONE].
      *
      * @return A [Direction] enum representing the direction.
@@ -295,12 +293,12 @@ abstract class Control(
     /**
      * Validates the control position values.
      *
-     * @throws InvalidControlPositionException If any of the position values is negative.
+     * @throws InvalidControlPositionException If any of the position coordinates is negative.
      */
     @Throws(InvalidControlPositionException::class)
     protected fun validatePositionValues() {
         if(mPosition.x < 0 || mPosition.y < 0)
-            throw InvalidControlPositionException("None of the position values can be negative.")
+            throw InvalidControlPositionException()
     }
 
     /**
@@ -328,7 +326,7 @@ abstract class Control(
      *
      * It updates the drawer position and center.
      * @param size The size of the view.
-     * @throws InvalidControlPositionException If any of the position values is negative.
+     * @throws InvalidControlPositionException If any of the position coordinates is negative.
      */
     @Throws(InvalidControlPositionException::class)
     fun onSizeChanged(size: Size) {
@@ -353,10 +351,8 @@ abstract class Control(
     /**
      * Sets the current position of the control.
      *
-     * This method performs additional validations with [validatePositionLimits] & [validatePositionValues]
-     *
      * @param position The new position to be assigned.
-     * @throws InvalidControlPositionException If any of the position values is negative.
+     * @throws InvalidControlPositionException If any of the position coordinates is negative.
      */
     @Throws(InvalidControlPositionException::class)
     fun setPosition(position: ImmutablePosition) {
@@ -368,12 +364,10 @@ abstract class Control(
     /**
      * Sets the current position of the control.
      *
-     * This method performs additional validations with [validatePositionLimits] & [validatePositionValues]
-     *
      * @param x The x coordinate to be assigned.
      * @param y The y coordinate to be assigned.
      *
-     * @throws InvalidControlPositionException If any of the position values is negative.
+     * @throws InvalidControlPositionException If any of the position coordinates is negative.
      */
     @Throws(InvalidControlPositionException::class)
     fun setPosition(x: Float, y: Float) {
@@ -384,7 +378,7 @@ abstract class Control(
 
     /**
      * Sets the current position to center.
-     * @throws InvalidControlPositionException If any of the position values is negative.
+     * @throws InvalidControlPositionException If any of the position coordinates is negative.
      */
     @Throws(InvalidControlPositionException::class)
     fun toCenter() = setPosition(mCenter)

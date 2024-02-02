@@ -19,9 +19,17 @@ import com.yoimerdr.android.virtualjoystick.utils.log.Logger
  * A [ControlDrawer] that draws an drawable resource.
  */
 open class DrawableControlDrawer(
+    /**
+     * The drawable drawer properties.
+     */
     private val properties: DrawableProperties
 ) : ControlDrawer {
 
+    /**
+     * @param drawable The drawable resource to be drawn.
+     * @param scale The scale ratio to scale the dimensions of the [drawable].
+     * @param paint The paint to use to draw the [drawable].
+     */
     constructor(drawable: Drawable, scale: Float, paint: Paint?) : this(
         DrawableProperties(
             drawable,
@@ -30,54 +38,76 @@ open class DrawableControlDrawer(
         )
     )
 
+    /**
+     * @param drawable The drawable resource to be drawn.
+     * @param scale The scale ratio to scale the dimensions of the [drawable].
+     */
     constructor(drawable: Drawable, scale: Float) : this(drawable, scale, null)
-    constructor(drawable: Drawable, paint: Paint?) : this(drawable, 1f, paint)
-    constructor(drawable: Drawable) : this(drawable, null)
 
     /**
-     * The drawable resource.
+     * @param drawable The drawable resource to be drawn.
+     * @param paint The paint to use to draw the [drawable].
      */
+    constructor(drawable: Drawable, paint: Paint?) : this(drawable, 1f, paint)
+
+    /**
+     * @param drawable The drawable resource to be drawn.
+     */
+    constructor(drawable: Drawable) : this(drawable, null)
+
+
     open var drawable: Drawable
+        /**
+         * Gets the drawable resource.
+         */
         get() = properties.drawable
-        set(value) {
-            properties.drawable = value
+        /**
+         * Sets the drawable resource.
+         * @param drawable The new drawable resource.
+         */
+        set(drawable) {
+            properties.drawable = drawable
             checkDrawableSize()
             convertDrawableToBitmap()
         }
 
-    /**
-     * Getter and setter for scaling the size of the drawable.
-     *
-     * @throws IllegalArgumentException If when set the value is negative.
-     */
-    @set:Throws(IllegalArgumentException::class)
     open var scale: Float
+        /**
+         * Gets the scale for the dimensions of the size of the drawable resource.
+         */
         get() = properties.scale
-        set(value) {
-            if (value <= 0)
+
+        /**
+         * Sets the scale for the dimensions of the size of the drawable resource.
+         * @throws scale The new scale value.
+         * @throws IllegalArgumentException If the scale is negative or zero.
+         */
+        @Throws(IllegalArgumentException::class)
+        set(scale) {
+            if (scale <= 0)
                 throw IllegalArgumentException("The scale value must be a value greater than zero.")
-            if (scale != value) {
-                properties.scale = value
+            if (this.scale != scale) {
+                properties.scale = scale
                 convertDrawableToBitmap()
             }
         }
 
     /**
-     * The drawer paint.
+     * Gets the drawer paint.
      */
     protected open val paint: Paint? get() = properties.paint
 
     /**
      * Gets the bitmap to draw.
      */
-    protected val bitmap: Bitmap get() {
+    protected open val bitmap: Bitmap get() {
         if(mBitmap == null)
             convertDrawableToBitmap()
         return mBitmap!!
     }
 
     /**
-     * The drawable bitmap
+     * The drawable bitmap.
      */
     private var mBitmap: Bitmap? = null
 
@@ -110,7 +140,7 @@ open class DrawableControlDrawer(
          * Instance a [DrawableControlDrawer] from context and a [DrawableRes] id.
          * @param context The current activity or view context.
          * @param id The drawable resource id.
-         * @param scale The scale proportion to scale the drawable. Must be a value greater than zero.
+         * @param scale The scale ratio to scale the drawable. Must be a value greater than zero.
          * @param paint The [DrawableControlDrawer] paint.
          * @throws IllegalArgumentException If doesn't exist a drawable for the given id or the [scale] is not positive.
          */
@@ -129,7 +159,7 @@ open class DrawableControlDrawer(
          * Instance a [DrawableControlDrawer] from context and a [DrawableRes] id.
          * @param context The current activity or view context.
          * @param id The drawable resource id.
-         * @param scale The scale proportion to scale the drawable. Must be a value greater than zero.
+         * @param scale The scale ratio to scale the drawable. Must be a value greater than zero.
          * @throws IllegalArgumentException If doesn't exist a drawable for the given id or the [scale] is not positive.
          */
         @JvmStatic
@@ -173,34 +203,35 @@ open class DrawableControlDrawer(
     }
 
     /**
-     * Getter for the drawable scaled width.
+     * Gets the scaled width dimension of the drawable.
      */
     protected val width: Float get() = drawable.intrinsicWidth * scale
 
     /**
-     * Getter for the drawable scaled height.
+     * Gets for the scaled height dimension of the drawable.
      */
     protected val height: Float get() = drawable.intrinsicHeight * scale
 
     /**
-     * Gets the scaled half [width].
+     * Gets half the value of [width].
      */
     protected val halfWidth: Float get() = width / 2f
 
     /**
-     * Gets the scaled half [height].
+     * Gets half the value of [height].
      */
     protected val halfHeight: Float get() = height / 2f
 
+
     /**
-     * Gets the bitmap to draw.
+     * Check whether the dimensions of the drawable are similar,
+     * if not log an error message.
+     * @see [Logger.errorFromClass]
      */
-
-
     protected fun checkDrawableSize() {
         drawable.apply {
             if (intrinsicHeight != intrinsicWidth)
-                Logger.error(
+                Logger.errorFromClass(
                     this@DrawableControlDrawer,
                     "To avoid unexpected behavior, the width and height of the drawable should be the same or should not differ too much."
                 )
@@ -208,7 +239,9 @@ open class DrawableControlDrawer(
     }
 
     /**
-     * Convert the drawable to a bitmap according the [scale] value.
+     * Convert the drawable to a bitmap according the [width] and [height] dimensions.
+     *
+     * @see [bitmap]
      */
     @Throws(IllegalArgumentException::class)
     protected fun convertDrawableToBitmap() {
@@ -224,7 +257,7 @@ open class DrawableControlDrawer(
     protected open fun getPosition(control: Control): ImmutablePosition {
         val max = control.viewRadius - maxOf(halfWidth, halfHeight)
         return if (max <= 0) {
-            Logger.error(
+            Logger.errorFromClass(
                 this,
                 "The size of the scaled drawable (width and height) is too large with respect to the view where the control is used. Try scaling it using the scale property of this drawer using a smaller value."
             )
