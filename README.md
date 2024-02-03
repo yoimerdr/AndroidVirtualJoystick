@@ -67,9 +67,9 @@ To use the library you can install it from [github packages](#github-packages-in
         // .....
     }
     // ....
-    def githubPropertiesFile = rootProject.file("github.properties"))
+    def githubPropertiesFile = Paths.get(rootProject.projectDir.toString(), "github.properties").toFile()
     def githubProperties = new Properties()
-    githubProperties.load(new FileInputStream(githubPropertiesFile)
+    githubProperties.load(new FileInputStream(githubPropertiesFile))
     // .....
     ```
     Add a new repository inside the dependencyResolutionManagement config.
