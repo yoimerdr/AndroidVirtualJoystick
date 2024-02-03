@@ -10,21 +10,12 @@
         android:id="@+id/tvDirection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="@string/joystick_direction"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45" />
-
-    <TextView
-        android:id="@+id/tvAngle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/joystick_angle"
-        app:layout_constraintEnd_toEndOf="@+id/tvDirection"
-        app:layout_constraintStart_toStartOf="@+id/tvDirection"
-        app:layout_constraintTop_toBottomOf="@+id/tvDirection" />
+        app:layout_constraintTop_toBottomOf="@+id/spnDirectionType" />
 
     <TextView
         android:id="@+id/tvPosition"
@@ -32,9 +23,102 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/joystick_position"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/tvDirection"
         app:layout_constraintStart_toStartOf="@+id/tvDirection"
-        app:layout_constraintTop_toBottomOf="@+id/tvAngle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDirection" />
+
+    <com.yoimerdr.android.virtualjoystick.views.JoystickView
+        android:id="@+id/vJoystick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        app:arcControlDrawer_sweepAngle="100"
+        app:controlDrawer_accentColor="#FFFFFF"
+        app:controlDrawer_primaryColor="#FF0000"
+        app:controlType="circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvPrimaryColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/joystick_primary_color"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spnPrimaryColor"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/tvPrimaryColor"
+        app:layout_constraintTop_toBottomOf="@+id/tvPrimaryColor" />
+
+    <TextView
+        android:id="@+id/tvAccentColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/joystick_accent_color"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/spnPrimaryColor"
+        app:layout_constraintTop_toBottomOf="@+id/spnPrimaryColor" />
+
+    <Spinner
+        android:id="@+id/spnAccentColor"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/spnPrimaryColor"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvAccentColor"
+        app:layout_constraintTop_toBottomOf="@+id/tvAccentColor" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="left" />
+
+    <TextView
+        android:id="@+id/tvDrawerType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/joystick_drawer_type"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spnDrawerType"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/tvDrawerType"
+        app:layout_constraintTop_toBottomOf="@+id/tvDrawerType" />
+
+    <TextView
+        android:id="@+id/tvDirectionType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/joystick_direction_type"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/spnDrawerType"
+        app:layout_constraintTop_toBottomOf="@+id/spnDrawerType" />
+
+    <Spinner
+        android:id="@+id/spnDirectionType"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/tvDirectionType"
+        app:layout_constraintTop_toBottomOf="@+id/tvDirectionType" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
