@@ -122,14 +122,16 @@ abstract class TouchHoldEventHandler<ViewLike : View>(
 
         return when(event.action) {
             MotionEvent.ACTION_UP -> {
-                removeRunnable()
                 isHold = false
+                removeRunnable()
                 touchUp()
             }
             MotionEvent.ACTION_DOWN -> {
                 removeRunnable()
                 isHold = true
-                touchDown()
+                touchDown().apply {
+                    postHoldRunnable()
+                }
             }
             MotionEvent.ACTION_MOVE -> {
                 removeRunnable()
