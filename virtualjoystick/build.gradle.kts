@@ -3,8 +3,10 @@ import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.base.DokkaBaseConfiguration
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.incremental.deleteDirectoryContents
+import java.io.FileInputStream
 import java.nio.file.Paths
 import java.nio.file.Path
+import java.util.Properties
 
 plugins {
     id("com.android.library")
@@ -81,6 +83,16 @@ val libraryProperties = LibraryProperties()
 val localRepository = PathFileBuilder(project.buildDir)
     .add("localRepository")
     .build()
+
+val githubProperties = Properties()
+
+try {
+    githubProperties.load(FileInputStream(rootProject.file("github.properties")))
+} catch (e: Exception) {
+    println(e)
+}
+
+val githubPckTarget = "https://maven.pkg.github.com/yoimerdr/android-virtualjoystick"
 
 val dokkaIncludes = PathFileBuilder(project.rootDir)
     .add("dokka")
@@ -179,12 +191,21 @@ publishing {
             name = "local"
             url = uri(localRepository)
         }
+
+        maven {
+            name = "GithubPackages"
+            url = uri(githubPckTarget)
+            credentials {
+                username = githubProperties.getProperty("gpr.usr") ?: System.getenv("GPR_USER")
+                password = githubProperties.getProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
+            }
+        }
     }
 }
 
 tasks.register<Zip>("distLocalLibrary") {
     description = "Copy the generated files in the local repo to distributions folder on root."
-    dependsOn(tasks.publish)
+    dependsOn("publishReleasePublicationToLocalRepository")
 
     val sourceDir = PathFileBuilder(localRepository)
         .add(libraryProperties.toPath())
