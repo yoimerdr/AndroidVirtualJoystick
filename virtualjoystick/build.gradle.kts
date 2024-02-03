@@ -92,7 +92,7 @@ try {
     println(e)
 }
 
-val githubPckTarget = "https://maven.pkg.github.com/yoimerdr/android-virtualjoystick"
+val githubPckTarget = "https://maven.pkg.github.com/yoimerdr/AndroidVirtualJoystick"
 
 val dokkaIncludes = PathFileBuilder(project.rootDir)
     .add("dokka")
