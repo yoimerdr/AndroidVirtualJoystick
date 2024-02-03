@@ -63,9 +63,9 @@ To use the library you can install it from [github packages](#github-packages-in
   ```
   You can read more about how to install a github packages library with KTS [here](https://github.com/enefce/AndroidLibrary-GPR-KDSL?tab=readme-ov-file#using-a-library-from-the-github-packages)
   * Groovy
-    ```gradle
-  
+
     Load you credentials before apply it after the pluginManagement config.
+    ```gradle
     // ....
     pluginManagement {
         // .....
