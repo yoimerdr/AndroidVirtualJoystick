@@ -22,6 +22,7 @@ import com.yoimerdr.android.virtualjoystick.geometry.Plane
 import com.yoimerdr.android.virtualjoystick.geometry.Size
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.log.Logger
+import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
 
 /**
  * A view representing a virtual joystick.
@@ -50,12 +51,16 @@ class JoystickView @JvmOverloads constructor(
     private var interval: Long = HOLD_INTERVAL
         set(value) {
             field = getHoldInterval(value)
+            touchHandler.apply {
+                holdInterval = field
+                activeHoldInterval = field
+            }
         }
 
     /**
      * The control holds handler.
      */
-    private val touchHandler: JoystickTouchHandler = JoystickTouchHandler(this)
+    private val touchHandler: JoystickTouchHandler = JoystickTouchHandler(this, interval)
 
     /**
      * The builder to build the controls defined in the package.
@@ -158,7 +163,7 @@ class JoystickView @JvmOverloads constructor(
         /**
          * The default interval in ms for the joystick [listener] call.
          */
-        const val HOLD_INTERVAL: Long = 100
+        const val HOLD_INTERVAL: Long = 150
 
         /**
          * Checks if the value of [interval] is not less than zero.
@@ -246,48 +251,32 @@ class JoystickView @JvmOverloads constructor(
      * A handler for control holds.
      */
     private class JoystickTouchHandler(
-        /**
-         * The joystick view where the handler is used
-         */
-        private val joystick: JoystickView
-    ) : Runnable {
+        joystick: JoystickView,
+        interval: Long,
+    ) : TouchHoldEventHandler<JoystickView>(joystick, interval) {
+        override fun touchHold() {
+            view.move()
+        }
 
-        private var isHold = false
-
-        fun holdUp(): Boolean {
-            isHold = false
-            remove()
-            joystick.control.toCenter()
-            joystick.move(Direction.NONE)
+        override fun touchDown(): Boolean {
+            view.move()
             return true
         }
 
-        fun holdDown(): Boolean {
-            isHold = true
-            run()
+        override fun touchUp(): Boolean {
+            view.control.toCenter()
+            view.move(Direction.NONE)
             return true
         }
 
-        fun holdMove(): Boolean {
-            joystick.move()
+        override fun touchMove(): Boolean {
+            view.move()
             return true
         }
 
-        private fun post() {
-            joystick.postDelayed(this, joystick.interval)
+        override fun notHandledTouch(event: MotionEvent): Boolean {
+            return false
         }
-
-        private fun remove() {
-            joystick.removeCallbacks(this)
-        }
-
-        override fun run() {
-            if(isHold) {
-                joystick.move()
-                post()
-            }
-        }
-
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -330,8 +319,13 @@ class JoystickView @JvmOverloads constructor(
             return false
 
         val touchPosition = FixedPosition(event.x, event.y)
-        if(Plane.distanceBetween(touchPosition, center) > viewRadius)
+        if(event.action != MotionEvent.ACTION_MOVE && Plane.distanceBetween(touchPosition, center) > viewRadius) {
+            if(!control.isInCenter()) {
+                control.toCenter()
+                invalidate()
+            }
             return false
+        }
 
 
         try {
@@ -341,15 +335,7 @@ class JoystickView @JvmOverloads constructor(
             return false
         }
 
-        return when(event.action) {
-            MotionEvent.ACTION_UP -> touchHandler.holdUp()
-            MotionEvent.ACTION_DOWN -> touchHandler.holdDown()
-            MotionEvent.ACTION_MOVE -> touchHandler.holdMove()
-            else -> {
-                touchHandler.holdUp()
-                super.onTouchEvent(event)
-            }
-        }.let {
+        return touchHandler.onTouchEvent(event).let {
             invalidate()
             it
         }
@@ -389,6 +375,7 @@ class JoystickView @JvmOverloads constructor(
             if(!size.isEmpty()) {
                 onSizeChanged(size)
                 setPosition(this@JoystickView.position)
+                invalidate()
             }
         }
     }
@@ -408,6 +395,7 @@ class JoystickView @JvmOverloads constructor(
     fun setType(type: Control.DefaultType) {
         controlBuilder.type(type)
         buildControl()
+        invalidate()
     }
 
     /**
@@ -441,6 +429,7 @@ class JoystickView @JvmOverloads constructor(
     fun setPrimaryColor(@ColorInt color: Int) {
         colorfulDrawer?.primaryColor = color
         controlBuilder.primaryColor(color)
+        invalidate()
     }
 
     /**
@@ -452,6 +441,7 @@ class JoystickView @JvmOverloads constructor(
     fun setAccentColor(@ColorInt color: Int) {
         colorfulDrawer?.accentColor = color
         controlBuilder.accentColor(color)
+        invalidate()
     }
 
     /**
@@ -463,6 +453,7 @@ class JoystickView @JvmOverloads constructor(
     fun setColors(colors: ColorsScheme) {
         colorfulDrawer?.setColors(colors)
         controlBuilder.colors(colors)
+        invalidate()
     }
 
     /**
@@ -486,5 +477,6 @@ class JoystickView @JvmOverloads constructor(
      */
     fun setControlDrawer(drawer: ControlDrawer) {
         control.drawer = drawer
+        invalidate()
     }
 }
