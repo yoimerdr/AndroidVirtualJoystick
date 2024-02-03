@@ -310,7 +310,7 @@ open class ArcControlDrawer(
             }
 
             val arrowSweepAngle = Math.toDegrees(angle) - 90
-            ArcControlDrawer.drawArrow(canvas, position, arrowSweepAngle.toFloat(), strokeWidth, paint)
+            ArcControlDrawer.drawArrow(canvas, position, strokeWidth, arrowSweepAngle.toFloat(), paint)
         }
     }
 
