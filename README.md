@@ -5,7 +5,11 @@ A library made in kotlin for native android that exposes a view for a virtual jo
 
 ## Installation
 
-To use the library you can install it from [github packages](#github-packages-installation) or [locally](#local-installation).
+To use the library you can install it from [github packages](#github-packages-installation) or [locally](#local-installation). But before installation, make sure that your project meets the requirements.
+
+### Requirements
+* Android minSdk >= 21
+* Android minCompileSdk >= 21
 
 ### Github Packages installation
 
@@ -59,9 +63,9 @@ To use the library you can install it from [github packages](#github-packages-in
   ```
   You can read more about how to install a github packages library with KTS [here](https://github.com/enefce/AndroidLibrary-GPR-KDSL?tab=readme-ov-file#using-a-library-from-the-github-packages)
   * Groovy
-    ```gradle
-  
+
     Load you credentials before apply it after the pluginManagement config.
+    ```gradle
     // ....
     pluginManagement {
         // .....
@@ -172,4 +176,84 @@ And use it.
   // ....
   ```
 
-You can read the latest docs of the library [here](https://yoimerdr.github.io/AndroidVirtualJoystick/docs/1.0.0/index.html)
+### Usage customization
+
+If you use the JoystickView view in a layout (xml), you could place values to some attributes that the view uses
+
+* **background**
+
+  Is a reference to a drawable resource that the view will use as background.
+* **moveInterval**
+  
+  It is an interval (integer) of time (ms) for which passed, to consider the touch on the joystick as maintained.
+  For now, it has a bad name, it will be changed in future versions.
+* **invalidRadius**
+  
+  It is a dimension value to be taken into account when obtaining control direction. 
+  In other words, if the distance between the touch made by the user and the center of the JoystickView does not exceed this value, 
+  the joystick direction is considered as NONE.
+
+* **controlType**
+
+  It is an enum that determines that the already defined ControlDrawer will be used as the initial drawer of the joystick. 
+  For now, it can be any of the following values:
+  * arc
+  
+    The drawer to be used will be CircleControlDrawer
+  * arc
+
+    The drawer to be used will be ArcControlDrawer
+  * circe_arc
+
+    The drawer to be used will be CircleArcControlDrawer
+
+* **directionType**
+  It is an enum that determines how many directions the joystick will be able to pass to its listener.
+  For now, it can be any of the following values:
+  * complete
+
+    The directions that the joystick will be able to pass, apart from NONE, are UP, UP_LEFT, UP_RIGHT, DOWN, DOW_LEFT, DOWN_RIGHT, LEFT and RIGHT
+  * simple
+    The directions that the joystick will be able to pass, apart from NONE, are UP, DOWN, LEFT and RIGHT
+
+* **controlDrawer_primaryColor**
+
+  A reference to a color that the initial drawer will use as the primary color.
+
+* **controlDrawer_accentColor**
+
+  A reference to a color that the initial drawer will use as the accent color.
+
+* **arcControlDrawer_sweepAngle**
+
+  It is a float value that will determine, if the initial drawer is of type arc or circle_arc, what sweep angle the arc will make.
+
+* **arcControlDrawer_strokeWidth**
+
+  It is a float value that will determine, if the initial drawer is of type arc or circle_arc, how wide the arc will be.
+
+* **circleControlDrawer_radiusProportion**
+
+  It is a floating value that will determine what proportion of the JoystickView radius to take as the radius of the circle to draw.
+
+
+To know more about the ControlDrawer's, joystick direction and other library stuff, you can read the latest library docs [here](https://yoimerdr.github.io/AndroidVirtualJoystick/docs/1.0.0/index.html)
+
+## How does the joystick look like?
+
+To see how the joystick looks like with different configurations you could clone this repository, modify the joystick configuration, 
+and run the application, but if you don't want to do that, here is a video that will show you how it looks like with some configuration changes.
+
+<div style="text-align: center">
+  <img src="./sample/joystick_app.gif" height="772" alt="joystick sample app"/>
+</div>
+
+
+## License
+
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
+
+## Problems
+
+If you encounter any problems or bugs while using the script, please open an issue in the GitHub repository. 
+If you have any questions or suggestions, feel free to contact me.
