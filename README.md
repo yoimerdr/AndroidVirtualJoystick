@@ -24,27 +24,79 @@ To use the library you can install it from [github packages](#github-packages-in
   * Replace GITHUB_USERID with personal / organisation Github User ID and PERSONAL_ACCESS_TOKEN with the token generated in #Step 1
 > Alternatively you can also add the **GPR_USER** and **GPR_API_KEY** values to your environment variables on you local machine or build server to avoid creating a github properties file
 
-#### Step 3: Update build.gradle inside the application module
+#### Step 3: Update settings.gradle inside the project
 * KTS
 
+  Load you credentials before apply it after the pluginManagement config.
   ```kts
-  val githubPropertiesFile = rootProject.file("github.properties");
+  pluginManagement {
+      // .....
+  }
+  // ....
+  val githubPropertiesFile: File = rootProject.projectDir.resolve("github.properties");
   val githubProperties = Properties()
   githubProperties.load(FileInputStream(githubPropertiesFile))
   // .....
+  ```
+  Add a new repository inside the dependencyResolutionManagement config.
   
-  repositories {
-      maven {
-          name = "GitHubPackages"
-          url = uri("https://maven.pkg.github.com/yoimerdr/AndroidVirtualJoystick")
-  
-          credentials {
-                username = githubProperties.getProperty("gpr.usr") ?: System.getenv("GPR_USER")
-                password = githubProperties.getProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
+  ```kts
+  // ......
+  dependencyResolutionManagement {
+      // ......
+      repositories {
+          // ......
+          maven {
+              name = "GitHubPackages"
+              url = uri("https://maven.pkg.github.com/yoimerdr/AndroidVirtualJoystick")
+              credentials {
+                    username = githubProperties.getProperty("gpr.usr") ?: System.getenv("GPR_USER")
+                    password = githubProperties.getProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
+              }
           }
       }
   }
   ```
+  You can read more about how to install a github packages library with KTS [here](https://github.com/enefce/AndroidLibrary-GPR-KDSL?tab=readme-ov-file#using-a-library-from-the-github-packages)
+  * Groovy
+    ```gradle
+  
+    Load you credentials before apply it after the pluginManagement config.
+    // ....
+    pluginManagement {
+        // .....
+    }
+    // ....
+    def githubPropertiesFile = rootProject.file("github.properties"))
+    def githubProperties = new Properties()
+    githubProperties.load(new FileInputStream(githubPropertiesFile)
+    // .....
+    ```
+    Add a new repository inside the dependencyResolutionManagement config.
+
+    ```gradle
+    // ......
+    dependencyResolutionManagement {
+        // ......
+        repositories {
+            // ......
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/yoimerdr/AndroidVirtualJoystick")
+  
+                credentials {
+                    username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                    password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+                }
+            }
+        }
+    }
+    ```
+    You can read more about how to install a github packages library with groovy [here](https://github.com/enefce/AndroidLibraryForGitHubPackagesDemo?tab=readme-ov-file#using-a-library-from-the-github-package-registry)
+
+#### Step 4: Update build.gradle inside the application module
+
+* KTS
   ```kts
   // ....
   dependencies {
@@ -52,34 +104,15 @@ To use the library you can install it from [github packages](#github-packages-in
       implementation("com.yoimerdr.android:virtualjoystick:1.0.0")
   }
   ```
-  You can read more about how to install a github packages library with KTS [here](https://github.com/enefce/AndroidLibrary-GPR-KDSL?tab=readme-ov-file#using-a-library-from-the-github-packages)
+  
 * Groovy
-  ```gradle
-  // ....
-  def githubPropertiesFile = rootProject.file("github.properties"))
-  def githubProperties = new Properties()
-  githubProperties.load(new FileInputStream(githubPropertiesFile)
-  repositories {
-      maven {
-          name = "GitHubPackages"
-          url = uri("https://maven.pkg.github.com/yoimerdr/AndroidVirtualJoystick")
-
-          credentials {
-              username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
-              password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
-          }  
-      }
-  }
-  ```
   ```gradle
   // ....
   dependencies {
       // ....
-      implementation 'com.yoimerdr.android:virtualjoystick:1.0.0'
+      implementation("com.yoimerdr.android:virtualjoystick:1.0.0")
   }
   ```
-  You can read more about how to install a github packages library with groovy [here](https://github.com/enefce/AndroidLibraryForGitHubPackagesDemo?tab=readme-ov-file#using-a-library-from-the-github-package-registry)
-  
 
 ### Local installation
 
