@@ -65,7 +65,7 @@ class LibraryProperties {
     var compileSdk = 34
     var group = "com.yoimerdr.android"
     var name = "virtualjoystick"
-    var version = "1.0.0"
+    var version = "2.0.0"
     var copyright = "© 2024 Yoimer Davila"
     var minSdk = 21
 
