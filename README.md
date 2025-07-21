@@ -62,41 +62,43 @@ To use the library you can install it from [github packages](#github-packages-in
   }
   ```
   You can read more about how to install a github packages library with KTS [here](https://github.com/enefce/AndroidLibrary-GPR-KDSL?tab=readme-ov-file#using-a-library-from-the-github-packages)
-  * Groovy
 
-    Load you credentials before apply it after the pluginManagement config.
-    ```gradle
-    // ....
-    pluginManagement {
-        // .....
-    }
-    // ....
-    def githubPropertiesFile = Paths.get(rootProject.projectDir.toString(), "github.properties").toFile()
-    def githubProperties = new Properties()
-    githubProperties.load(new FileInputStream(githubPropertiesFile))
-    // .....
-    ```
-    Add a new repository inside the dependencyResolutionManagement config.
 
-    ```gradle
-    // ......
-    dependencyResolutionManagement {
-        // ......
-        repositories {
-            // ......
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/yoimerdr/AndroidVirtualJoystick")
+* Groovy
+
+  Load you credentials before apply it after the pluginManagement config.
+  ```gradle
+  // ....
+  pluginManagement {
+      // .....
+  }
+  // ....
+  def githubPropertiesFile = Paths.get(rootProject.projectDir.toString(), "github.properties").toFile()
+  def githubProperties = new Properties()
+  githubProperties.load(new FileInputStream(githubPropertiesFile))
+  // .....
+  ```
+  Add a new repository inside the dependencyResolutionManagement config.
+
+  ```gradle
+  // ......
+  dependencyResolutionManagement {
+      // ......
+      repositories {
+          // ......
+          maven {
+              name = "GitHubPackages"
+              url = uri("https://maven.pkg.github.com/yoimerdr/AndroidVirtualJoystick")
   
-                credentials {
-                    username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
-                    password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
-                }
-            }
-        }
-    }
-    ```
-    You can read more about how to install a github packages library with groovy [here](https://github.com/enefce/AndroidLibraryForGitHubPackagesDemo?tab=readme-ov-file#using-a-library-from-the-github-package-registry)
+              credentials {
+                  username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                  password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+              }
+          }
+      }
+  }
+  ```
+  You can read more about how to install a github packages library with groovy [here](https://github.com/enefce/AndroidLibraryForGitHubPackagesDemo?tab=readme-ov-file#using-a-library-from-the-github-package-registry)
 
 #### Step 4: Update build.gradle inside the application module
 
@@ -197,7 +199,7 @@ If you use the JoystickView view in a layout (xml), you could place values to so
 
   It is an enum that determines that the already defined ControlDrawer will be used as the initial drawer of the joystick. 
   For now, it can be any of the following values:
-  * arc
+  * circle
   
     The drawer to be used will be CircleControlDrawer
   * arc
@@ -208,6 +210,7 @@ If you use the JoystickView view in a layout (xml), you could place values to so
     The drawer to be used will be CircleArcControlDrawer
 
 * **directionType**
+
   It is an enum that determines how many directions the joystick will be able to pass to its listener.
   For now, it can be any of the following values:
   * complete
