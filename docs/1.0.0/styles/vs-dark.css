@@ -1,0 +1,70 @@
+:root {
+  --keyword-color: #499CD5;
+  --function-color: #DCDCAA;
+  --parameter-color: #989898;
+  --static-fields-color: #FFC66D;
+  --static-method-color: #FFC66D;
+  --references: #FFC66D;
+  --class-color: #39C8B0;
+  --class-field-color: #9CDCFE;
+}
+
+:root.theme-dark .token.keyword {
+  color: var(--keyword-color);
+}
+
+:root.theme-dark .parameter {
+  color: var(--parameter-color);
+}
+
+:root.theme-dark .token.function {
+  color: var(--function-color);
+}
+
+:root.theme-dark div[data-page-type="classlike"] h1.cover span,
+:root.theme-dark div[data-page-type="member"] h1.cover span
+{
+  font-weight: 400;
+}
+
+:root.theme-dark div[data-page-type="classlike"] h1.cover span,
+:root.theme-dark div.cover div[data-platform-hinted="data-platform-hinted"] div.symbol a,
+:root.theme-dark div.cover div[data-platform-hinted="data-platform-hinted"] div.table a,
+:root.theme-dark div[data-platform-hinted="data-platform-hinted"] div.symbol,
+:root.theme-dark div[data-togglable="CONSTRUCTOR"] div.symbol > a,
+:root.theme-dark div[data-togglable="CONSTRUCTOR"] div.main-subrow > div .inline-flex a,
+:root.theme-dark div[data-togglable="TYPE"] div.symbol > a,
+:root.theme-dark div[data-togglable="TYPE"] div.main-subrow > div .inline-flex a,
+:root.theme-dark div[data-togglable="CONSTRUCTOR"] .parameters .parameter > a,
+:root.theme-dark div[data-togglable="PROPERTY"] div.symbol > a,
+:root.theme-dark div[data-togglable="FUNCTION"] div.symbol > a,
+:root.theme-dark div[data-togglable="FUNCTION"] .parameters .parameter > a,
+
+:root.theme-dark div[data-page-type="member"] div.symbol > a,
+:root.theme-dark div[data-page-type="member"] .parameters .parameter > a
+{
+  color: var(--class-color);
+}
+
+:root.theme-dark div[data-togglable="CONSTRUCTOR"] div.symbol > a:last-of-type,
+:root.theme-dark div[data-togglable="FUNCTION"] div.main-subrow > div .inline-flex a ,
+:root.theme-dark div[data-togglable="FUNCTION"] div.symbol > a:last-of-type,
+:root.theme-dark div[data-page-type="member"] h1.cover span,
+:root.theme-dark div[data-page-type="member"] div.symbol > a:last-of-type {
+  color: var(--function-color);
+}
+
+:root.theme-dark div[data-togglable="PROPERTY"] div.symbol > a:last-of-type,
+:root.theme-dark div[data-togglable="PROPERTY"] div.main-subrow > div .inline-flex a {
+  color: var(--class-field-color);
+}
+
+:root.theme-dark div[data-page-type="member"] div.main-subrow u > span {
+  color: var(--parameter-color);
+}
+
+:root.theme-dark div[data-page-type="member"] .paragraph > a,
+:root.theme-dark div[data-page-type="classlike"] div.brief .paragraph > a,
+:root.theme-dark div[data-page-type="classlike"] div.content .paragraph > a {
+  color: var(--references);
+}

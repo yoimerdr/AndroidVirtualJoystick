@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>TouchHoldEventHandler</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+<link href="../../../styles/vs-dark.css" rel="Stylesheet">
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            virtualjoystick
+                    </a>
+            </div>
+            <div class="library-version">
+2.0.0            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":virtualjoystick:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="virtualjoystick::com.yoimerdr.android.virtualjoystick.views.handler/TouchHoldEventHandler///PointingToDeclaration//338715815">
+  <div class="breadcrumbs"><a href="../../../index.html">virtualjoystick</a><span class="delimiter">/</span><a href="../index.html">com.yoimerdr.android.virtualjoystick.views.handler</a><span class="delimiter">/</span><span class="current">TouchHoldEventHandler</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Touch</span><wbr></wbr><span>Hold</span><wbr></wbr><span>Event</span><wbr></wbr><span><span>Handler</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">public </span><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">class </span><a href="index.html">TouchHoldEventHandler</a><span class="token operator">&lt;</span>ViewLike<span class="token keyword"> extends </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token operator">&gt;</span></div><p class="paragraph">Handles a simple hold event, and other basics, in onTouchEvent.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-simple-touch-event-handler/index.html">SimpleTouchEventHandler</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-2122285294%2FConstructors%2F338715815" anchor-label="TouchHoldEventHandler" id="-2122285294%2FConstructors%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-touch-hold-event-handler.html"><span>Touch</span><wbr></wbr><span>Hold</span><wbr></wbr><span>Event</span><wbr></wbr><span><span>Handler</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2122285294%2FConstructors%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="index.html">TouchHoldEventHandler</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">ViewLike</a><span class="token operator">&gt;</span> <a href="-touch-hold-event-handler.html"><span class="token function">TouchHoldEventHandler</span></a><span class="token operator">&lt;</span>ViewLike<span class="token keyword"> extends </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="index.html">ViewLike</a> view<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Long.html">Long</a> holdInterval</span></span><span class="token punctuation">)</span></div><div class="brief "></div><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="index.html">TouchHoldEventHandler</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">ViewLike</a><span class="token operator">&gt;</span> <a href="-touch-hold-event-handler.html"><span class="token function">TouchHoldEventHandler</span></a><span class="token operator">&lt;</span>ViewLike<span class="token keyword"> extends </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="index.html">ViewLike</a> view<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Long.html">Long</a> holdInterval<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Long.html">Long</a> activeHoldInterval</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="707140859%2FProperties%2F338715815" anchor-label="activeHoldInterval" id="707140859%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#707140859%2FProperties%2F338715815"><span>active</span><wbr></wbr><span>Hold</span><wbr></wbr><span><span>Interval</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="707140859%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Long.html">Long</a> <a href="index.html#707140859%2FProperties%2F338715815">activeHoldInterval</a></div><div class="brief "><p class="paragraph">The time interval (ms) to consider the <a href="https://developer.android.com/reference/kotlin/android/view/MotionEvent.html#action_move">MotionEvent.ACTION_MOVE</a> as a hold event if a different event has not occurred.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1980151393%2FProperties%2F338715815" anchor-label="holdInterval" id="1980151393%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1980151393%2FProperties%2F338715815"><span>hold</span><wbr></wbr><span><span>Interval</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1980151393%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Long.html">Long</a> <a href="index.html#1980151393%2FProperties%2F338715815">holdInterval</a></div><div class="brief "><p class="paragraph">The time interval (ms) to consider the <a href="https://developer.android.com/reference/kotlin/android/view/MotionEvent.html#action_down">MotionEvent.ACTION_DOWN</a> as a hold event if a different event has not occurred.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-60185216%2FProperties%2F338715815" anchor-label="view" id="-60185216%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-60185216%2FProperties%2F338715815"><span><span>view</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-60185216%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword"></span><a href="index.html">ViewLike</a> <a href="index.html#-60185216%2FProperties%2F338715815">view</a></div><div class="brief "><p class="paragraph">The view where the handler must be used.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1430482635%2FFunctions%2F338715815" anchor-label="getActiveHoldInterval" id="-1430482635%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-active-hold-interval.html"><span>get</span><wbr></wbr><span>Active</span><wbr></wbr><span>Hold</span><wbr></wbr><span><span>Interval</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1430482635%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Long.html">Long</a> <a href="get-active-hold-interval.html"><span class="token function">getActiveHoldInterval</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The time interval (ms) to consider the <a href="https://developer.android.com/reference/kotlin/android/view/MotionEvent.html#action_move">MotionEvent.ACTION_MOVE</a> as a hold event if a different event has not occurred.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-189833701%2FFunctions%2F338715815" anchor-label="getHoldInterval" id="-189833701%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-hold-interval.html"><span>get</span><wbr></wbr><span>Hold</span><wbr></wbr><span><span>Interval</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-189833701%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Long.html">Long</a> <a href="get-hold-interval.html"><span class="token function">getHoldInterval</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The time interval (ms) to consider the <a href="https://developer.android.com/reference/kotlin/android/view/MotionEvent.html#action_down">MotionEvent.ACTION_DOWN</a> as a hold event if a different event has not occurred.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1914001606%2FFunctions%2F338715815" anchor-label="getView" id="-1914001606%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-view.html"><span>get</span><wbr></wbr><span><span>View</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1914001606%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="index.html">ViewLike</a> <a href="get-view.html"><span class="token function">getView</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The view where the handler must be used.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1775542117%2FFunctions%2F338715815" anchor-label="notHandledTouch" id="1775542117%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="not-handled-touch.html"><span>not</span><wbr></wbr><span>Handled</span><wbr></wbr><span><span>Touch</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1775542117%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="not-handled-touch.html"><span class="token function">notHandledTouch</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/view/MotionEvent.html">MotionEvent</a> event</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The not handled touch events.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-68869998%2FFunctions%2F338715815" anchor-label="onTouchEvent" id="-68869998%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-touch-event.html"><span>on</span><wbr></wbr><span>Touch</span><wbr></wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-68869998%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="on-touch-event.html"><span class="token function">onTouchEvent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/view/MotionEvent.html">MotionEvent</a> event</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The touch event handler.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-651046160%2FFunctions%2F338715815" anchor-label="setActiveHoldInterval" id="-651046160%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-active-hold-interval.html"><span>set</span><wbr></wbr><span>Active</span><wbr></wbr><span>Hold</span><wbr></wbr><span><span>Interval</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-651046160%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="set-active-hold-interval.html"><span class="token function">setActiveHoldInterval</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Long.html">Long</a> activeHoldInterval</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The time interval (ms) to consider the <a href="https://developer.android.com/reference/kotlin/android/view/MotionEvent.html#action_move">MotionEvent.ACTION_MOVE</a> as a hold event if a different event has not occurred.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="620172106%2FFunctions%2F338715815" anchor-label="setHoldInterval" id="620172106%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-hold-interval.html"><span>set</span><wbr></wbr><span>Hold</span><wbr></wbr><span><span>Interval</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="620172106%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="set-hold-interval.html"><span class="token function">setHoldInterval</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Long.html">Long</a> holdInterval</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The time interval (ms) to consider the <a href="https://developer.android.com/reference/kotlin/android/view/MotionEvent.html#action_down">MotionEvent.ACTION_DOWN</a> as a hold event if a different event has not occurred.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1889777087%2FFunctions%2F338715815" anchor-label="setView" id="-1889777087%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-view.html"><span>set</span><wbr></wbr><span><span>View</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1889777087%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="set-view.html"><span class="token function">setView</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="index.html">ViewLike</a> view</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The view where the handler must be used.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="131308180%2FFunctions%2F338715815" anchor-label="touchDown" id="131308180%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="touch-down.html"><span>touch</span><wbr></wbr><span><span>Down</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="131308180%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="touch-down.html"><span class="token function">touchDown</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The touch down event.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="605697303%2FFunctions%2F338715815" anchor-label="touchHold" id="605697303%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="touch-hold.html"><span>touch</span><wbr></wbr><span><span>Hold</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="605697303%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="touch-hold.html"><span class="token function">touchHold</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The touch hold event.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="833463877%2FFunctions%2F338715815" anchor-label="touchMove" id="833463877%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="touch-move.html"><span>touch</span><wbr></wbr><span><span>Move</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="833463877%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="touch-move.html"><span class="token function">touchMove</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The touch move event.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-799169285%2FFunctions%2F338715815" anchor-label="touchUp" id="-799169285%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="touch-up.html"><span>touch</span><wbr></wbr><span><span>Up</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-799169285%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="touch-up.html"><span class="token function">touchUp</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The touch up event.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Yoimer Davila</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
