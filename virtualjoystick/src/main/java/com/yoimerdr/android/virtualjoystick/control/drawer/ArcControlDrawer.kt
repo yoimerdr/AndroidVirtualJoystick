@@ -10,14 +10,14 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
-import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
-import com.yoimerdr.android.virtualjoystick.geometry.Position
+import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.Position
 import com.yoimerdr.android.virtualjoystick.geometry.factory.RectFFactory
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
  * A [ControlDrawer] that draws an arc.
- * Draws the arc positioned almost in [Control.viewParametricPosition].
+ * Draws the arc positioned almost in [Control.parametricPosition].
  */
 open class ArcControlDrawer(
     /**
@@ -238,7 +238,7 @@ open class ArcControlDrawer(
      * Gets the distance value between the arc position and the control center.
      * @param control The [Control] from where the drawer is used.
      */
-    protected open fun getDistance(control: Control): Double = control.viewRadius - strokeWidth * 2
+    protected open fun getDistance(control: Control): Double = control.radius - strokeWidth * 2
 
     /**
      * The bounds of oval used to define the shape and size of the arc.
@@ -249,7 +249,7 @@ open class ArcControlDrawer(
     }
 
     override fun draw(canvas: Canvas, control: Control) {
-        if(control.distanceFromCenter < control.invalidRadius)
+        if(control.distance < control.invalidRadius)
             return
 
         drawShapes(canvas, control)
@@ -267,7 +267,7 @@ open class ArcControlDrawer(
             radius = getDistance(control)
         }
 
-        val angle: Double = control.anglePosition
+        val angle: Double = control.angle
         val startAngle: Double = Math.toDegrees(angle) - sweepAngle / 2
 
         paint.apply {
@@ -310,7 +310,7 @@ open class ArcControlDrawer(
             }
 
             val arrowSweepAngle = Math.toDegrees(angle) - 90
-            ArcControlDrawer.drawArrow(canvas, position, strokeWidth, arrowSweepAngle.toFloat(), paint)
+            drawArrow(canvas, position, strokeWidth, arrowSweepAngle.toFloat(), paint)
         }
     }
 
@@ -323,7 +323,7 @@ open class ArcControlDrawer(
      * @param startAngle The starting angle of the arc sweep angle in the range of 0 to 360 degrees clockwise.
      */
     protected open fun getPaintShader(control: Control, angle: Double, startAngle: Double): Shader {
-        val position = arcCircle.parametricPositionOf(control.anglePosition)
+        val position = arcCircle.parametricPositionOf(control.angle)
         return RadialGradient(
             position.x, position.y,
             getDistance(control).toFloat(),

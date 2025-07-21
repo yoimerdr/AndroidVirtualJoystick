@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.geometry
+package com.yoimerdr.android.virtualjoystick.geometry.position
 
 /**
  * Represents a mutable position.

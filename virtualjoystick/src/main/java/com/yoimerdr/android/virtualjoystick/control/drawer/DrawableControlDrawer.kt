@@ -1,18 +1,23 @@
 package com.yoimerdr.android.virtualjoystick.control.drawer
 
 import android.content.Context
+import android.content.res.Resources.NotFoundException
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Paint
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
-import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.factory.RectFFactory
+import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.log.Logger
 
 /**
@@ -23,37 +28,36 @@ open class DrawableControlDrawer(
      * The drawable drawer properties.
      */
     private val properties: DrawableProperties
-) : ControlDrawer {
+) : ColorfulControlDrawer(properties) {
+
 
     /**
      * @param drawable The drawable resource to be drawn.
      * @param scale The scale ratio to scale the dimensions of the [drawable].
-     * @param paint The paint to use to draw the [drawable].
      */
-    constructor(drawable: Drawable, scale: Float, paint: Paint?) : this(
+    @JvmOverloads
+    constructor(drawable: Drawable, scale: Float, @ColorInt color: Int = Color.TRANSPARENT) : this(
         DrawableProperties(
             drawable,
             scale,
-            paint
+            color,
         )
     )
 
-    /**
-     * @param drawable The drawable resource to be drawn.
-     * @param scale The scale ratio to scale the dimensions of the [drawable].
-     */
-    constructor(drawable: Drawable, scale: Float) : this(drawable, scale, null)
-
-    /**
-     * @param drawable The drawable resource to be drawn.
-     * @param paint The paint to use to draw the [drawable].
-     */
-    constructor(drawable: Drawable, paint: Paint?) : this(drawable, 1f, paint)
 
     /**
      * @param drawable The drawable resource to be drawn.
      */
-    constructor(drawable: Drawable) : this(drawable, null)
+    @JvmOverloads
+    constructor(drawable: Drawable, @ColorInt color: Int = Color.TRANSPARENT) : this(drawable, 1f, color)
+
+    init {
+        properties.apply {
+            if (colors.primary != Color.TRANSPARENT) {
+                paint.colorFilter = PorterDuffColorFilter(colors.primary, PorterDuff.Mode.SRC_IN)
+            }
+        }
+    }
 
 
     open var drawable: Drawable
@@ -76,7 +80,6 @@ open class DrawableControlDrawer(
          * Gets the scale for the dimensions of the size of the drawable resource.
          */
         get() = properties.scale
-
         /**
          * Sets the scale for the dimensions of the size of the drawable resource.
          * @throws scale The new scale value.
@@ -92,19 +95,24 @@ open class DrawableControlDrawer(
             }
         }
 
-    /**
-     * Gets the drawer paint.
-     */
-    protected open val paint: Paint? get() = properties.paint
+    override var primaryColor: Int
+        get() = super.primaryColor
+        set(@ColorInt color) {
+            if (color != Color.TRANSPARENT) {
+                colors.primary = color
+                paint.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
+        }
 
     /**
      * Gets the bitmap to draw.
      */
-    protected open val bitmap: Bitmap get() {
-        if(mBitmap == null)
-            convertDrawableToBitmap()
-        return mBitmap!!
-    }
+    protected open val bitmap: Bitmap
+        get() {
+            if (mBitmap == null)
+                convertDrawableToBitmap()
+            return mBitmap!!
+        }
 
     /**
      * The drawable bitmap.
@@ -116,7 +124,12 @@ open class DrawableControlDrawer(
         convertDrawableToBitmap()
     }
 
-    open class DrawableProperties(var drawable: Drawable, var scale: Float, val paint: Paint?)
+
+    open class DrawableProperties @JvmOverloads constructor(
+        var drawable: Drawable,
+        var scale: Float,
+        @ColorInt color: Int = Color.TRANSPARENT
+    ) : ColorfulProperties(ColorsScheme(color, Color.TRANSPARENT))
 
     companion object {
 
@@ -125,15 +138,15 @@ open class DrawableControlDrawer(
          *
          * @param context The current activity or view context.
          * @param resourceId The drawable resource id.
-         * @throws IllegalArgumentException if doesn't exist a drawable for the given resourceId.
+         * @throws NotFoundException if doesn't exist a drawable for the given resourceId.
          */
         @JvmStatic
-        @Throws(IllegalArgumentException::class)
+        @Throws(NotFoundException::class)
         fun getDrawable(context: Context, @DrawableRes resourceId: Int): Drawable {
             val drawable = ContextCompat.getDrawable(context, resourceId)
             if (drawable != null)
                 return drawable
-            throw IllegalArgumentException("Don't exists a valid drawable for given resource id")
+            throw NotFoundException("Don't exists a valid drawable for given resource id")
         }
 
         /**
@@ -141,18 +154,17 @@ open class DrawableControlDrawer(
          * @param context The current activity or view context.
          * @param id The drawable resource id.
          * @param scale The scale ratio to scale the drawable. Must be a value greater than zero.
-         * @param paint The [DrawableControlDrawer] paint.
-         * @throws IllegalArgumentException If doesn't exist a drawable for the given id or the [scale] is not positive.
+         * @throws NotFoundException If doesn't exist a drawable for the given id or the [scale] is not positive.
          */
         @JvmStatic
-        @Throws(IllegalArgumentException::class)
+        @Throws(NotFoundException::class)
         fun fromDrawableRes(
             context: Context,
             @DrawableRes id: Int,
             scale: Float,
-            paint: Paint?
+            @ColorInt color: Int,
         ): DrawableControlDrawer {
-            return DrawableControlDrawer(getDrawable(context, id), scale, paint)
+            return DrawableControlDrawer(getDrawable(context, id), scale, color)
         }
 
         /**
@@ -160,45 +172,44 @@ open class DrawableControlDrawer(
          * @param context The current activity or view context.
          * @param id The drawable resource id.
          * @param scale The scale ratio to scale the drawable. Must be a value greater than zero.
-         * @throws IllegalArgumentException If doesn't exist a drawable for the given id or the [scale] is not positive.
+         * @throws NotFoundException If doesn't exist a drawable for the given id or the [scale] is not positive.
          */
         @JvmStatic
-        @Throws(IllegalArgumentException::class)
+        @Throws(NotFoundException::class)
         fun fromDrawableRes(
             context: Context,
             @DrawableRes id: Int,
             scale: Float
         ): DrawableControlDrawer {
-            return DrawableControlDrawer.fromDrawableRes(context, id, scale, null)
+            return fromDrawableRes(context, id, scale, Color.TRANSPARENT)
         }
 
         /**
          * Instance a [DrawableControlDrawer] from context and a [DrawableRes] id.
          * @param context The current activity or view context.
          * @param id The drawable resource id.
-         * @param paint The [DrawableControlDrawer] paint.
-         * @throws IllegalArgumentException If doesn't exist a drawable for the given id.
+         * @throws NotFoundException If doesn't exist a drawable for the given id.
          */
         @JvmStatic
-        @Throws(IllegalArgumentException::class)
+        @Throws(NotFoundException::class)
         fun fromDrawableRes(
             context: Context,
             @DrawableRes id: Int,
-            paint: Paint?
+            @ColorInt color: Int,
         ): DrawableControlDrawer {
-            return DrawableControlDrawer.fromDrawableRes(context, id, 1f, paint)
+            return fromDrawableRes(context, id, 1f, color)
         }
 
         /**
          * Instance a [DrawableControlDrawer] from context and a [DrawableRes] id.
          * @param context The current activity or view context.
          * @param id The drawable resource id.
-         * @throws IllegalArgumentException if doesn't exist a drawable for the given id.
+         * @throws NotFoundException if doesn't exist a drawable for the given id.
          */
         @JvmStatic
-        @Throws(IllegalArgumentException::class)
+        @Throws(NotFoundException::class)
         fun fromDrawableRes(context: Context, @DrawableRes id: Int): DrawableControlDrawer {
-            return DrawableControlDrawer.fromDrawableRes(context, id, null)
+            return fromDrawableRes(context, id, Color.TRANSPARENT)
         }
     }
 
@@ -233,7 +244,7 @@ open class DrawableControlDrawer(
             if (intrinsicHeight != intrinsicWidth)
                 Logger.errorFromClass(
                     this@DrawableControlDrawer,
-                    "To avoid unexpected behavior, the width and height of the drawable should be the same or should not differ too much."
+                    "To avoid unexpected behavior, the width and height of the drawable should be the same."
                 )
         }
     }
@@ -255,16 +266,16 @@ open class DrawableControlDrawer(
      * @param control The [Control] from where the drawer is used.
      */
     protected open fun getPosition(control: Control): ImmutablePosition {
-        val max = control.viewRadius - maxOf(halfWidth, halfHeight)
+        val max = control.radius - maxOf(halfWidth, halfHeight)
         return if (max <= 0) {
             Logger.errorFromClass(
                 this,
-                "The size of the scaled drawable (width and height) is too large with respect to the view where the control is used. Try scaling it using the scale property of this drawer using a smaller value."
+                "The size of the scaled drawable (width and height) is too large with respect to the view where the control is used. Try scaling it using a smaller value for the scale property of this drawer."
             )
             control.center
-        } else if (control.distanceFromCenter > max)
+        } else if (control.distance > max)
             Circle.fromImmutableCenter(max, control.center)
-                .parametricPositionOf(control.anglePosition)
+                .parametricPositionOf(control.angle)
         else control.position
     }
 

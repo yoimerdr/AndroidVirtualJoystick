@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.yoimerdr.android.virtualjoystick.databinding.ActivityMainBinding
 import com.yoimerdr.android.virtualjoystick.control.Control
+import com.yoimerdr.android.virtualjoystick.control.SimpleControl
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.DrawableControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.HighlightControlDrawer
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     private val tvDirection: TextView get() = binding.tvDirection
     private val tvPosition: TextView get() = binding.tvPosition
+    private val tvNdcPosition: TextView get() = binding.tvNdcPosition
     private val vJoystick: JoystickView get() = binding.vJoystick
     private val spnPrimaryColor: Spinner get() = binding.spnPrimaryColor
     private val spnAccentColor: Spinner get() = binding.spnAccentColor
@@ -38,16 +40,19 @@ class MainActivity : AppCompatActivity() {
     )
 
     private val drawers = mapOf(
-        "Circle" to Control.DefaultType.CIRCLE.id,
-        "Arc" to Control.DefaultType.ARC.id,
-        "Circle Arc" to Control.DefaultType.CIRCLE_ARC.id,
+        "Circle" to Control.DrawerType.CIRCLE.ordinal,
+        "Arc" to Control.DrawerType.ARC.ordinal,
+        "Circle Arc" to Control.DrawerType.CIRCLE_ARC.ordinal,
         "Highlight" to -1, "Drawable" to -2
     )
 
     private val directionTypes = mapOf(
-        "Complete" to JoystickView.DirectionType.COMPLETE,
-        "Simple" to JoystickView.DirectionType.SIMPLE
+        "Complete" to Control.DirectionType.COMPLETE,
+        "Simple" to Control.DirectionType.SIMPLE
     )
+
+    private lateinit var positionFormat: String
+    private lateinit var directionFormat: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,13 +63,16 @@ class MainActivity : AppCompatActivity() {
         initEvents()
     }
 
-    private fun simpleArrayAdapter(items: List<String>) = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items)
+    private fun simpleArrayAdapter(items: List<String>) =
+        ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items)
 
     private fun iniViews() {
         spnPrimaryColor.adapter = simpleArrayAdapter(colors.keys.toList())
         spnAccentColor.adapter = simpleArrayAdapter(colors.keys.toList())
         spnDrawerType.adapter = simpleArrayAdapter(drawers.keys.toList())
         spnDirectionType.adapter = simpleArrayAdapter(directionTypes.keys.toList())
+        directionFormat = getString(R.string.joystick_direction)
+        positionFormat = getString(R.string.joystick_position)
     }
 
     private fun initEvents() {
@@ -79,8 +87,8 @@ class MainActivity : AppCompatActivity() {
                 val color = colors[selected] ?: return
 
                 val drawer = noDefaultDrawer
-                if(drawer != null && drawer is DrawableControlDrawer) {
-                    if(drawer.drawable is VectorDrawable)
+                if (drawer != null && drawer is DrawableControlDrawer) {
+                    if (drawer.drawable is VectorDrawable)
                         drawer.drawable = drawer.drawable.apply {
                             setTint(color)
                         }
@@ -120,25 +128,27 @@ class MainActivity : AppCompatActivity() {
                 val selected = parent?.getItemAtPosition(position) ?: return
                 val typeId = drawers[selected] ?: return
 
-                if(typeId < 0) {
+                if (typeId < 0) {
                     val color = colors[spnPrimaryColor.selectedItem] ?: return
                     noDefaultDrawer = when (typeId) {
                         -1 -> HighlightControlDrawer(color, 0.48f)
                         -2 -> {
-                            val drawable = DrawableControlDrawer.getDrawable(this@MainActivity, R.drawable.baseline_adb_24)
-                            if(drawable is VectorDrawable)
-                                drawable.setTint(color)
-                            DrawableControlDrawer(drawable)
+                            val drawable = DrawableControlDrawer.getDrawable(
+                                this@MainActivity,
+                                R.drawable.baseline_adb_24
+                            )
+                            DrawableControlDrawer(drawable, color)
                         }
+
                         else -> null
                     }
 
-                    if(noDefaultDrawer != null)
+                    if (noDefaultDrawer != null)
                         vJoystick.setControlDrawer(noDefaultDrawer!!)
 
                 } else {
                     noDefaultDrawer = null
-                    vJoystick.setTypeAndBackground(Control.DefaultType.fromId(typeId))
+                    vJoystick.setTypeAndBackground(Control.DrawerType.fromId(typeId))
                 }
             }
 
@@ -147,7 +157,7 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        spnDirectionType.onItemSelectedListener = object  : AdapterView.OnItemSelectedListener {
+        spnDirectionType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -167,9 +177,12 @@ class MainActivity : AppCompatActivity() {
 
         vJoystick.apply {
             setMoveListener {
-                tvDirection.text = getString(R.string.joystick_direction).format(it.name)
-                val position = this.position
-                tvPosition.text = getString(R.string.joystick_position).format(position.x, position.y)
+                tvDirection.text = directionFormat.format(it)
+
+                val position = position
+                val ndcPosition = ndcPosition
+                tvPosition.text = positionFormat.format(position.x, position.y)
+                tvNdcPosition.text = positionFormat.format(ndcPosition.x, ndcPosition.y)
             }
         }
     }

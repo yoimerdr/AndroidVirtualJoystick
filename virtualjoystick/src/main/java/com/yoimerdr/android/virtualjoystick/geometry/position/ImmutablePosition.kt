@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.geometry
+package com.yoimerdr.android.virtualjoystick.geometry.position
 
 /**
  * Represents an immutable position.
@@ -49,4 +49,6 @@ interface ImmutablePosition {
      * @return The calculated value.
      */
     fun deltaY(position: ImmutablePosition): Float
+
+    override fun equals(other: Any?): Boolean
 }

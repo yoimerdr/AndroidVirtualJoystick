@@ -1,9 +1,9 @@
-package com.yoimerdr.android.virtualjoystick.geometry
+package com.yoimerdr.android.virtualjoystick.geometry.position
 
 class Position(
     override var x: Float,
-    override var y: Float
-) : FixedPosition(), MutablePosition {
+    override var y: Float,
+) : FixedPosition(x, y), MutablePosition {
 
     constructor() : this(0.0f, 0.0f)
 
@@ -36,7 +36,9 @@ class Position(
         xOffset(dx)
         yOffset(dy)
     }
+
     override fun offset(position: ImmutablePosition) = offset(position.x, position.y)
+
     override fun toImmutable(): ImmutablePosition = FixedPosition(this)
 
     override fun toString(): String = "Position(x=%.2f,y=%.2f)".format(x, y)

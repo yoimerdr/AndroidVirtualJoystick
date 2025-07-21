@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.geometry
+package com.yoimerdr.android.virtualjoystick.geometry.position
 
 open class FixedPosition(
     override val x: Float,
@@ -7,9 +7,7 @@ open class FixedPosition(
 
     constructor() : this(0.0f, 0.0f)
 
-    constructor(x: Int, y: Int) : this(x.toFloat(), y.toFloat())
-
-    constructor(x: Double, y: Double) : this(x.toFloat(), y.toFloat())
+    constructor(x: Number, y: Number) : this(x.toFloat(), y.toFloat())
 
     constructor(position: ImmutablePosition) : this(position.x, position.y)
 
@@ -22,9 +20,8 @@ open class FixedPosition(
     override fun deltaY(position: ImmutablePosition): Float = deltaY(position.y)
 
     override fun equals(other: Any?): Boolean {
-        if(other is ImmutablePosition) {
+        if (other is ImmutablePosition)
             return other.x == x && other.y == y
-        }
         return super.equals(other)
     }
 

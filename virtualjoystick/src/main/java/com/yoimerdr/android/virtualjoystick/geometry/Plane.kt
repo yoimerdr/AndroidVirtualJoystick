@@ -2,6 +2,9 @@ package com.yoimerdr.android.virtualjoystick.geometry
 
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
+import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
+import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
 import kotlin.math.atan2
 import kotlin.math.hypot
 
@@ -28,8 +31,7 @@ object Plane {
     @JvmStatic
     @Throws(IllegalArgumentException::class)
     fun quadrantOf(angle: Double, maxQuadrants: MaxQuadrants, useMiddle: Boolean): Int {
-        if(angle < 0)
-            throw IllegalArgumentException("The angle must be greater than 0.")
+        angle.requirePositive()
         val quadrants = maxQuadrants.toInt()
         val angleQuadrant = Circle.DEGREE_SPIN / quadrants
 
@@ -151,6 +153,6 @@ object Plane {
     @JvmStatic
     @FloatRange(from = 0.0, to = Circle.RADIAN_SPIN)
     fun angleBetween(xA: Float, yA: Float, xB: Float, yB: Float): Double {
-        return Plane.angleBetween(FixedPosition(xA, yA), FixedPosition(xB, yB))
+        return angleBetween(FixedPosition(xA, yA), FixedPosition(xB, yB))
     }
 }
