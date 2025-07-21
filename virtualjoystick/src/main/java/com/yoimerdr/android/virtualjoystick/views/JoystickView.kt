@@ -25,6 +25,7 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.log.Logger
 import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
 import androidx.core.content.withStyledAttributes
+import androidx.core.view.postDelayed
 
 /**
  * A view representing a virtual joystick.
@@ -250,22 +251,22 @@ class JoystickView @JvmOverloads constructor(
         interval: Long,
     ) : TouchHoldEventHandler<JoystickView>(joystick, interval) {
         override fun touchHold() {
-            view.move()
+            view.moveListener()
         }
 
         override fun touchDown(): Boolean {
-            view.move()
+            view.moveListener()
             return true
         }
 
         override fun touchUp(): Boolean {
             view.mControl.toCenter()
-            view.move(Control.Direction.NONE)
+            view.moveListener(Control.Direction.NONE)
             return true
         }
 
         override fun touchMove(): Boolean {
-            view.move()
+            view.moveListener()
             return true
         }
 
@@ -302,11 +303,11 @@ class JoystickView @JvmOverloads constructor(
     }
 
 
-    private fun move(direction: Control.Direction) {
+    private fun moveListener(direction: Control.Direction) {
         listener?.onMove(direction)
     }
 
-    private fun move() = move(mControl.direction)
+    private fun moveListener() = moveListener(mControl.direction)
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -464,5 +465,53 @@ class JoystickView @JvmOverloads constructor(
                 invalidate()
             }
         }
+    }
+
+    private fun move(
+        position: ImmutablePosition,
+        direction: Control.Direction,
+        keepAlive: Boolean = false,
+    ) {
+        mControl.setPosition(position)
+        invalidate()
+        val result = mControl.direction
+        moveListener(
+            if (result != direction)
+                result
+            else direction
+        )
+        if (!keepAlive)
+            postDelayed(holdInterval) {
+                if (!mControl.isInCenter())
+                    move(mControl.center, Control.Direction.NONE, true)
+            }
+    }
+
+    /**
+     * Moves the joystick to the specified position.
+     *
+     * @param position The new position of the joystick.
+     */
+    fun move(position: ImmutablePosition) {
+        move(position, mControl.directionFrom(position))
+    }
+
+    /**
+     * Moves the joystick to the specified position.
+     *
+     * @param x The x-coordinate of the new position.
+     * @param y The y-coordinate of the new position.
+     */
+    fun move(x: Float, y: Float) {
+        move(FixedPosition(x, y))
+    }
+
+    /**
+     * Moves the joystick in the specified direction.
+     *
+     * @param direction The direction to move the joystick.
+     */
+    fun move(direction: Control.Direction) {
+        move(mControl.positionFrom(direction), direction)
     }
 }
