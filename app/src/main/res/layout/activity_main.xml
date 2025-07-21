@@ -28,6 +28,17 @@
         app:layout_constraintStart_toStartOf="@+id/tvDirection"
         app:layout_constraintTop_toBottomOf="@+id/tvDirection" />
 
+    <TextView
+        android:id="@+id/tvNdcPosition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/joystick_ndc_position"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvPosition"
+        app:layout_constraintStart_toStartOf="@+id/tvPosition"
+        app:layout_constraintTop_toBottomOf="@+id/tvPosition" />
+
     <com.yoimerdr.android.virtualjoystick.views.JoystickView
         android:id="@+id/vJoystick"
         android:layout_width="wrap_content"
@@ -119,6 +130,35 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="@+id/tvDirectionType"
         app:layout_constraintTop_toBottomOf="@+id/tvDirectionType" />
+
+    <TextView
+        android:id="@+id/tvForceDirection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/joystick_direction_type"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/vJoystick" />
+
+    <Spinner
+        android:id="@+id/spnForceDirection"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/tvForceDirection"
+        app:layout_constraintTop_toBottomOf="@+id/tvForceDirection" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnForceDirection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="Start move action"
+        app:layout_constraintEnd_toEndOf="@+id/spnForceDirection"
+        app:layout_constraintTop_toBottomOf="@+id/spnForceDirection"
+        app:srcCompat="@drawable/outline_play_arrow_24" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

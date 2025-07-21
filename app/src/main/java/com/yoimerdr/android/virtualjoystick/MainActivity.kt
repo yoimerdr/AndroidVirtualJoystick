@@ -9,9 +9,9 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.yoimerdr.android.virtualjoystick.databinding.ActivityMainBinding
 import com.yoimerdr.android.virtualjoystick.control.Control
-import com.yoimerdr.android.virtualjoystick.control.SimpleControl
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.DrawableControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.HighlightControlDrawer
@@ -28,8 +28,10 @@ class MainActivity : AppCompatActivity() {
     private val spnAccentColor: Spinner get() = binding.spnAccentColor
     private val spnDrawerType: Spinner get() = binding.spnDrawerType
     private val spnDirectionType: Spinner get() = binding.spnDirectionType
+    private val spnForceDirection: Spinner get() = binding.spnForceDirection
+    private val btnForceDirection: FloatingActionButton get() = binding.btnForceDirection
 
-    private var noDefaultDrawer: ControlDrawer? = null
+    private var drawable: ControlDrawer? = null
 
     private val colors = mapOf(
         "Red" to Color.RED,
@@ -51,6 +53,11 @@ class MainActivity : AppCompatActivity() {
         "Simple" to Control.DirectionType.SIMPLE
     )
 
+    private val directions = Control.Direction.entries
+        .associateBy { it.name }
+
+    private var direction = Control.Direction.NONE
+
     private lateinit var positionFormat: String
     private lateinit var directionFormat: String
 
@@ -71,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         spnAccentColor.adapter = simpleArrayAdapter(colors.keys.toList())
         spnDrawerType.adapter = simpleArrayAdapter(drawers.keys.toList())
         spnDirectionType.adapter = simpleArrayAdapter(directionTypes.keys.toList())
+        spnForceDirection.adapter = simpleArrayAdapter(directions.keys.toList())
         directionFormat = getString(R.string.joystick_direction)
         positionFormat = getString(R.string.joystick_position)
     }
@@ -81,12 +89,12 @@ class MainActivity : AppCompatActivity() {
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
-                id: Long
+                id: Long,
             ) {
                 val selected = parent?.getItemAtPosition(position) ?: return
                 val color = colors[selected] ?: return
 
-                val drawer = noDefaultDrawer
+                val drawer = drawable
                 if (drawer != null && drawer is DrawableControlDrawer) {
                     if (drawer.drawable is VectorDrawable)
                         drawer.drawable = drawer.drawable.apply {
@@ -106,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
-                id: Long
+                id: Long,
             ) {
                 val selected = parent?.getItemAtPosition(position) ?: return
                 val color = colors[selected] ?: return
@@ -123,14 +131,14 @@ class MainActivity : AppCompatActivity() {
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
-                id: Long
+                id: Long,
             ) {
                 val selected = parent?.getItemAtPosition(position) ?: return
                 val typeId = drawers[selected] ?: return
 
                 if (typeId < 0) {
                     val color = colors[spnPrimaryColor.selectedItem] ?: return
-                    noDefaultDrawer = when (typeId) {
+                    drawable = when (typeId) {
                         -1 -> HighlightControlDrawer(color, 0.48f)
                         -2 -> {
                             val drawable = DrawableControlDrawer.getDrawable(
@@ -143,12 +151,26 @@ class MainActivity : AppCompatActivity() {
                         else -> null
                     }
 
-                    if (noDefaultDrawer != null)
-                        vJoystick.setControlDrawer(noDefaultDrawer!!)
+                    if (drawable != null)
+                        vJoystick.setControlDrawer(drawable!!)
 
                 } else {
-                    noDefaultDrawer = null
-                    vJoystick.setTypeAndBackground(Control.DrawerType.fromId(typeId))
+                    val type = Control.DrawerType.fromId(typeId)
+
+                    drawable = Control
+                        .DrawerBuilder()
+                        .primaryColor(colors[spnPrimaryColor.selectedItem] ?: Color.RED)
+                        .accentColor(colors[spnAccentColor.selectedItem] ?: Color.WHITE)
+                        .type(type)
+                        .build()
+
+                    vJoystick.background = JoystickView.getBackgroundResOf(type)
+                        .let {
+                            DrawableControlDrawer.getDrawable(this@MainActivity, it)
+                        }
+
+                    vJoystick.setControlDrawer(drawable!!)
+
                 }
             }
 
@@ -162,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
-                id: Long
+                id: Long,
             ) {
                 val selected = parent?.getItemAtPosition(position) ?: return
                 val type = directionTypes[selected] ?: return
@@ -174,6 +196,25 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        spnForceDirection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long,
+            ) {
+                val selected = parent?.getItemAtPosition(position) ?: return
+                direction = directions[selected] ?: Control.Direction.NONE
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                direction = Control.Direction.NONE
+            }
+        }
+
+        btnForceDirection.setOnClickListener {
+            vJoystick.move(direction)
+        }
 
         vJoystick.apply {
             setMoveListener {
