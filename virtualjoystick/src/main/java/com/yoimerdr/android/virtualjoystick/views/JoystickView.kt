@@ -15,14 +15,17 @@ import com.yoimerdr.android.virtualjoystick.R
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.control.drawer.ColorfulControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
-import com.yoimerdr.android.virtualjoystick.exceptions.InvalidControlPositionException
-import com.yoimerdr.android.virtualjoystick.geometry.FixedPosition
-import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
+import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
+import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.Plane
-import com.yoimerdr.android.virtualjoystick.geometry.Size
+import com.yoimerdr.android.virtualjoystick.geometry.size.ImmutableSize
+import com.yoimerdr.android.virtualjoystick.geometry.size.Size
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.log.Logger
 import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
+import androidx.core.content.withStyledAttributes
+import androidx.core.view.postDelayed
 
 /**
  * A view representing a virtual joystick.
@@ -30,13 +33,13 @@ import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
 class JoystickView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defaultStyle: Int = 0
+    defaultStyle: Int = 0,
 ) : View(context, attrs, defaultStyle) {
 
     /**
      * The [Size] representation of the view size.
      */
-    private val viewSize: Size get() = Size(width, height)
+    private val viewSize: ImmutableSize get() = Size(width, height)
 
     private val viewRadius: Double get() = viewSize.width / 2.0
 
@@ -48,9 +51,13 @@ class JoystickView @JvmOverloads constructor(
     /**
      * The interval for the joystick listener call when it is hold.
      */
-    private var interval: Long = HOLD_INTERVAL
-        set(value) {
-            field = getHoldInterval(value)
+    var holdInterval: Long = HOLD_INTERVAL
+        /**
+         * Changes the current interval for the joystick listener call when the control is hold.
+         * @param interval An interval value in ms.
+         */
+        set(interval) {
+            field = getHoldInterval(interval)
             touchHandler.apply {
                 holdInterval = field
                 activeHoldInterval = field
@@ -60,96 +67,131 @@ class JoystickView @JvmOverloads constructor(
     /**
      * The control holds handler.
      */
-    private val touchHandler: JoystickTouchHandler = JoystickTouchHandler(this, interval)
+    private val touchHandler: JoystickTouchHandler = JoystickTouchHandler(this, holdInterval)
+
+
+    private var mControl: Control
+
 
     /**
-     * The builder to build the controls defined in the package.
+     * Gets the current position.
      */
-    private var controlBuilder: Control.Builder = Control.Builder()
+    val position: ImmutablePosition get() = mControl.position
 
     /**
-     * The joystick [Control].
+     * Gets the current center.
      */
-    private var control: Control
-
-    /**
-     * Gets the current [control] position.
-     */
-    val position: ImmutablePosition get() = control.position
-
-    /**
-     * Gets the current [control] center.
-     */
-    val center: ImmutablePosition get() = control.center
+    val center: ImmutablePosition get() = mControl.center
 
     /**
      * Gets distance between current [position] and [center].
      */
-    val distance: Float get() = control.distanceFromCenter
+    val distance: Float get() = mControl.distance
 
     /**
      * Gets the angle (clockwise) formed from the current [position] and the [center].
      *
      * @return A value in the range from 0 to 2PI radians.
      */
-    val angle: Double get() = control.anglePosition
+    val angle: Double get() = mControl.angle
+
+    val centeredPosition: ImmutablePosition get() = mControl.centeredPosition
+
+    val ndcPosition: ImmutablePosition get() = mControl.ndcPosition
+
 
     init {
         var primaryColor = ContextCompat.getColor(context, R.color.drawer_primary)
         var accentColor = ContextCompat.getColor(context, R.color.drawer_accent)
 
         var invalidRadius: Float = resources.getDimensionPixelSize(R.dimen.invalidRadius).toFloat()
-        var backgroundRes: Int
-        var controlType = Control.DefaultType.CIRCLE
-        var directionType = DirectionType.COMPLETE
+        var backgroundRes: Int = R.drawable.circlefor_bg
+        var controlType = Control.DrawerType.CIRCLE
+        var directionType = Control.DirectionType.COMPLETE
 
         var arcSweepAngle: Float = ResourcesCompat.getFloat(resources, R.dimen.arc_sweepAngle)
         var arcStrokeWidth: Float = ResourcesCompat.getFloat(resources, R.dimen.arc_strokeWidth)
 
-        var circleRadiusProportion: Float = ResourcesCompat.getFloat(resources, R.dimen.circle_radiusRatio)
+        var circleRadiusProportion: Float =
+            ResourcesCompat.getFloat(resources, R.dimen.circle_radiusRatio)
 
-        if(attrs != null) {
-            context.obtainStyledAttributes(attrs, R.styleable.JoystickView)
-                .also { styles ->
-                    interval = styles.getInteger(R.styleable.JoystickView_moveInterval, interval.toInt()).toLong()
+        if (attrs != null) {
+            context.withStyledAttributes(attrs, R.styleable.JoystickView) {
+                val styles = this
 
-                    // all types
-                    invalidRadius = styles.getDimensionPixelSize(R.styleable.JoystickView_invalidRadius, invalidRadius.toInt()).toFloat()
-                    primaryColor = styles.getColor(R.styleable.JoystickView_controlDrawer_primaryColor, primaryColor)
-                    accentColor = styles.getColor(R.styleable.JoystickView_controlDrawer_accentColor, accentColor)
-                    controlType = Control.DefaultType.fromId(styles.getInt(R.styleable.JoystickView_controlType, controlType.id))
-                    directionType = DirectionType.fromId(styles.getInt(R.styleable.JoystickView_directionType, directionType.id))
-                    backgroundRes = getBackgroundResOf(controlType).let {
-                        styles.getResourceId(R.styleable.JoystickView_background, it)
-                    }
+                holdInterval =
+                    styles.getInteger(
+                        R.styleable.JoystickView_moveInterval,
+                        holdInterval.toInt()
+                    )
+                        .toLong()
 
-                    // arc types
-                    arcStrokeWidth = styles.getFloat(R.styleable.JoystickView_arcControlDrawer_strokeWidth, arcStrokeWidth)
-                    arcSweepAngle = styles.getFloat(R.styleable.JoystickView_arcControlDrawer_sweepAngle, arcSweepAngle)
-
-                    // circle types
-                    circleRadiusProportion = styles.getFloat(R.styleable.JoystickView_circleControlDrawer_radiusProportion, circleRadiusProportion)
+                // all types
+                invalidRadius = styles.getDimensionPixelSize(
+                    R.styleable.JoystickView_invalidRadius,
+                    invalidRadius.toInt()
+                ).toFloat()
+                primaryColor = styles.getColor(
+                    R.styleable.JoystickView_controlDrawer_primaryColor,
+                    primaryColor
+                )
+                accentColor = styles.getColor(
+                    R.styleable.JoystickView_controlDrawer_accentColor,
+                    accentColor
+                )
+                controlType = Control.DrawerType.fromId(
+                    styles.getInt(
+                        R.styleable.JoystickView_controlType,
+                        0
+                    )
+                )
+                directionType = Control.DirectionType.fromId(
+                    styles.getInt(
+                        R.styleable.JoystickView_directionType,
+                        0
+                    )
+                )
+                backgroundRes = getBackgroundResOf(controlType).let {
+                    styles.getResourceId(R.styleable.JoystickView_background, it)
                 }
-                .recycle()
+
+                // arc types
+                arcStrokeWidth = styles.getFloat(
+                    R.styleable.JoystickView_arcControlDrawer_strokeWidth,
+                    arcStrokeWidth
+                )
+                arcSweepAngle = styles.getFloat(
+                    R.styleable.JoystickView_arcControlDrawer_sweepAngle,
+                    arcSweepAngle
+                )
+
+                // circle types
+                circleRadiusProportion = styles.getFloat(
+                    R.styleable.JoystickView_circleControlDrawer_radiusProportion,
+                    circleRadiusProportion
+                )
+            }
         } else {
             backgroundRes = getBackgroundResOf(controlType)
         }
 
-        control = controlBuilder
-            .primaryColor(primaryColor)
-            .accentColor(accentColor)
+        mControl = Control.Builder()
+            .apply {
+                drawer.primaryColor(primaryColor)
+                    .accentColor(accentColor)
+                    .arcStrokeWidth(arcStrokeWidth)
+                    .arcSweepAngle(arcSweepAngle)
+                    .circleRadiusRatio(circleRadiusProportion)
+                    .type(controlType)
+            }.directionType(directionType)
             .invalidRadius(invalidRadius)
-            .arcStrokeWidth(arcStrokeWidth)
-            .arcSweepAngle(arcSweepAngle)
-            .circleRadiusRatio(circleRadiusProportion)
-            .type(controlType)
-            .directionType(directionType)
             .build()
+
 
         background = try {
             getCompatDrawable(backgroundRes)
         } catch (_: Exception) {
-            getCompatDrawable(JoystickView.getBackgroundResOf(controlType))
+            getCompatDrawable(getBackgroundResOf(controlType))
         }
 
     }
@@ -157,7 +199,8 @@ class JoystickView @JvmOverloads constructor(
     /**
      * Gets a drawable resource from this resources.
      */
-    private fun getCompatDrawable(@DrawableRes id: Int): Drawable? = ResourcesCompat.getDrawable(resources, id, context.theme)
+    private fun getCompatDrawable(@DrawableRes id: Int): Drawable? =
+        ResourcesCompat.getDrawable(resources, id, context.theme)
 
     companion object {
         /**
@@ -181,57 +224,10 @@ class JoystickView @JvmOverloads constructor(
          */
         @JvmStatic
         @DrawableRes
-        fun getBackgroundResOf(type: Control.DefaultType): Int {
-            return when(type) {
-                Control.DefaultType.ARC -> R.drawable.arcfor_bg
+        fun getBackgroundResOf(type: Control.DrawerType): Int {
+            return when (type) {
+                Control.DrawerType.ARC -> R.drawable.arcfor_bg
                 else -> R.drawable.circlefor_bg
-            }
-        }
-    }
-
-    /**
-     * The possibles directions of the joystick.
-     */
-    enum class Direction {
-        UP,
-        LEFT,
-        RIGHT,
-        DOWN,
-        UP_RIGHT,
-        UP_LEFT,
-        DOWN_RIGHT,
-        DOWN_LEFT,
-        NONE
-    }
-
-    /**
-     * The type that will determine how many directions the joystick will be able to return.
-     */
-    enum class DirectionType(val id: Int) {
-        /**
-         * Determines that the joystick will be able to return all the entries of [Direction] enum.
-         */
-        COMPLETE(1),
-
-        /**
-         * Determines that the joystick will only be able to return 5 directions.
-         *
-         * [Direction.RIGHT], [Direction.DOWN], [Direction.LEFT], [Direction.UP] and [Direction.NONE]
-         */
-        SIMPLE(2);
-
-        companion object {
-            /**
-             * @param id The id for the enum value
-             * @return The enum value for the given id. If not found, returns the value [COMPLETE].
-             */
-            @JvmStatic
-            fun fromId(id: Int): DirectionType {
-                for(type in DirectionType.entries)
-                    if(type.id == id)
-                        return type
-
-                return COMPLETE
             }
         }
     }
@@ -244,7 +240,7 @@ class JoystickView @JvmOverloads constructor(
          * Called when joystick control is moved or held down.
          * @param direction The control direction
          */
-        fun onMove(direction: Direction)
+        fun onMove(direction: Control.Direction)
     }
 
     /**
@@ -255,22 +251,22 @@ class JoystickView @JvmOverloads constructor(
         interval: Long,
     ) : TouchHoldEventHandler<JoystickView>(joystick, interval) {
         override fun touchHold() {
-            view.move()
+            view.moveListener()
         }
 
         override fun touchDown(): Boolean {
-            view.move()
+            view.moveListener()
             return true
         }
 
         override fun touchUp(): Boolean {
-            view.control.toCenter()
-            view.move(Direction.NONE)
+            view.mControl.toCenter()
+            view.moveListener(Control.Direction.NONE)
             return true
         }
 
         override fun touchMove(): Boolean {
-            view.move()
+            view.moveListener()
             return true
         }
 
@@ -281,7 +277,7 @@ class JoystickView @JvmOverloads constructor(
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        control.onSizeChanged(viewSize)
+        mControl.onSizeChanged(viewSize)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -291,10 +287,10 @@ class JoystickView @JvmOverloads constructor(
 
         var side = resources.getDimensionPixelSize(R.dimen.width)
 
-        if(arrayOf(widthMode, heightMode).any { it == MeasureSpec.EXACTLY }) {
+        if (arrayOf(widthMode, heightMode).any { it == MeasureSpec.EXACTLY }) {
             val size = MeasureSpec.getSize(widthMeasureSpec)
                 .coerceAtMost(MeasureSpec.getSize(heightMeasureSpec))
-            if(size > 0)
+            if (size > 0)
                 side = size
         }
 
@@ -303,25 +299,29 @@ class JoystickView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        control.onDraw(canvas)
+        mControl.onDraw(canvas)
     }
 
 
-    private fun move(direction: Direction) {
+    private fun moveListener(direction: Control.Direction) {
         listener?.onMove(direction)
     }
 
-    private fun move() = move(control.direction)
+    private fun moveListener() = moveListener(mControl.direction)
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if(event == null)
+        if (event == null)
             return false
 
         val touchPosition = FixedPosition(event.x, event.y)
-        if(event.action != MotionEvent.ACTION_MOVE && Plane.distanceBetween(touchPosition, center) > viewRadius) {
-            if(!control.isInCenter()) {
-                control.toCenter()
+        if (event.action != MotionEvent.ACTION_MOVE && Plane.distanceBetween(
+                touchPosition,
+                center
+            ) > viewRadius
+        ) {
+            if (!mControl.isInCenter()) {
+                mControl.toCenter()
                 invalidate()
             }
             return false
@@ -329,8 +329,8 @@ class JoystickView @JvmOverloads constructor(
 
 
         try {
-            control.setPosition(touchPosition)
-        } catch (e: InvalidControlPositionException) {
+            mControl.setPosition(touchPosition)
+        } catch (e: LowerNumberException) {
             Logger.errorFromClass(this@JoystickView, e)
             return false
         }
@@ -350,40 +350,15 @@ class JoystickView @JvmOverloads constructor(
         this.listener = listener
     }
 
-    /**
-     * Changes the current interval for the joystick listener call when the control is hold.
-     * @param interval An interval value in ms.
-     */
-    fun setHoldInterval(interval: Long) {
-        this.interval = interval
-    }
 
     /**
      * Changes the current interval for the joystick listener call when the control is hold.
      * @param interval An interval value in ms.
      */
-    fun setHoldInterval(interval: Int) = setHoldInterval(interval.toLong())
-
-    /**
-     * Changes the current joystick control.
-     * @param control The new [Control]
-     */
-    @Throws(InvalidControlPositionException::class)
-    fun setControl(control: Control) {
-        this.control = control.apply {
-            val size = viewSize
-            if(!size.isEmpty()) {
-                onSizeChanged(size)
-                setPosition(this@JoystickView.position)
-                invalidate()
-            }
-        }
+    fun setHoldInterval(interval: Int) {
+        holdInterval = interval.toLong()
     }
 
-    @Throws(InvalidControlPositionException::class)
-    private fun buildControl() {
-        setControl(controlBuilder.build())
-    }
 
     /**
      * Changes the current control to one defined in the package.
@@ -391,10 +366,11 @@ class JoystickView @JvmOverloads constructor(
      * If you also want to change the background for the [type], use [setTypeAndBackground] instead.
      * @param type The new control type.
      */
-    @Throws(InvalidControlPositionException::class)
-    fun setType(type: Control.DefaultType) {
-        controlBuilder.type(type)
-        buildControl()
+    fun setType(type: Control.DrawerType) {
+        mControl.drawer = Control.DrawerBuilder
+            .from(mControl.drawer)
+            .type(type)
+            .build()
         invalidate()
     }
 
@@ -405,54 +381,51 @@ class JoystickView @JvmOverloads constructor(
      * If you only want to change the the [type], use [setType]
      * @param type The new control type.
      */
-    @Throws(InvalidControlPositionException::class)
-    fun setTypeAndBackground(type: Control.DefaultType) {
+    fun setTypeAndBackground(type: Control.DrawerType) {
         setType(type)
         val drawable = getCompatDrawable(getBackgroundResOf(type))
-        if(drawable != null)
+        if (drawable != null)
             background = drawable
     }
 
-    private val colorfulDrawer: ColorfulControlDrawer? get() {
-        val drawer = control.drawer
-        if(drawer is ColorfulControlDrawer)
-            return drawer
-        return null
-    }
+    private val colorfulDrawer: ColorfulControlDrawer?
+        get() = mControl.drawer
+            .let {
+                if (it is ColorfulControlDrawer)
+                    it
+                else null
+            }
 
     /**
-     * Changes the primary colour of the current [control]'s drawer.
+     * Changes the primary colour of the current control's drawer.
      *
      * If the current control's drawer is custom (not defined in the package)
      * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
      */
     fun setPrimaryColor(@ColorInt color: Int) {
         colorfulDrawer?.primaryColor = color
-        controlBuilder.primaryColor(color)
         invalidate()
     }
 
     /**
-     * Changes the accent colour of the current [control]'s drawer.
+     * Changes the accent colour of the current control's drawer.
      *
      * If the current control's drawer is custom (not defined in the package)
      * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
      */
     fun setAccentColor(@ColorInt color: Int) {
         colorfulDrawer?.accentColor = color
-        controlBuilder.accentColor(color)
         invalidate()
     }
 
     /**
-     * Changes the colors of the current [control]'s drawer.
+     * Changes the colors of the current control's drawer.
      *
      * If the current control's drawer is custom (not defined in the package)
      * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
      */
     fun setColors(colors: ColorsScheme) {
         colorfulDrawer?.setColors(colors)
-        controlBuilder.colors(colors)
         invalidate()
     }
 
@@ -460,23 +433,85 @@ class JoystickView @JvmOverloads constructor(
      * Changes the [Control.invalidRadius] of the current control.
      */
     fun setInvalidRadius(radius: Float) {
-        control.invalidRadius = radius
-        controlBuilder.invalidRadius(radius)
+        mControl.invalidRadius = radius
     }
 
     /**
      * Changes the [Control.directionType] property of the current control.
      */
-    fun setDirectionType(type: DirectionType) {
-        control.directionType = type
-        controlBuilder.directionType(type)
+    fun setDirectionType(type: Control.DirectionType) {
+        mControl.directionType = type
     }
 
     /**
-     * Changes the drawer of the current [control].
+     * Changes the drawer of the current control drawer.
      */
     fun setControlDrawer(drawer: ControlDrawer) {
-        control.drawer = drawer
+        mControl.drawer = drawer
         invalidate()
+    }
+
+    /**
+     * Changes the current joystick control.
+     * @param control The new [Control]
+     */
+    @Throws(LowerNumberException::class)
+    fun setControl(control: Control) {
+        mControl = control.apply {
+            val size = viewSize
+            if (!size.isEmpty()) {
+                onSizeChanged(size)
+                setPosition(mControl.position)
+                invalidate()
+            }
+        }
+    }
+
+    private fun move(
+        position: ImmutablePosition,
+        direction: Control.Direction,
+        keepAlive: Boolean = false,
+    ) {
+        mControl.setPosition(position)
+        invalidate()
+        val result = mControl.direction
+        moveListener(
+            if (result != direction)
+                result
+            else direction
+        )
+        if (!keepAlive)
+            postDelayed(holdInterval) {
+                if (!mControl.isInCenter())
+                    move(mControl.center, Control.Direction.NONE, true)
+            }
+    }
+
+    /**
+     * Moves the joystick to the specified position.
+     *
+     * @param position The new position of the joystick.
+     */
+    fun move(position: ImmutablePosition) {
+        move(position, mControl.directionFrom(position))
+    }
+
+    /**
+     * Moves the joystick to the specified position.
+     *
+     * @param x The x-coordinate of the new position.
+     * @param y The y-coordinate of the new position.
+     */
+    fun move(x: Float, y: Float) {
+        move(FixedPosition(x, y))
+    }
+
+    /**
+     * Moves the joystick in the specified direction.
+     *
+     * @param direction The direction to move the joystick.
+     */
+    fun move(direction: Control.Direction) {
+        move(mControl.positionFrom(direction), direction)
     }
 }

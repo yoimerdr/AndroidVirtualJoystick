@@ -12,7 +12,6 @@ import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.Plane
 import com.yoimerdr.android.virtualjoystick.geometry.factory.RectFFactory
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
-import com.yoimerdr.android.virtualjoystick.views.JoystickView.DirectionType
 
 /**
  * A [ControlDrawer] that draws a highlighted circular trapezoid.
@@ -104,7 +103,7 @@ open class HighlightControlDrawer(
          * @param ratio The new ratio value. Must be a value in the range from [MIN_INNER_RADIUS_RATIO] to [MAX_INNER_RADIUS_RATIO].
          */
         set(ratio) {
-            properties.innerRatio = HighlightControlDrawer.getInnerRadiusRatio(ratio)
+            properties.innerRatio = getInnerRadiusRatio(ratio)
         }
 
     class HighlightProperties(
@@ -174,7 +173,7 @@ open class HighlightControlDrawer(
     }
 
     override fun draw(canvas: Canvas, control: Control) {
-        if(control.distanceFromCenter < control.invalidRadius)
+        if(control.distance < control.invalidRadius)
             return
 
         drawTrapezoid(canvas, control)
@@ -200,13 +199,13 @@ open class HighlightControlDrawer(
      * Gets the distance value between the outer arc of the trapezoid and the control center.
      * @param control The [Control] from where the drawer is used.
      */
-    protected open fun getOuterDistance(control: Control): Double = control.viewRadius
+    protected open fun getOuterDistance(control: Control): Double = control.radius
 
     /**
      * Gets the distance value between the inner arc of the trapezoid and the control center.
      * @param control The [Control] from where the drawer is used.
      */
-    protected open fun getInnerDistance(control: Control): Double = (control.viewRadius * innerRatio)
+    protected open fun getInnerDistance(control: Control): Double = (control.radius * innerRatio)
 
     /**
      * Resets and fills the path of the circular trapezoid.
@@ -253,10 +252,10 @@ open class HighlightControlDrawer(
     /**
      * Gets the sweep angle for give direction type.
      * @param directionType The control direction type.
-     * @return 90 if [directionType] is [DirectionType.SIMPLE]; Otherwise, 45
+     * @return 90 if [directionType] is [Control.DirectionType.SIMPLE]; Otherwise, 45
      */
-    protected open fun getSweepAngleOf(directionType: DirectionType): Float {
-        return if(directionType == DirectionType.SIMPLE) 90f
+    protected open fun getSweepAngleOf(directionType: Control.DirectionType): Float {
+        return if(directionType == Control.DirectionType.SIMPLE) 90f
         else 45f
     }
 
@@ -264,12 +263,12 @@ open class HighlightControlDrawer(
      * Gets the current quadrant of the control position.
      *
      * @param control The [Control] from where the drawer is used.
-     * @return If control direction type is [DirectionType.SIMPLE], a value in the range 1 to 4;
+     * @return If control direction type is [Control.DirectionType.SIMPLE], a value in the range 1 to 4;
      * otherwise, a value in the range 1 to 8.
      */
     protected open fun getCurrentQuadrant(control: Control): Int {
-        val angle = Math.toDegrees(control.anglePosition)
-        return if(control.directionType == DirectionType.SIMPLE)
+        val angle = Math.toDegrees(control.angle)
+        return if(control.directionType == Control.DirectionType.SIMPLE)
             Plane.quadrantOf(angle, true)
         else Plane.quadrantOf(angle, Plane.MaxQuadrants.EIGHT, true)
     }

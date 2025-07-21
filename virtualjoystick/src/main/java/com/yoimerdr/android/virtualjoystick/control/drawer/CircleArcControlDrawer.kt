@@ -12,67 +12,31 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
  * A [ControlDrawer] that draws a circle accompanied by an arc.
  */
 open class CircleArcControlDrawer(
+    /**
+     * The drawer properties.
+     */
     private val properties: CircleArcProperties,
-    /**
-     * The interface to call before drawing the circle or arc.
-     */
-    protected open val beforeDraw: BeforeDraw?
 ) : ArcControlDrawer(properties) {
-
-    /**
-     * @param properties The drawer properties.
-     */
-    constructor(properties: CircleArcProperties) : this(properties, null)
 
     /**
      * @param colors The colors for the drawer.
      * @param strokeWidth The stroke width of the paint.
      * @param sweepAngle The arc sweep angle.
      * @param ratio The ratio value for the circle radius length.
-     * @param beforeDraw A listener to call before drawing the arc and circle.
      */
     constructor(
         colors: ColorsScheme,
         strokeWidth: Float,
         sweepAngle: Float,
-        ratio: Float,
-        beforeDraw: BeforeDraw?
+        ratio: Float
     ) : this(
         CircleArcProperties(
             colors,
             strokeWidth,
             sweepAngle,
             CircleProperties(colors, ratio)
-        ), beforeDraw
+        )
     )
-
-    /**
-     * @param color The unique initial color for the drawer.
-     * @param strokeWidth The stroke width of the paint.
-     * @param sweepAngle The arc sweep angle.
-     * @param ratio The ratio value for the circle radius length.
-     * @param beforeDraw A listener to call before drawing the arc and circle.
-     */
-    constructor(
-        @ColorInt color: Int,
-        strokeWidth: Float,
-        sweepAngle: Float,
-        ratio: Float,
-        beforeDraw: BeforeDraw?
-    ) : this(ColorsScheme(color), strokeWidth, sweepAngle, ratio, beforeDraw)
-
-    /**
-     * @param colors The colors for the drawer.
-     * @param strokeWidth The stroke width of the paint.
-     * @param sweepAngle The arc sweep angle.
-     * @param ratio The ratio value for the circle radius length.
-     */
-    constructor(
-        colors: ColorsScheme,
-        strokeWidth: Float,
-        sweepAngle: Float,
-        ratio: Float,
-    ) : this(colors, strokeWidth, sweepAngle, ratio, null)
 
     /**
      * @param color The unique initial color for the drawer.
@@ -85,7 +49,7 @@ open class CircleArcControlDrawer(
         strokeWidth: Float,
         sweepAngle: Float,
         ratio: Float
-    ) : this(color, strokeWidth, sweepAngle, ratio, null)
+    ) : this(ColorsScheme(color), strokeWidth, sweepAngle, ratio)
 
     var ratio: Float
         /**
@@ -100,7 +64,8 @@ open class CircleArcControlDrawer(
             properties.circleProperties.ratio = CircleControlDrawer.getRadiusRatio(ratio)
         }
 
-    private class CircleDrawer(private val properties: CircleArcProperties) : CircleControlDrawer(properties.circleProperties) {
+    protected open class CircleDrawer(private val properties: CircleArcProperties) :
+        CircleControlDrawer(properties.circleProperties) {
         override fun getMaxDistance(control: Control): Double {
             return super.getMaxDistance(control) - properties.strokeWidth * 2
         }
@@ -119,37 +84,17 @@ open class CircleArcControlDrawer(
     ) : ArcProperties(colors, strokeWidth, sweepAngle)
 
 
-    /**
-     * Interface to call before drawing the circle and arc.
-     */
-    interface BeforeDraw {
-        /**
-         * Called before drawing the arc.
-         * @param control The [Control] from where the drawer is used.
-         */
-        fun beforeArc(control: Control)
-
-        /**
-         * Called before drawing the circle.
-         * @param control The [Control] from where the drawer is used.
-         */
-        fun beforeCircle(control: Control)
-    }
-
     override fun getDistance(control: Control): Double {
         val max = super.getDistance(control)
 
-        return (control.distanceFromCenter + (control.viewRadius * ratio))
+        return (control.distance + (control.radius * ratio))
             .coerceAtMost(max)
     }
 
     override fun draw(canvas: Canvas, control: Control) {
-        if (!control.isInCenter()) {
-            beforeDraw?.beforeArc(control)
+        if (!control.isInCenter())
             drawShapes(canvas, control)
-        }
 
-        beforeDraw?.beforeCircle(control)
         circleDrawer.draw(canvas, control)
     }
 }

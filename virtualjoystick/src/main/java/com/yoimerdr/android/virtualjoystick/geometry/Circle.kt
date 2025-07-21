@@ -1,17 +1,21 @@
 package com.yoimerdr.android.virtualjoystick.geometry
 
 import androidx.annotation.IntRange
+import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
+import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.MutablePosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.Position
+import com.yoimerdr.android.virtualjoystick.utils.extensions.greaterThan
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
 class Circle(
     radius: Double,
-    val center: MutablePosition
+    val center: MutablePosition,
 ) {
-    constructor(radius: Float, center: MutablePosition) : this(radius.toDouble(), center)
-    constructor(radius: Int, center: MutablePosition) : this(radius.toDouble(), center)
-
+    constructor(radius: Number, center: MutablePosition) : this(radius.toDouble(), center)
 
     /**
      * Getter and setter for the circle radius.
@@ -77,10 +81,9 @@ class Circle(
 
     }
 
-    @Throws(IllegalArgumentException::class)
+    @Throws(LowerNumberException::class)
     private fun validateRadius(radius: Double) {
-        if(radius <= 0)
-            throw IllegalArgumentException("The radius of the circle cannot be negative or zero.")
+        radius.greaterThan(0.0)
     }
 
     /**
@@ -146,21 +149,13 @@ class Circle(
      * @return if [maxQuadrants] is [Plane.MaxQuadrants.FOUR], a value in the range 1 to 4;
      * otherwise, a value in the range 1 to 8.
      */
-    fun quadrantOf(position: ImmutablePosition, maxQuadrants: Plane.MaxQuadrants, useMiddle: Boolean): Int {
+    @JvmOverloads
+    fun quadrantOf(
+        position: ImmutablePosition,
+        maxQuadrants: Plane.MaxQuadrants = Plane.MaxQuadrants.FOUR,
+        useMiddle: Boolean = false,
+    ): Int {
         return Plane.quadrantOf(angleTo(position), maxQuadrants, useMiddle)
-    }
-
-    /**
-     * Gets the quadrant of the given position according the circle center.
-     *
-     * This method does not check if the position is in the circle area.
-     * @param position The position with x and y coordinates.
-     * @param maxQuadrants The max quadrants in the circle.
-     * @return if [maxQuadrants] is [Plane.MaxQuadrants.FOUR], a value in the range 1 to 4;
-     * otherwise, a value in the range 1 to 8.
-     */
-    fun quadrantOf(position: ImmutablePosition, maxQuadrants: Plane.MaxQuadrants): Int {
-        return quadrantOf(position, maxQuadrants, false)
     }
 
     /**
@@ -174,18 +169,6 @@ class Circle(
     @IntRange(from = 1, to = 4)
     fun quadrantOf(position: ImmutablePosition, useMiddle: Boolean): Int {
         return quadrantOf(position, Plane.MaxQuadrants.FOUR, useMiddle)
-    }
-
-    /**
-     * Gets the quadrant of the given position.
-     *
-     * This method does not check if the position is in the circle area.
-     * @param position The position with x and y coordinates.
-     * @return A value in the range 1 to 4.
-     */
-    @IntRange(from = 1, to = 4)
-    fun quadrantOf(position: ImmutablePosition): Int {
-        return quadrantOf(position, false)
     }
 
     fun setCenter(position: ImmutablePosition) {

@@ -7,7 +7,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
-import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
@@ -98,12 +98,12 @@ open class CircleControlDrawer(
      * Gets the circle radius.
      * @param control The [Control] from where the drawer is used.
      */
-    protected open fun getCircleRadius(control: Control): Double = control.viewRadius * ratio
+    protected open fun getCircleRadius(control: Control): Double = control.radius * ratio
 
     /**
      * Gets the maximum distance to where the center position of the circle can be.
      */
-    protected open fun getMaxDistance(control: Control): Double = control.viewRadius - getCircleRadius(control)
+    protected open fun getMaxDistance(control: Control): Double = control.radius - getCircleRadius(control)
 
     /**
      * Gets the current position where the control is located
@@ -112,9 +112,9 @@ open class CircleControlDrawer(
      */
     protected open fun getPosition(control: Control): ImmutablePosition {
         val maxRadius = getMaxDistance(control)
-        return if(control.distanceFromCenter > maxRadius) {
+        return if(control.distance > maxRadius) {
             Circle.fromImmutableCenter(maxRadius, control.center)
-                .parametricPositionOf(control.anglePosition)
+                .parametricPositionOf(control.angle)
         }
         else control.position
     }

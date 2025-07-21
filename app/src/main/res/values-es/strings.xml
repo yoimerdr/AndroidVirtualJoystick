@@ -3,6 +3,7 @@
     <string name="app_name">AndroidVirtualJoystick</string>
     <string name="joystick_direction">Dirección: %s</string>
     <string name="joystick_position">Posición, x: %.2f y: %.2f</string>
+    <string name="joystick_ndc_position">Posición normalizada (NDC), x: %.2f y: %.2f</string>
     <string name="joystick_direction_type">Tipo de dirección</string>
     <string name="joystick_primary_color">Color primario</string>
     <string name="joystick_accent_color">Color de acento</string>

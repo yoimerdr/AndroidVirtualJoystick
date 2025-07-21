@@ -11,26 +11,26 @@ abstract class ColorfulControlDrawer(
     private val properties: ColorfulProperties
 ) : ControlDrawer {
 
-    open class ColorfulProperties(val colors: ColorsScheme) {
+    open class ColorfulProperties(open val colors: ColorsScheme) {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     }
 
     /**
      * The drawer colors.
      */
-    protected val colors: ColorsScheme get() = properties.colors
+    val colors: ColorsScheme get() = properties.colors
 
     /**
      * The drawer paint.
      */
-    protected val paint: Paint get() = properties.paint
+    val paint: Paint get() = properties.paint
 
     /**
      * An [IntArray] of the current [colors] properties.
      *
      * @return A new intArrayOf([primaryColor], [accentColor])
      */
-    protected val colorsArray: IntArray
+    val colorsArray: IntArray
         @ColorInt
         get() = intArrayOf(primaryColor, accentColor)
 

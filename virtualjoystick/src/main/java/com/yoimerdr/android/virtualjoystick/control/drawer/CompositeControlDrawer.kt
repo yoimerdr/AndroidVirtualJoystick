@@ -6,7 +6,7 @@ import com.yoimerdr.android.virtualjoystick.control.Control
 /**
  * A [ControlDrawer] that uses other drawers to draw.
  */
-open class CompositeControlDrawer(
+open class CompositeControlDrawer @JvmOverloads constructor(
     /**
      *  The control drawers to use.
      */
@@ -14,9 +14,8 @@ open class CompositeControlDrawer(
     /**
      * The interface to call before each draw.
      */
-    protected open val beforeDraw: BeforeDraw?
+    protected open val beforeDraw: BeforeDraw? = null
 ) : ControlDrawer {
-    constructor(drawers: List<ControlDrawer>) : this(drawers,  null)
 
     /**
      * Interface for call before each draw.

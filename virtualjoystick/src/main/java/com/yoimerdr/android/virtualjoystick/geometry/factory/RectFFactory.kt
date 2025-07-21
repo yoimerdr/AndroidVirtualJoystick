@@ -2,7 +2,7 @@ package com.yoimerdr.android.virtualjoystick.geometry.factory
 
 import android.graphics.RectF
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
-import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 
 /**
  * A factory for create [RectF] objects.
@@ -42,7 +42,7 @@ object RectFFactory {
      */
     @JvmStatic
     fun withCenterAt(position: ImmutablePosition, side: Float): RectF {
-        return RectFFactory.withCenterAt(position, side, side)
+        return withCenterAt(position, side, side)
     }
 
     /**
@@ -62,7 +62,7 @@ object RectFFactory {
      */
     @JvmStatic
     fun fromCircle(circle: Circle): RectF {
-        return RectFFactory.withCenterAt(circle.center, circle.radius.toFloat())
+        return withCenterAt(circle.center, circle.radius.toFloat())
     }
 
 }

@@ -3,20 +3,23 @@ package com.yoimerdr.android.virtualjoystick.control
 import android.graphics.Canvas
 import android.graphics.Color
 import androidx.annotation.ColorInt
+import com.yoimerdr.android.virtualjoystick.control.Control.Direction
 import com.yoimerdr.android.virtualjoystick.control.drawer.ArcControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.CircleArcControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.CircleControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.ColorfulControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
-import com.yoimerdr.android.virtualjoystick.exceptions.InvalidControlPositionException
+import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
-import com.yoimerdr.android.virtualjoystick.geometry.ImmutablePosition
-import com.yoimerdr.android.virtualjoystick.geometry.MutablePosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
+import com.yoimerdr.android.virtualjoystick.geometry.position.MutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.Plane
-import com.yoimerdr.android.virtualjoystick.geometry.Position
-import com.yoimerdr.android.virtualjoystick.geometry.Size
+import com.yoimerdr.android.virtualjoystick.geometry.position.Position
+import com.yoimerdr.android.virtualjoystick.geometry.size.ImmutableSize
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
-import com.yoimerdr.android.virtualjoystick.views.JoystickView
-import com.yoimerdr.android.virtualjoystick.views.JoystickView.Direction
-import com.yoimerdr.android.virtualjoystick.views.JoystickView.DirectionType
+import com.yoimerdr.android.virtualjoystick.utils.extensions.firstOrdinal
+import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
 
 /**
  * Represents a virtual joystick control.
@@ -31,24 +34,24 @@ abstract class Control(
      * Used to determine how many directions, in addition to [Direction.NONE],
      * will be taken into account when calling [direction].
      */
-    var directionType: DirectionType
+    var directionType: DirectionType,
 ) {
 
     /**
      * The control position.
      */
-    private val mPosition: MutablePosition
+    private val mPosition: MutablePosition = Position()
 
     /**
      * The center of the view.
      */
-    private val mCenter: MutablePosition
+    private val mCenter: MutablePosition = Position()
 
 
     /**
      * Circle representing the area of the view where the control is used.
      */
-    private val viewCircle: Circle
+    private val mViewCircle: Circle = Circle(1f, mCenter)
 
 
     /**
@@ -70,31 +73,181 @@ abstract class Control(
     abstract var drawer: ControlDrawer
 
     init {
-        mCenter = Position()
-        mPosition = Position()
-        viewCircle = Circle(1f, mCenter)
         validateInvalidRadius()
     }
 
-    enum class DefaultType(val id: Int) {
-        CIRCLE(0),
-        ARC(1),
-        CIRCLE_ARC(2);
+    /**
+     * The possibles directions of the control.
+     */
+    enum class Direction {
+        UP,
+        LEFT,
+        RIGHT,
+        DOWN,
+        UP_RIGHT,
+        UP_LEFT,
+        DOWN_RIGHT,
+        DOWN_LEFT,
+        NONE
+    }
+
+    /**
+     * The type that will determine how many directions the control will be able to return.
+     */
+    enum class DirectionType {
+        /**
+         * Determines that the joystick will be able to return all the entries of [Direction] enum.
+         */
+        COMPLETE,
+
+        /**
+         * Determines that the joystick will only be able to return 5 directions.
+         *
+         * [Direction.RIGHT], [Direction.DOWN], [Direction.LEFT], [Direction.UP] and [Direction.NONE]
+         */
+        SIMPLE;
+
+        companion object {
+            /**
+             * @param id The id for the enum value
+             * @return The enum value for the given id. If not found, returns the value [COMPLETE].
+             */
+            @JvmStatic
+            fun fromId(id: Int): DirectionType {
+                return entries.firstOrdinal(id, COMPLETE)
+            }
+        }
+    }
+
+    enum class DrawerType {
+        CIRCLE,
+        ARC,
+        CIRCLE_ARC;
+
         companion object {
             /**
              * @param id The id for the enum value
              * @return The enum value for the given id. If not found, returns the value [CIRCLE].
              */
             @JvmStatic
-            fun fromId(id: Int): Control.DefaultType {
-                for(type in entries)
-                    if(type.id == id)
-                        return type
-
-                return CIRCLE
+            fun fromId(id: Int): DrawerType {
+                return entries.firstOrdinal(id, CIRCLE)
             }
         }
     }
+
+    /**
+     * A builder class to build a drawer from some of the defaults for the control.
+     *
+     * @see [ArcControlDrawer]
+     * @see [CircleControlDrawer]
+     * @see [CircleArcControlDrawer]
+     */
+    class DrawerBuilder {
+        private val colors: ColorsScheme = ColorsScheme(Color.RED, Color.WHITE)
+        private var type: DrawerType = DrawerType.CIRCLE
+
+        // for arc type
+        private var arcStrokeWidth: Float = 13f
+        private var arcSweepAngle: Float = 90f
+
+        // for circle type
+        private var circleRadiusRatio: Float = 0.25f
+
+        companion object {
+            @JvmStatic
+            fun from(drawer: ControlDrawer): DrawerBuilder {
+                return DrawerBuilder().apply {
+                    if (drawer is ColorfulControlDrawer)
+                        colors.set(drawer.colors)
+                    when (drawer) {
+                        is ArcControlDrawer -> {
+                            arcStrokeWidth = drawer.strokeWidth
+                            arcSweepAngle = drawer.sweepAngle
+                        }
+
+                        is CircleControlDrawer -> {
+                            circleRadiusRatio = drawer.ratio
+                        }
+                    }
+
+                }
+            }
+        }
+
+
+        fun primaryColor(@ColorInt color: Int): DrawerBuilder {
+            colors.primary = color
+            return this
+        }
+
+        fun accentColor(@ColorInt color: Int): DrawerBuilder {
+            colors.accent = color
+            return this
+        }
+
+        fun colors(@ColorInt primary: Int, @ColorInt accent: Int): DrawerBuilder {
+            return primaryColor(primary)
+                .accentColor(accent)
+        }
+
+        fun colors(scheme: ColorsScheme): DrawerBuilder {
+            return colors(scheme.primary, scheme.accent)
+        }
+
+        fun arcStrokeWidth(width: Float): DrawerBuilder {
+            arcStrokeWidth = ArcControlDrawer.getStrokeWidth(width)
+            return this
+        }
+
+        fun arcStrokeWidth(width: Double) = arcStrokeWidth(width.toFloat())
+
+        fun arcStrokeWidth(width: Int) = arcStrokeWidth(width.toFloat())
+
+        fun arcSweepAngle(angle: Float): DrawerBuilder {
+            arcSweepAngle = ArcControlDrawer.getSweepAngle(angle)
+            return this
+        }
+
+        fun arcSweepAngle(angle: Double) = arcSweepAngle(angle.toFloat())
+
+        fun arcSweepAngle(angle: Int) = arcSweepAngle(angle.toFloat())
+
+        fun circleRadiusRatio(ratio: Float): DrawerBuilder {
+            circleRadiusRatio = CircleControlDrawer.getRadiusRatio(ratio)
+            return this
+        }
+
+        fun circleRadiusRatio(ratio: Double) = circleRadiusRatio(ratio.toFloat())
+
+        fun type(type: DrawerType): DrawerBuilder {
+            this.type = type
+            return this
+        }
+
+        fun build(): ControlDrawer {
+            return when (type) {
+                DrawerType.ARC -> ArcControlDrawer(
+                    colors,
+                    arcStrokeWidth,
+                    arcSweepAngle
+                )
+
+                DrawerType.CIRCLE_ARC -> CircleArcControlDrawer(
+                    colors,
+                    arcStrokeWidth,
+                    arcSweepAngle,
+                    circleRadiusRatio
+                )
+
+                DrawerType.CIRCLE -> CircleControlDrawer(
+                    colors,
+                    circleRadiusRatio
+                )
+            }
+        }
+    }
+
 
     /**
      * A builder class to build a control for the default ones.
@@ -104,35 +257,26 @@ abstract class Control(
      * @see [CircleArcControl]
      */
     class Builder {
-        private val colors: ColorsScheme = ColorsScheme(Color.RED, Color.WHITE)
-        private var type: Control.DefaultType = Control.DefaultType.CIRCLE
-        private var directionType: JoystickView.DirectionType = JoystickView.DirectionType.COMPLETE
+
+        private var directionType: DirectionType = DirectionType.COMPLETE
         private var invalidRadius: Float = 70f
+        var drawer = DrawerBuilder()
+            private set
 
-        // for arc type
-        private var arcStrokeWidth: Float = 13f
-        private var arcSweepAngle: Float = 90f
+        companion object {
+            @JvmStatic
+            fun from(control: Control): Builder {
+                return Builder().apply {
+                    drawer = DrawerBuilder.from(control.drawer)
+                    directionType = control.directionType
+                    invalidRadius = control.invalidRadius
+                }
+            }
+        }
 
-        // for circle type
-        private var circleRadiusRatio: Float = 0.25f
-
-        fun primaryColor(@ColorInt color: Int): Builder {
-            colors.primary = color
+        fun directionType(type: DirectionType): Builder {
+            this.directionType = type
             return this
-        }
-
-        fun accentColor(@ColorInt color: Int): Builder {
-            colors.accent = color
-            return this
-        }
-
-        fun colors(@ColorInt primary: Int, @ColorInt accent: Int): Builder {
-            return primaryColor(primary)
-                .accentColor(accent)
-        }
-
-        fun colors(scheme: ColorsScheme): Builder {
-            return colors(scheme.primary, scheme.accent)
         }
 
         fun invalidRadius(radius: Float): Builder {
@@ -142,73 +286,18 @@ abstract class Control(
 
         fun invalidRadius(radius: Double): Builder = invalidRadius(radius.toFloat())
 
-        fun arcStrokeWidth(width: Float): Builder {
-            arcStrokeWidth = ArcControlDrawer.getStrokeWidth(width)
-            return this
-        }
-
-        fun arcStrokeWidth(width: Double) = arcStrokeWidth(width.toFloat())
-
-        fun arcStrokeWidth(width: Int) = arcStrokeWidth(width.toFloat())
-
-        fun arcSweepAngle(angle: Float): Builder {
-            arcSweepAngle = ArcControlDrawer.getSweepAngle(angle)
-            return this
-        }
-
-        fun arcSweepAngle(angle: Double) = arcSweepAngle(angle.toFloat())
-
-        fun arcSweepAngle(angle: Int) = arcSweepAngle(angle.toFloat())
-
-        fun circleRadiusRatio(ratio: Float): Builder {
-            circleRadiusRatio = CircleControlDrawer.getRadiusRatio(ratio)
-            return this
-        }
-
-        fun circleRadiusRatio(ratio: Double) = circleRadiusRatio(ratio.toFloat())
-
-        fun type(type: Control.DefaultType): Builder {
-            this.type = type
-            return this
-        }
-
-        fun directionType(type: JoystickView.DirectionType): Builder {
-            this.directionType = type
-            return this
-        }
-
         fun build(): Control {
-            return when (type) {
-                Control.DefaultType.ARC -> ArcControl(
-                    colors,
-                    invalidRadius,
-                    directionType,
-                    arcStrokeWidth,
-                    arcSweepAngle
-                )
-
-                Control.DefaultType.CIRCLE_ARC -> CircleArcControl(
-                    colors,
-                    invalidRadius,
-                    directionType,
-                    arcStrokeWidth,
-                    arcSweepAngle,
-                    circleRadiusRatio
-                )
-
-                Control.DefaultType.CIRCLE -> CircleControl(
-                    colors,
-                    invalidRadius,
-                    directionType,
-                    circleRadiusRatio
-                )
-            }
+            return SimpleControl(
+                drawer.build(),
+                invalidRadius,
+                directionType
+            )
         }
     }
 
     /**
      * Gets the direction to which the control is pointing.
-     * It is based on the [anglePosition] value, but if [distanceFromCenter] is less than [invalidRadius], the
+     * It is based on the [angle] value, but if [distance] is less than [invalidRadius], the
      * direction is considered as [Direction.NONE].
      *
      * @return A [Direction] enum representing the direction.
@@ -221,33 +310,7 @@ abstract class Control(
      */
 
     open val direction: Direction
-        get() {
-        if (distanceFromCenter <= invalidRadius)
-            return Direction.NONE
-
-        val angleDegrees = Math.toDegrees(anglePosition)
-
-        if(directionType == DirectionType.COMPLETE)
-            return when(Plane.quadrantOf(angleDegrees, Plane.MaxQuadrants.EIGHT,true)) {
-                1 -> Direction.RIGHT
-                2 -> Direction.DOWN_RIGHT
-                3 -> Direction.DOWN
-                4 -> Direction.DOWN_LEFT
-                5 -> Direction.LEFT
-                6 -> Direction.UP_LEFT
-                7 -> Direction.UP
-                8 -> Direction.UP_RIGHT
-                else -> Direction.NONE
-            }
-
-        return when(Plane.quadrantOf(angleDegrees, true)) {
-            1 -> Direction.RIGHT
-            2 -> Direction.DOWN
-            3 -> Direction.LEFT
-            4 -> Direction.UP
-            else -> Direction.NONE
-        }
-    }
+        get() = directionFrom(mPosition)
 
     /**
      * Gets the immutable position of control center.
@@ -263,18 +326,11 @@ abstract class Control(
      */
     open val position: ImmutablePosition get() = mPosition.toImmutable()
 
+    open val centeredPosition: ImmutablePosition
+        get() = FixedPosition(deltaX(), deltaY())
 
-    /**
-     * Calculates the distance between current position and center.
-     * @return The calculated distance.
-     */
-    val distanceFromCenter: Float get() = viewCircle.distanceTo(mPosition)
-
-    /**
-     * Calculates the angle (clockwise) formed from the current position and center.
-     * @return A value in the range from 0 to 2PI radians.
-     */
-    val anglePosition: Double get() = viewCircle.angleTo(mPosition)
+    open val ndcPosition: ImmutablePosition
+        get() = FixedPosition(deltaX() / radius, deltaY() / radius)
 
     /**
      * Gets the parametric position of current position in the view circle.
@@ -282,23 +338,35 @@ abstract class Control(
      * @return A new instance of the parametric position.
      */
 
-    val viewParametricPosition: ImmutablePosition get() = viewCircle.parametricPositionOf(anglePosition)
+    open val parametricPosition: ImmutablePosition
+        get() = mViewCircle.parametricPositionOf(angle)
 
+    /**
+     * Calculates the distance between current position and center.
+     * @return The calculated distance.
+     */
+    val distance: Float get() = mViewCircle.distanceTo(mPosition)
+
+    /**
+     * Calculates the angle (clockwise) formed from the current position and center.
+     * @return A value in the range from 0 to 2PI radians.
+     */
+    val angle: Double get() = mViewCircle.angleTo(mPosition)
 
     /**
      * Gets the radius of the view where the control is used.
      */
-    val viewRadius: Double get() = viewCircle.radius
+    val radius: Double get() = mViewCircle.radius
 
     /**
      * Validates the control position values.
      *
-     * @throws InvalidControlPositionException If any of the position coordinates is negative.
+     * @throws LowerNumberException If any of the position coordinates is negative.
      */
-    @Throws(InvalidControlPositionException::class)
+    @Throws(LowerNumberException::class)
     protected fun validatePositionValues() {
-        if(mPosition.x < 0 || mPosition.y < 0)
-            throw InvalidControlPositionException()
+        mPosition.x.requirePositive()
+        mPosition.y.requirePositive()
     }
 
     /**
@@ -308,17 +376,17 @@ abstract class Control(
      */
     @Throws(IllegalArgumentException::class)
     private fun validateInvalidRadius() {
-        if(invalidRadius < 0)
+        if (invalidRadius < 0)
             throw IllegalArgumentException("Invalid radius value must be positive.")
     }
 
     /**
-     * Checks if [distanceFromCenter] is greater than the [viewRadius].
-     * If so, changes the position to the [viewParametricPosition].
+     * Checks if [distance] is greater than the [radius].
+     * If so, changes the position to the [parametricPosition].
      */
     private fun validatePositionLimits() {
-        if (distanceFromCenter > viewRadius)
-            mPosition.set(viewParametricPosition)
+        if (distance > radius)
+            mPosition.set(parametricPosition)
     }
 
     /**
@@ -326,18 +394,19 @@ abstract class Control(
      *
      * It updates the drawer position and center.
      * @param size The size of the view.
-     * @throws InvalidControlPositionException If any of the position coordinates is negative.
+     * @throws LowerNumberException If any of the position coordinates is negative.
      */
-    @Throws(InvalidControlPositionException::class)
-    fun onSizeChanged(size: Size) {
+    @Throws(LowerNumberException::class)
+    open fun onSizeChanged(size: ImmutableSize) {
         size.apply {
             (width.coerceAtMost(height) / 2f).also {
                 mCenter.set(it, it)
-                viewCircle.radius = it.toDouble()
+                mViewCircle.radius = it.toDouble()
                 toCenter()
             }
         }
     }
+
 
     /**
      * Method to draw the control using the [drawer].
@@ -352,9 +421,9 @@ abstract class Control(
      * Sets the current position of the control.
      *
      * @param position The new position to be assigned.
-     * @throws InvalidControlPositionException If any of the position coordinates is negative.
+     * @throws LowerNumberException If any of the position coordinates is negative.
      */
-    @Throws(InvalidControlPositionException::class)
+    @Throws(LowerNumberException::class)
     fun setPosition(position: ImmutablePosition) {
         position.apply {
             setPosition(x, y)
@@ -367,9 +436,9 @@ abstract class Control(
      * @param x The x coordinate to be assigned.
      * @param y The y coordinate to be assigned.
      *
-     * @throws InvalidControlPositionException If any of the position coordinates is negative.
+     * @throws LowerNumberException If any of the position coordinates is negative.
      */
-    @Throws(InvalidControlPositionException::class)
+    @Throws(LowerNumberException::class)
     fun setPosition(x: Float, y: Float) {
         mPosition.set(x, y)
         validatePositionLimits()
@@ -377,10 +446,91 @@ abstract class Control(
     }
 
     /**
-     * Sets the current position to center.
-     * @throws InvalidControlPositionException If any of the position coordinates is negative.
+     * Calculates the direction from the given position to the control center.
+     *
+     * * The directions available depend on the [directionType] and [invalidRadius].
+     *
+     * @param position The position from which the direction will be calculated.
      */
-    @Throws(InvalidControlPositionException::class)
+    fun directionFrom(position: ImmutablePosition): Direction {
+        val distance = mViewCircle.distanceTo(position)
+
+        if (distance <= invalidRadius)
+            return Direction.NONE
+
+        val angleDegrees = Math.toDegrees(angle)
+
+        if (directionType == DirectionType.COMPLETE)
+            return when (Plane.quadrantOf(angleDegrees, Plane.MaxQuadrants.EIGHT, true)) {
+                1 -> Direction.RIGHT
+                2 -> Direction.DOWN_RIGHT
+                3 -> Direction.DOWN
+                4 -> Direction.DOWN_LEFT
+                5 -> Direction.LEFT
+                6 -> Direction.UP_LEFT
+                7 -> Direction.UP
+                8 -> Direction.UP_RIGHT
+                else -> Direction.NONE
+            }
+
+        return when (Plane.quadrantOf(angleDegrees, true)) {
+            1 -> Direction.RIGHT
+            2 -> Direction.DOWN
+            3 -> Direction.LEFT
+            4 -> Direction.UP
+            else -> Direction.NONE
+        }
+    }
+
+    /**
+     * Calculates the position from the given direction.
+     *
+     * @param direction The direction from which the position will be calculated.
+     */
+    fun positionFrom(direction: Direction): ImmutablePosition {
+        val center = center
+        var radius = radius
+
+        return when (direction) {
+            Direction.NONE -> center
+            Direction.UP -> FixedPosition(center.x, center.y - radius)
+            Direction.DOWN -> FixedPosition(center.x, center.y + radius)
+            Direction.LEFT -> FixedPosition(center.x - radius, center.y)
+            Direction.RIGHT -> FixedPosition(center.x + radius, center.y)
+            else -> {
+                radius /= kotlin.math.sqrt(2.0f)
+                when (direction) {
+                    Direction.UP_LEFT -> FixedPosition(
+                        center.x - radius,
+                        center.y - radius
+                    )
+
+                    Direction.UP_RIGHT -> FixedPosition(
+                        center.x + radius,
+                        center.y - radius
+                    )
+
+                    Direction.DOWN_LEFT -> FixedPosition(
+                        center.x - radius,
+                        center.y + radius
+                    )
+
+                    Direction.DOWN_RIGHT -> FixedPosition(
+                        center.x + radius,
+                        center.y + radius
+                    )
+
+                    else -> center
+                }
+            }
+        }
+    }
+
+    /**
+     * Sets the current position to center.
+     * @throws LowerNumberException If any of the position coordinates is negative.
+     */
+    @Throws(LowerNumberException::class)
     fun toCenter() = setPosition(mCenter)
 
     /**
@@ -394,11 +544,11 @@ abstract class Control(
      * Calculates the difference in the x-coordinate between the current position and the center.
      * @return The calculated difference.
      */
-    protected fun deltaX(): Float = mPosition.deltaX(mCenter)
+    fun deltaX(): Float = mPosition.deltaX(mCenter)
 
     /**
      * Calculates the difference in the y-coordinate between the current position and the center.
      * @return The calculated difference.
      */
-    protected fun deltaY(): Float = mPosition.deltaY(mCenter)
+    fun deltaY(): Float = mPosition.deltaY(mCenter)
 }
