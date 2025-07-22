@@ -215,7 +215,9 @@ class JoystickView @JvmOverloads constructor(
          */
         @JvmStatic
         fun getHoldInterval(interval: Long): Long {
-            return interval.coerceAtLeast(HOLD_INTERVAL)
+            return if (interval < 0)
+                HOLD_INTERVAL
+            else interval
         }
 
         /**
@@ -269,8 +271,7 @@ class JoystickView @JvmOverloads constructor(
     /**
      * Unified joystick event listener that handles all movement events.
      */
-    interface MovesListener : MoveStartListener, MoveListener, MoveEndListener {
-    }
+    interface MovesListener : MoveStartListener, MoveListener, MoveEndListener
 
     /**
      * The control movement start listener.
@@ -473,7 +474,7 @@ class JoystickView @JvmOverloads constructor(
     }
 
     /**
-     * Changes the accent colour of the current control's drawer.
+     * Changes the accent color of the current control's drawer.
      *
      * If the current control's drawer is custom (not defined in the package)
      * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
@@ -491,6 +492,20 @@ class JoystickView @JvmOverloads constructor(
      */
     fun setColors(colors: ColorsScheme) {
         colorfulDrawer?.setColors(colors)
+        invalidate()
+    }
+
+    /**
+     * Changes the colors of the current control's drawer.
+     *
+     * If the current control's drawer is custom (not defined in the package)
+     * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
+     */
+    fun setColors(
+        @ColorInt primaryColor: Int,
+        @ColorInt accentColor: Int,
+    ) {
+        colorfulDrawer?.setColors(primaryColor, accentColor)
         invalidate()
     }
 

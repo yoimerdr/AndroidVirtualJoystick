@@ -2,6 +2,7 @@ package com.yoimerdr.android.virtualjoystick.views.handler
 
 import android.view.MotionEvent
 import android.view.View
+import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
 import kotlinx.coroutines.Runnable
 
 /**
@@ -15,11 +16,11 @@ abstract class TouchHoldEventHandler<ViewLike : View>(
     /**
      * The time interval (ms) to consider the [MotionEvent.ACTION_DOWN] as a hold event if a different event has not occurred.
      */
-    var holdInterval: Long,
+    holdInterval: Long,
     /**
      * The time interval (ms) to consider the [MotionEvent.ACTION_MOVE] as a hold event if a different event has not occurred.
      */
-    var activeHoldInterval: Long
+    activeHoldInterval: Long,
 ) {
     /**
      * @param view The view where the handler must be used.
@@ -31,10 +32,20 @@ abstract class TouchHoldEventHandler<ViewLike : View>(
      */
     constructor(view: ViewLike, holdInterval: Long) : this(view, holdInterval, holdInterval)
 
+    var activeHoldInterval: Long = activeHoldInterval.requirePositive()
+        set(value) {
+            field = value.requirePositive()
+        }
+
+    var holdInterval: Long = holdInterval.requirePositive()
+        set(value) {
+            field = value.requirePositive()
+        }
+
     private var isHold = false
 
     private var holdRunnable = Runnable {
-        if(isHold) {
+        if (isHold) {
             touchHold()
             postHoldRunnable()
         }
@@ -117,15 +128,16 @@ abstract class TouchHoldEventHandler<ViewLike : View>(
      *
      */
     open fun onTouchEvent(event: MotionEvent?): Boolean {
-        if(event == null)
+        if (event == null)
             return false
 
-        return when(event.action) {
+        return when (event.action) {
             MotionEvent.ACTION_UP -> {
                 isHold = false
                 removeRunnable()
                 touchUp()
             }
+
             MotionEvent.ACTION_DOWN -> {
                 removeRunnable()
                 isHold = true
@@ -133,12 +145,14 @@ abstract class TouchHoldEventHandler<ViewLike : View>(
                     postHoldRunnable()
                 }
             }
+
             MotionEvent.ACTION_MOVE -> {
                 removeRunnable()
                 touchMove().apply {
                     postActiveHoldRunnable()
                 }
             }
+
             else -> notHandledTouch(event)
         }
     }

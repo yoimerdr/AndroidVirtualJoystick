@@ -26,6 +26,12 @@ fun Int.requirePositive(): Int = greaterThan(-1)
 fun Int.requireNegative(): Int = lowerThan(0)
 
 @Throws(LowerNumberException::class)
+fun Long.requirePositive(): Long = greaterThan(-1)
+
+@Throws(LargeNumberException::class)
+fun Long.requireNegative(): Long = lowerThan(0)
+
+@Throws(LowerNumberException::class)
 fun Float.requirePositive(): Float = greaterThan(-1.0f)
 
 @Throws(LargeNumberException::class)
