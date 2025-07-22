@@ -46,7 +46,7 @@ class JoystickView @JvmOverloads constructor(
     /**
      * The control movement listener.
      */
-    private var listener: MoveListener? = null
+    private var mMoveListener: MoveListener? = null
 
     /**
      * The interval for the joystick listener call when it is hold.
@@ -204,7 +204,7 @@ class JoystickView @JvmOverloads constructor(
 
     companion object {
         /**
-         * The default interval in ms for the joystick [listener] call.
+         * The default interval in ms for the joystick listener call.
          */
         const val HOLD_INTERVAL: Long = 150
 
@@ -238,10 +238,49 @@ class JoystickView @JvmOverloads constructor(
     fun interface MoveListener {
         /**
          * Called when joystick control is moved or held down.
+         *
          * @param direction The control direction
          */
         fun onMove(direction: Control.Direction)
     }
+
+    /**
+     * Joystick control movement start listener.
+     */
+    fun interface MoveStartListener {
+        /**
+         * Called when joystick control movement starts.
+         *
+         * @param direction The starting direction of the control movement.
+         */
+        fun onMoveStart(direction: Control.Direction)
+    }
+
+    /**
+     * Joystick control movement end listener.
+     */
+    fun interface MoveEndListener {
+        /**
+         * Called when joystick control movement ends.
+         */
+        fun onMoveEnd()
+    }
+
+    /**
+     * Unified joystick event listener that handles all movement events.
+     */
+    interface MovesListener : MoveStartListener, MoveListener, MoveEndListener {
+    }
+
+    /**
+     * The control movement start listener.
+     */
+    private var mMoveStartListener: MoveStartListener? = null
+
+    /**
+     * The control movement end listener.
+     */
+    private var mMoveEndListener: MoveEndListener? = null
 
     /**
      * A handler for control holds.
@@ -251,22 +290,21 @@ class JoystickView @JvmOverloads constructor(
         interval: Long,
     ) : TouchHoldEventHandler<JoystickView>(joystick, interval) {
         override fun touchHold() {
-            view.moveListener()
+            view.movement()
         }
 
         override fun touchDown(): Boolean {
-            view.moveListener()
+            view.movementStart()
             return true
         }
 
         override fun touchUp(): Boolean {
-            view.mControl.toCenter()
-            view.moveListener(Control.Direction.NONE)
+            view.movementEnd()
             return true
         }
 
         override fun touchMove(): Boolean {
-            view.moveListener()
+            view.movement()
             return true
         }
 
@@ -302,12 +340,18 @@ class JoystickView @JvmOverloads constructor(
         mControl.onDraw(canvas)
     }
 
-
-    private fun moveListener(direction: Control.Direction) {
-        listener?.onMove(direction)
+    private fun movementStart() {
+        mMoveStartListener?.onMoveStart(mControl.direction)
     }
 
-    private fun moveListener() = moveListener(mControl.direction)
+    private fun movement(direction: Control.Direction = mControl.direction) {
+        mMoveListener?.onMove(direction)
+    }
+
+    private fun movementEnd() {
+        mControl.toCenter()
+        mMoveEndListener?.onMoveEnd()
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -315,16 +359,18 @@ class JoystickView @JvmOverloads constructor(
             return false
 
         val touchPosition = FixedPosition(event.x, event.y)
+
+        // checks outside view events
         if (event.action != MotionEvent.ACTION_MOVE && Plane.distanceBetween(
                 touchPosition,
                 center
             ) > viewRadius
         ) {
             if (!mControl.isInCenter()) {
-                mControl.toCenter()
+                movementEnd()
                 invalidate()
             }
-            return false
+            return true
         }
 
 
@@ -347,9 +393,28 @@ class JoystickView @JvmOverloads constructor(
      * @param listener The new listener.
      */
     fun setMoveListener(listener: MoveListener) {
-        this.listener = listener
+        this.mMoveListener = listener
     }
 
+    /**
+     * Sets the move start listener.
+     */
+    fun setMoveStartListener(listener: MoveStartListener?) {
+        mMoveStartListener = listener
+    }
+
+    /**
+     * Sets the move end listener.
+     */
+    fun setMoveEndListener(listener: MoveEndListener?) {
+        mMoveEndListener = listener
+    }
+
+    fun setMovesListener(listener: MovesListener?) {
+        mMoveStartListener = listener
+        mMoveListener = listener
+        mMoveEndListener = listener
+    }
 
     /**
      * Changes the current interval for the joystick listener call when the control is hold.
@@ -469,22 +534,17 @@ class JoystickView @JvmOverloads constructor(
 
     private fun move(
         position: ImmutablePosition,
-        direction: Control.Direction,
-        keepAlive: Boolean = false,
+        isEnd: Boolean,
     ) {
         mControl.setPosition(position)
-        invalidate()
-        val result = mControl.direction
-        moveListener(
-            if (result != direction)
-                result
-            else direction
-        )
-        if (!keepAlive)
+        if (!isEnd) {
+            movementStart()
             postDelayed(holdInterval) {
                 if (!mControl.isInCenter())
-                    move(mControl.center, Control.Direction.NONE, true)
+                    move(mControl.center, true)
             }
+        } else movementEnd()
+        invalidate()
     }
 
     /**
@@ -493,7 +553,7 @@ class JoystickView @JvmOverloads constructor(
      * @param position The new position of the joystick.
      */
     fun move(position: ImmutablePosition) {
-        move(position, mControl.directionFrom(position))
+        move(position, false)
     }
 
     /**
@@ -512,6 +572,6 @@ class JoystickView @JvmOverloads constructor(
      * @param direction The direction to move the joystick.
      */
     fun move(direction: Control.Direction) {
-        move(mControl.positionFrom(direction), direction)
+        move(mControl.positionFrom(direction))
     }
 }
