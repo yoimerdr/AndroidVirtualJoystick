@@ -7,4 +7,6 @@
     <string name="joystick_primary_color">Primary color</string>
     <string name="joystick_accent_color">Accent color</string>
     <string name="joystick_drawer_type">Drawer type</string>
+    <string name="joystick_bounded">Bounded</string>
+    <string name="joystick_move_action">Start move action</string>
 </resources>

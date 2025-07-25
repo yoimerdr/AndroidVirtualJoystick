@@ -15,6 +15,7 @@ import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.DrawableControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.HighlightControlDrawer
+import com.yoimerdr.android.virtualjoystick.utils.log.Logger
 import com.yoimerdr.android.virtualjoystick.views.JoystickView
 
 class MainActivity : AppCompatActivity() {
@@ -30,8 +31,9 @@ class MainActivity : AppCompatActivity() {
     private val spnDirectionType: Spinner get() = binding.spnDirectionType
     private val spnForceDirection: Spinner get() = binding.spnForceDirection
     private val btnForceDirection: FloatingActionButton get() = binding.btnForceDirection
+    private val spnBounded: Spinner get() = binding.spnBounded
 
-    private var drawable: ControlDrawer? = null
+    private var drawer: ControlDrawer? = null
 
     private val colors = mapOf(
         "Red" to Color.RED,
@@ -52,6 +54,13 @@ class MainActivity : AppCompatActivity() {
         "Complete" to Control.DirectionType.COMPLETE,
         "Simple" to Control.DirectionType.SIMPLE
     )
+
+    private val boundedTypes = mapOf(
+        "True" to true,
+        "False" to false
+    )
+
+    private var bounded = true
 
     private val directions = Control.Direction.entries
         .associateBy { it.name }
@@ -79,6 +88,7 @@ class MainActivity : AppCompatActivity() {
         spnDrawerType.adapter = simpleArrayAdapter(drawers.keys.toList())
         spnDirectionType.adapter = simpleArrayAdapter(directionTypes.keys.toList())
         spnForceDirection.adapter = simpleArrayAdapter(directions.keys.toList())
+        spnBounded.adapter = simpleArrayAdapter(boundedTypes.keys.toList())
         directionFormat = getString(R.string.joystick_direction)
         positionFormat = getString(R.string.joystick_position)
     }
@@ -94,7 +104,7 @@ class MainActivity : AppCompatActivity() {
                 val selected = parent?.getItemAtPosition(position) ?: return
                 val color = colors[selected] ?: return
 
-                val drawer = drawable
+                val drawer = drawer
                 if (drawer != null && drawer is DrawableControlDrawer) {
                     if (drawer.drawable is VectorDrawable)
                         drawer.drawable = drawer.drawable.apply {
@@ -126,7 +136,7 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        spnDrawerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        spnBounded.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -134,44 +144,30 @@ class MainActivity : AppCompatActivity() {
                 id: Long,
             ) {
                 val selected = parent?.getItemAtPosition(position) ?: return
-                val typeId = drawers[selected] ?: return
+                val bounded = boundedTypes[selected] ?: true
 
-                if (typeId < 0) {
-                    val color = colors[spnPrimaryColor.selectedItem] ?: return
-                    drawable = when (typeId) {
-                        -1 -> HighlightControlDrawer(color, 0.48f)
-                        -2 -> {
-                            val drawable = DrawableControlDrawer.getDrawable(
-                                this@MainActivity,
-                                R.drawable.baseline_adb_24
-                            )
-                            DrawableControlDrawer(drawable, color)
-                        }
-
-                        else -> null
-                    }
-
-                    if (drawable != null)
-                        vJoystick.setControlDrawer(drawable!!)
-
-                } else {
-                    val type = Control.DrawerType.fromId(typeId)
-
-                    drawable = Control
-                        .DrawerBuilder()
-                        .primaryColor(colors[spnPrimaryColor.selectedItem] ?: Color.RED)
-                        .accentColor(colors[spnAccentColor.selectedItem] ?: Color.WHITE)
-                        .type(type)
-                        .build()
-
-                    vJoystick.background = JoystickView.getBackgroundResOf(type)
-                        .let {
-                            DrawableControlDrawer.getDrawable(this@MainActivity, it)
-                        }
-
-                    vJoystick.setControlDrawer(drawable!!)
-
+                if (bounded != this@MainActivity.bounded) {
+                    this@MainActivity.bounded = bounded
+                    updateDrawer(spnDrawerType.selectedItem)
                 }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                if (!bounded) {
+                    bounded = true
+                    updateDrawer(spnDrawerType.selectedItem)
+                }
+            }
+        }
+
+        spnDrawerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long,
+            ) {
+                updateDrawer(parent?.getItemAtPosition(position) ?: return)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -217,14 +213,76 @@ class MainActivity : AppCompatActivity() {
         }
 
         vJoystick.apply {
-            setMoveListener {
-                tvDirection.text = directionFormat.format(it)
-
-                val position = position
-                val ndcPosition = ndcPosition
-                tvPosition.text = positionFormat.format(position.x, position.y)
-                tvNdcPosition.text = positionFormat.format(ndcPosition.x, ndcPosition.y)
+            setMoveStartListener {
+                onMovement(it)
+                Logger.log("START: $it")
             }
+
+            setMoveEndListener {
+                onMovement(Control.Direction.NONE)
+                Logger.log("END")
+            }
+
+            setMoveListener {
+                onMovement(it)
+                Logger.log("MOVE: $it")
+            }
+        }
+    }
+
+    private fun updateDrawer(drawerSelected: Any) {
+        val typeId = drawers[drawerSelected] ?: return
+        if (typeId < 0) {
+            val color = colors[spnPrimaryColor.selectedItem] ?: return
+            drawer = when (typeId) {
+                -1 -> HighlightControlDrawer(color, 0.48f)
+                -2 -> {
+
+                    DrawableControlDrawer.fromDrawableRes(
+                        this@MainActivity,
+                        R.drawable.baseline_adb_24,
+                        color,
+                        bounded
+                    )
+                }
+
+                else -> null
+            }
+
+            if (drawer != null)
+                vJoystick.setControlDrawer(drawer!!)
+
+        } else {
+            val builder = if (drawer == null)
+                Control.DrawerBuilder()
+            else Control.DrawerBuilder.from(drawer!!)
+
+            drawer = builder
+                .colors(
+                    colors[spnPrimaryColor.selectedItem] ?: Color.RED,
+                    colors[spnAccentColor.selectedItem] ?: Color.BLUE
+                )
+                .type(
+                    Control.DrawerType
+                        .fromId(typeId)
+                )
+                .bounded(bounded)
+                .build()
+
+            vJoystick.setControlDrawer(
+                drawer!!
+            )
+        }
+    }
+
+    private fun onMovement(direction: Control.Direction) {
+        tvDirection.text = directionFormat.format(direction)
+
+        vJoystick.apply {
+            val position = position
+            val ndcPosition = ndcPosition
+            tvPosition.text = positionFormat.format(position.x, position.y)
+            tvNdcPosition.text = positionFormat.format(ndcPosition.x, ndcPosition.y)
         }
     }
 
