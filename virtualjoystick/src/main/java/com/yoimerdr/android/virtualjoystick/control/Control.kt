@@ -2,6 +2,7 @@ package com.yoimerdr.android.virtualjoystick.control
 
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Rect
 import androidx.annotation.ColorInt
 import com.yoimerdr.android.virtualjoystick.control.Control.Direction
 import com.yoimerdr.android.virtualjoystick.control.drawer.ArcControlDrawer
@@ -20,6 +21,7 @@ import com.yoimerdr.android.virtualjoystick.geometry.size.ImmutableSize
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.extensions.firstOrdinal
 import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
+import kotlin.math.min
 
 /**
  * Represents a virtual joystick control.
@@ -407,9 +409,19 @@ abstract class Control(
      */
     @Throws(LowerNumberException::class)
     open fun onSizeChanged(size: ImmutableSize) {
-        size.apply {
-            (width.coerceAtMost(height) / 2f).also {
-                mCenter.set(it, it)
+        onSizeChanged(
+            Rect(
+                0, 0,
+                size.width,
+                size.height
+            )
+        )
+    }
+
+    open fun onSizeChanged(rect: Rect) {
+        rect.apply {
+            (min(width(), height()) / 2f).also {
+                mCenter.set(centerX().toFloat(), centerY().toFloat())
                 mViewCircle.radius = it.toDouble()
                 toCenter()
             }

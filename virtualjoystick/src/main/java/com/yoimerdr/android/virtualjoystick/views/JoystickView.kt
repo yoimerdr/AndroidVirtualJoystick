@@ -3,6 +3,7 @@ package com.yoimerdr.android.virtualjoystick.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -19,13 +20,12 @@ import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
 import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.Plane
-import com.yoimerdr.android.virtualjoystick.geometry.size.ImmutableSize
-import com.yoimerdr.android.virtualjoystick.geometry.size.Size
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.log.Logger
 import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.postDelayed
+import kotlin.math.min
 
 /**
  * A view representing a virtual joystick.
@@ -36,12 +36,15 @@ class JoystickView @JvmOverloads constructor(
     defaultStyle: Int = 0,
 ) : View(context, attrs, defaultStyle) {
 
-    /**
-     * The [Size] representation of the view size.
-     */
-    private val viewSize: ImmutableSize get() = Size(width, height)
+    private val viewBounds: Rect
+        get() = Rect(
+            paddingLeft,
+            paddingTop,
+            width - paddingRight,
+            height - paddingBottom
+        )
 
-    private val viewRadius: Double get() = viewSize.width / 2.0
+    private val viewRadius: Double get() = viewBounds.width() / 2.0
 
     /**
      * The control movement listener.
@@ -200,7 +203,6 @@ class JoystickView @JvmOverloads constructor(
         } catch (_: Exception) {
             getCompatDrawable(getBackgroundResOf(controlType))
         }
-
     }
 
     /**
@@ -323,7 +325,12 @@ class JoystickView @JvmOverloads constructor(
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        mControl.onSizeChanged(viewSize)
+        viewBounds.let { bounds ->
+            mControl.onSizeChanged(bounds)
+            background?.let {
+                it.bounds = bounds
+            }
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -334,13 +341,22 @@ class JoystickView @JvmOverloads constructor(
         var side = resources.getDimensionPixelSize(R.dimen.width)
 
         if (arrayOf(widthMode, heightMode).any { it == MeasureSpec.EXACTLY }) {
-            val size = MeasureSpec.getSize(widthMeasureSpec)
-                .coerceAtMost(MeasureSpec.getSize(heightMeasureSpec))
+            val size = min(
+                MeasureSpec.getSize(widthMeasureSpec),
+                MeasureSpec.getSize(heightMeasureSpec)
+            )
             if (size > 0)
                 side = size
         }
 
         setMeasuredDimension(side, side)
+    }
+
+    override fun draw(canvas: Canvas) {
+        background?.let {
+            it.bounds = viewBounds
+        }
+        super.draw(canvas)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -545,9 +561,9 @@ class JoystickView @JvmOverloads constructor(
     @Throws(LowerNumberException::class)
     fun setControl(control: Control) {
         mControl = control.apply {
-            val size = viewSize
-            if (!size.isEmpty()) {
-                onSizeChanged(size)
+            val bounds = viewBounds
+            if (!bounds.isEmpty) {
+                onSizeChanged(bounds)
                 setPosition(mControl.position)
                 invalidate()
             }
