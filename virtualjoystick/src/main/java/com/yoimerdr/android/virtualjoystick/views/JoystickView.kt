@@ -61,7 +61,7 @@ class JoystickView @JvmOverloads constructor(
          */
         set(interval) {
             field = getHoldInterval(interval)
-            touchHandler.apply {
+            mTouchHandler.apply {
                 holdInterval = field
                 activeHoldInterval = field
             }
@@ -70,7 +70,7 @@ class JoystickView @JvmOverloads constructor(
     /**
      * The control holds handler.
      */
-    private val touchHandler: JoystickTouchHandler = JoystickTouchHandler(this, holdInterval)
+    private val mTouchHandler: JoystickTouchHandler = JoystickTouchHandler(this, holdInterval)
 
 
     private var mControl: Control
@@ -391,6 +391,7 @@ class JoystickView @JvmOverloads constructor(
             ) > viewRadius
         ) {
             if (!mControl.isInCenter()) {
+                mTouchHandler.cancelHold()
                 movementEnd()
                 invalidate()
             }
@@ -405,7 +406,7 @@ class JoystickView @JvmOverloads constructor(
             return false
         }
 
-        return touchHandler.onTouchEvent(event).let {
+        return mTouchHandler.onTouchEvent(event).let {
             invalidate()
             it
         }

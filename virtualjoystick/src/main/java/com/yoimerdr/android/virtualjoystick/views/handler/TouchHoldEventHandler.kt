@@ -121,6 +121,11 @@ abstract class TouchHoldEventHandler<ViewLike : View>(
      */
     protected abstract fun notHandledTouch(event: MotionEvent): Boolean
 
+    fun cancelHold() {
+        isHold = false
+        removeRunnable()
+    }
+
     /**
      * The touch event handler.
      *
@@ -133,8 +138,7 @@ abstract class TouchHoldEventHandler<ViewLike : View>(
 
         return when (event.action) {
             MotionEvent.ACTION_UP -> {
-                isHold = false
-                removeRunnable()
+                cancelHold()
                 touchUp()
             }
 
