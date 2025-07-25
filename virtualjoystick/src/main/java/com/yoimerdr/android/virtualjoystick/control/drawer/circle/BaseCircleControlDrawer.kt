@@ -1,65 +1,17 @@
-package com.yoimerdr.android.virtualjoystick.control.drawer
+package com.yoimerdr.android.virtualjoystick.control.drawer.circle
 
 import android.graphics.Canvas
 import android.graphics.RadialGradient
 import android.graphics.Shader
-import androidx.annotation.ColorInt
-import androidx.annotation.FloatRange
 import com.yoimerdr.android.virtualjoystick.control.Control
+import com.yoimerdr.android.virtualjoystick.control.drawer.ColorfulControlDrawer
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
-/**
- * A [ControlDrawer] that draws the given circle.
- */
-open class CircleControlDrawer(
-    /**
-     * The circle drawer properties.
-     */
-    private val properties: CircleProperties,
+abstract class BaseCircleControlDrawer protected constructor(
+    private val properties: BasicCircleProperties,
 ) : ColorfulControlDrawer(properties) {
-
-    /**
-     * @param colors The colors for the drawer.
-     * @param ratio The ratio value for the circle radius length.
-     */
-    @JvmOverloads
-    constructor(
-        colors: ColorsScheme,
-        ratio: Float,
-        isBounded: Boolean = true,
-    ) : this(CircleProperties(colors, ratio, isBounded))
-
-    /**
-     * @param color The unique initial color for the drawer.
-     * @param ratio The ratio value for the circle radius length.
-     */
-    @JvmOverloads
-    constructor(
-        @ColorInt color: Int,
-        ratio: Float,
-        isBounded: Boolean = true,
-    ) : this(ColorsScheme(color), ratio, isBounded)
-
-    init {
-        properties.apply {
-            ratio = getRadiusRatio(ratio)
-        }
-    }
-
-    var ratio: Float
-        /**
-         * Gets the circle radius ratio.
-         */
-        get() = properties.ratio
-        /**
-         * Sets the circle radius ratio.
-         * @param ratio The new circle radius ratio. Must be a value in the range from [MIN_RADIUS_RATIO] to [MAX_RADIUS_RATIO]
-         */
-        set(ratio) {
-            properties.ratio = getRadiusRatio(ratio)
-        }
 
     var isBounded: Boolean
         /**
@@ -74,36 +26,10 @@ open class CircleControlDrawer(
             properties.isBounded = isBounded
         }
 
-    open class CircleProperties @JvmOverloads constructor(
+    open class BasicCircleProperties(
         colors: ColorsScheme,
-        var ratio: Float,
-        var isBounded: Boolean = true,
+        var isBounded: Boolean,
     ) : ColorfulProperties(colors)
-
-    companion object {
-        /**
-         * The minimum valid radius ratio value.
-         */
-        const val MIN_RADIUS_RATIO = 0.1f
-
-        /**
-         * The maximum valid radius ratio value.
-         */
-        const val MAX_RADIUS_RATIO = 0.80f
-
-        /**
-         * Checks if the [ratio] value meets the valid range.
-         *
-         * @param ratio The ratio value.
-         *
-         * @return A valid radius ratio in the range [MIN_RADIUS_RATIO] to [MAX_RADIUS_RATIO]
-         */
-        @JvmStatic
-        @FloatRange(from = MIN_RADIUS_RATIO.toDouble(), to = MAX_RADIUS_RATIO.toDouble())
-        fun getRadiusRatio(ratio: Float): Float {
-            return ratio.coerceIn(MIN_RADIUS_RATIO, MAX_RADIUS_RATIO)
-        }
-    }
 
     /**
      * The [Shader] for the drawer paint.
@@ -125,7 +51,7 @@ open class CircleControlDrawer(
      * Gets the circle radius.
      * @param control The [Control] from where the drawer is used.
      */
-    protected open fun getCircleRadius(control: Control): Double = control.radius * ratio
+    protected abstract fun getCircleRadius(control: Control): Double
 
     /**
      * Gets the maximum distance to where the center position of the circle can be.
