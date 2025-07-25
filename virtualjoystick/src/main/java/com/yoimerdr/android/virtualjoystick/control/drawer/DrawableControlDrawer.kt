@@ -27,7 +27,7 @@ open class DrawableControlDrawer(
     /**
      * The drawable drawer properties.
      */
-    private val properties: DrawableProperties
+    private val properties: DrawableProperties,
 ) : ColorfulControlDrawer(properties) {
 
 
@@ -36,11 +36,17 @@ open class DrawableControlDrawer(
      * @param scale The scale ratio to scale the dimensions of the [drawable].
      */
     @JvmOverloads
-    constructor(drawable: Drawable, scale: Float, @ColorInt color: Int = Color.TRANSPARENT) : this(
+    constructor(
+        drawable: Drawable,
+        scale: Float,
+        @ColorInt color: Int = Color.TRANSPARENT,
+        isBounded: Boolean = true,
+    ) : this(
         DrawableProperties(
             drawable,
             scale,
             color,
+            isBounded
         )
     )
 
@@ -49,7 +55,16 @@ open class DrawableControlDrawer(
      * @param drawable The drawable resource to be drawn.
      */
     @JvmOverloads
-    constructor(drawable: Drawable, @ColorInt color: Int = Color.TRANSPARENT) : this(drawable, 1f, color)
+    constructor(
+        drawable: Drawable,
+        @ColorInt color: Int = Color.TRANSPARENT,
+        isBounded: Boolean = true,
+    ) : this(
+        drawable,
+        1f,
+        color,
+        isBounded
+    )
 
     init {
         properties.apply {
@@ -59,6 +74,18 @@ open class DrawableControlDrawer(
         }
     }
 
+    var isBounded: Boolean
+        /**
+         * Gets whether the circle is bounded to the control radius.
+         */
+        get() = properties.isBounded
+        /**
+         * Sets whether the circle is bounded to the control radius.
+         * @param isBounded The new value for the bounded state.
+         */
+        set(isBounded) {
+            properties.isBounded = isBounded
+        }
 
     open var drawable: Drawable
         /**
@@ -128,7 +155,8 @@ open class DrawableControlDrawer(
     open class DrawableProperties @JvmOverloads constructor(
         var drawable: Drawable,
         var scale: Float,
-        @ColorInt color: Int = Color.TRANSPARENT
+        @ColorInt color: Int = Color.TRANSPARENT,
+        var isBounded: Boolean = true,
     ) : ColorfulProperties(ColorsScheme(color, Color.TRANSPARENT))
 
     companion object {
@@ -157,31 +185,16 @@ open class DrawableControlDrawer(
          * @throws NotFoundException If doesn't exist a drawable for the given id or the [scale] is not positive.
          */
         @JvmStatic
+        @JvmOverloads
         @Throws(NotFoundException::class)
         fun fromDrawableRes(
             context: Context,
             @DrawableRes id: Int,
             scale: Float,
-            @ColorInt color: Int,
+            @ColorInt color: Int = Color.TRANSPARENT,
+            isBounded: Boolean = true,
         ): DrawableControlDrawer {
-            return DrawableControlDrawer(getDrawable(context, id), scale, color)
-        }
-
-        /**
-         * Instance a [DrawableControlDrawer] from context and a [DrawableRes] id.
-         * @param context The current activity or view context.
-         * @param id The drawable resource id.
-         * @param scale The scale ratio to scale the drawable. Must be a value greater than zero.
-         * @throws NotFoundException If doesn't exist a drawable for the given id or the [scale] is not positive.
-         */
-        @JvmStatic
-        @Throws(NotFoundException::class)
-        fun fromDrawableRes(
-            context: Context,
-            @DrawableRes id: Int,
-            scale: Float
-        ): DrawableControlDrawer {
-            return fromDrawableRes(context, id, scale, Color.TRANSPARENT)
+            return DrawableControlDrawer(getDrawable(context, id), scale, color, isBounded)
         }
 
         /**
@@ -191,26 +204,17 @@ open class DrawableControlDrawer(
          * @throws NotFoundException If doesn't exist a drawable for the given id.
          */
         @JvmStatic
+        @JvmOverloads
         @Throws(NotFoundException::class)
         fun fromDrawableRes(
             context: Context,
             @DrawableRes id: Int,
-            @ColorInt color: Int,
+            @ColorInt color: Int = Color.TRANSPARENT,
+            isBounded: Boolean = true,
         ): DrawableControlDrawer {
-            return fromDrawableRes(context, id, 1f, color)
+            return fromDrawableRes(context, id, 1f, color, isBounded)
         }
 
-        /**
-         * Instance a [DrawableControlDrawer] from context and a [DrawableRes] id.
-         * @param context The current activity or view context.
-         * @param id The drawable resource id.
-         * @throws NotFoundException if doesn't exist a drawable for the given id.
-         */
-        @JvmStatic
-        @Throws(NotFoundException::class)
-        fun fromDrawableRes(context: Context, @DrawableRes id: Int): DrawableControlDrawer {
-            return fromDrawableRes(context, id, Color.TRANSPARENT)
-        }
     }
 
     /**
@@ -260,13 +264,19 @@ open class DrawableControlDrawer(
         mBitmap = drawable.toBitmap(width.toInt(), height.toInt())
     }
 
+    protected open fun getMaxRadius(control: Control): Double {
+        return if (isBounded)
+            control.radius - maxOf(halfWidth, halfHeight)
+        else control.radius
+    }
+
     /**
      * Gets the current position where the control is located
      * and that the drawer will take as center to draw the drawable.
      * @param control The [Control] from where the drawer is used.
      */
     protected open fun getPosition(control: Control): ImmutablePosition {
-        val max = control.radius - maxOf(halfWidth, halfHeight)
+        val max = getMaxRadius(control)
         return if (max <= 0) {
             Logger.errorFromClass(
                 this,

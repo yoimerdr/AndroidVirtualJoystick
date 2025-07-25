@@ -10,7 +10,10 @@ import com.yoimerdr.android.virtualjoystick.control.drawer.arc.ArcControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.arc.RatioCircleArcControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.ColorfulControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.DrawableControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.arc.BaseCircleArcControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.arc.RadiusCircleArcControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.circle.BaseCircleControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.circle.RadiusCircleControlDrawer
 import com.yoimerdr.android.virtualjoystick.control.drawer.circle.RatioCircleControlDrawer
 import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
@@ -168,6 +171,13 @@ abstract class Control(
                 return DrawerBuilder().apply {
                     if (drawer is ColorfulControlDrawer)
                         colors.set(drawer.colors)
+
+                    when (drawer) {
+                        is BaseCircleArcControlDrawer -> isBounded = drawer.isBounded
+                        is BaseCircleControlDrawer -> isBounded = drawer.isBounded
+                        is DrawableControlDrawer -> isBounded = drawer.isBounded
+                    }
+
                     when (drawer) {
                         is ArcControlDrawer -> {
                             arcStrokeWidth = drawer.strokeWidth
