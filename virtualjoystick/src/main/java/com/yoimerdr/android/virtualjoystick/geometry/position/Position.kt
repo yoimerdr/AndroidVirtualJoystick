@@ -3,7 +3,7 @@ package com.yoimerdr.android.virtualjoystick.geometry.position
 class Position(
     override var x: Float,
     override var y: Float,
-) : FixedPosition(x, y), MutablePosition {
+) : PartialPosition(), MutablePosition {
 
     constructor() : this(0.0f, 0.0f)
 

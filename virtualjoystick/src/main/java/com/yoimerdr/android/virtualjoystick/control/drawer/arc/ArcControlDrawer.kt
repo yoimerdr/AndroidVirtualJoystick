@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.control.drawer
+package com.yoimerdr.android.virtualjoystick.control.drawer.arc
 
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -15,6 +15,8 @@ import com.yoimerdr.android.virtualjoystick.geometry.position.Position
 import com.yoimerdr.android.virtualjoystick.geometry.factory.RectFFactory
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import androidx.core.graphics.withSave
+import com.yoimerdr.android.virtualjoystick.control.drawer.ColorfulControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
 
 /**
  * A [ControlDrawer] that draws an arc.

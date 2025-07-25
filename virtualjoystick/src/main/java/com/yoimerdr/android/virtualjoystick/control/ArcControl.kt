@@ -1,6 +1,6 @@
 package com.yoimerdr.android.virtualjoystick.control
 
-import com.yoimerdr.android.virtualjoystick.control.drawer.ArcControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.arc.ArcControlDrawer
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**

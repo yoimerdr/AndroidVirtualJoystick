@@ -1,22 +1,24 @@
-package com.yoimerdr.android.virtualjoystick.control.drawer
+package com.yoimerdr.android.virtualjoystick.control.drawer.arc
 
-import android.graphics.Canvas
 import androidx.annotation.ColorInt
+import androidx.annotation.FloatRange
 import com.yoimerdr.android.virtualjoystick.control.Control
-import com.yoimerdr.android.virtualjoystick.control.drawer.CircleControlDrawer.CircleProperties
-import com.yoimerdr.android.virtualjoystick.control.drawer.CircleControlDrawer.Companion.MAX_RADIUS_RATIO
-import com.yoimerdr.android.virtualjoystick.control.drawer.CircleControlDrawer.Companion.MIN_RADIUS_RATIO
+import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.circle.RatioCircleControlDrawer
+import com.yoimerdr.android.virtualjoystick.control.drawer.circle.RatioCircleControlDrawer.RatioCircleProperties
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
  * A [ControlDrawer] that draws a circle accompanied by an arc.
+ *
+ * The circle radius is based on the ratio of the control radius.
  */
-open class CircleArcControlDrawer(
+open class RatioCircleArcControlDrawer(
     /**
      * The drawer properties.
      */
-    private val properties: CircleArcProperties,
-) : ArcControlDrawer(properties) {
+    private val properties: RatioCircleArcProperties,
+) : BaseCircleArcControlDrawer(properties) {
 
     /**
      * @param colors The colors for the drawer.
@@ -32,11 +34,11 @@ open class CircleArcControlDrawer(
         ratio: Float,
         isBounded: Boolean = true,
     ) : this(
-        CircleArcProperties(
+        RatioCircleArcProperties(
             colors,
             strokeWidth,
             sweepAngle,
-            CircleProperties(colors, ratio),
+            RatioCircleProperties(colors, ratio),
             isBounded
         )
     )
@@ -58,17 +60,27 @@ open class CircleArcControlDrawer(
         /**
          * Gets the circle radius ratio.
          */
+        @FloatRange(
+            from = RatioCircleControlDrawer.MIN_RADIUS_RATIO.toDouble(),
+            to = RatioCircleControlDrawer.MAX_RADIUS_RATIO.toDouble()
+        )
         get() = properties.circleProperties.ratio
         /**
          * Sets the circle radius ratio.
-         * @param ratio The new circle radius ratio. Must be a value in the range from [MIN_RADIUS_RATIO] to [MAX_RADIUS_RATIO]
+         * @param ratio The new circle radius ratio.
          */
-        set(ratio) {
-            properties.circleProperties.ratio = CircleControlDrawer.getRadiusRatio(ratio)
+        set(
+            @FloatRange(
+                from = RatioCircleControlDrawer.MIN_RADIUS_RATIO.toDouble(),
+                to = RatioCircleControlDrawer.MAX_RADIUS_RATIO.toDouble()
+            )
+            ratio,
+        ) {
+            properties.circleProperties.ratio = RatioCircleControlDrawer.getRadiusRatio(ratio)
         }
 
-    protected open class CircleDrawer(private val properties: CircleArcProperties) :
-        CircleControlDrawer(properties.circleProperties) {
+    protected open class CircleDrawer(private val properties: RatioCircleArcProperties) :
+        RatioCircleControlDrawer(properties.circleProperties) {
         override fun getMaxDistance(control: Control): Double {
             val distance = super.getMaxDistance(control)
             return if (properties.isBounded)
@@ -77,31 +89,15 @@ open class CircleArcControlDrawer(
         }
     }
 
-    /**
-     * The circle drawer.
-     */
-    protected open val circleDrawer: ControlDrawer = CircleDrawer(properties)
+    override val circleDrawer: ControlDrawer = CircleDrawer(properties)
 
-    open class CircleArcProperties @JvmOverloads constructor(
+    open class RatioCircleArcProperties @JvmOverloads constructor(
         colors: ColorsScheme,
         strokeWidth: Float,
         sweepAngle: Float,
-        val circleProperties: CircleProperties,
+        val circleProperties: RatioCircleProperties,
         isBounded: Boolean = true,
     ) : ArcProperties(colors, strokeWidth, sweepAngle, isBounded)
 
-
-    override fun getDistance(control: Control): Double {
-        val max = super.getDistance(control)
-
-        return (control.distance + (control.radius * ratio))
-            .coerceAtMost(max)
-    }
-
-    override fun draw(canvas: Canvas, control: Control) {
-        if (!control.isInCenter())
-            drawShapes(canvas, control)
-
-        circleDrawer.draw(canvas, control)
-    }
+    override fun getCircleRadius(control: Control): Double = control.radius * ratio
 }
