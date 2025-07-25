@@ -24,17 +24,20 @@ open class CircleArcControlDrawer(
      * @param sweepAngle The arc sweep angle.
      * @param ratio The ratio value for the circle radius length.
      */
+    @JvmOverloads
     constructor(
         colors: ColorsScheme,
         strokeWidth: Float,
         sweepAngle: Float,
-        ratio: Float
+        ratio: Float,
+        isBounded: Boolean = true,
     ) : this(
         CircleArcProperties(
             colors,
             strokeWidth,
             sweepAngle,
-            CircleProperties(colors, ratio)
+            CircleProperties(colors, ratio),
+            isBounded
         )
     )
 
@@ -48,7 +51,7 @@ open class CircleArcControlDrawer(
         @ColorInt color: Int,
         strokeWidth: Float,
         sweepAngle: Float,
-        ratio: Float
+        ratio: Float,
     ) : this(ColorsScheme(color), strokeWidth, sweepAngle, ratio)
 
     var ratio: Float
@@ -67,7 +70,10 @@ open class CircleArcControlDrawer(
     protected open class CircleDrawer(private val properties: CircleArcProperties) :
         CircleControlDrawer(properties.circleProperties) {
         override fun getMaxDistance(control: Control): Double {
-            return super.getMaxDistance(control) - properties.strokeWidth * 2
+            val distance = super.getMaxDistance(control)
+            return if (properties.isBounded)
+                distance - properties.strokeWidth * 2
+            else distance
         }
     }
 
@@ -76,12 +82,13 @@ open class CircleArcControlDrawer(
      */
     protected open val circleDrawer: ControlDrawer = CircleDrawer(properties)
 
-    open class CircleArcProperties(
+    open class CircleArcProperties @JvmOverloads constructor(
         colors: ColorsScheme,
         strokeWidth: Float,
         sweepAngle: Float,
-        val circleProperties: CircleProperties
-    ) : ArcProperties(colors, strokeWidth, sweepAngle)
+        val circleProperties: CircleProperties,
+        isBounded: Boolean = true,
+    ) : ArcProperties(colors, strokeWidth, sweepAngle, isBounded)
 
 
     override fun getDistance(control: Control): Double {

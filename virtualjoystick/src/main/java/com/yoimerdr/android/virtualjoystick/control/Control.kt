@@ -146,6 +146,7 @@ abstract class Control(
     class DrawerBuilder {
         private val colors: ColorsScheme = ColorsScheme(Color.RED, Color.WHITE)
         private var type: DrawerType = DrawerType.CIRCLE
+        private var isBounded: Boolean = true
 
         // for arc type
         private var arcStrokeWidth: Float = 13f
@@ -225,24 +226,32 @@ abstract class Control(
             return this
         }
 
+        fun bounded(bounded: Boolean): DrawerBuilder {
+            isBounded = bounded
+            return this
+        }
+
         fun build(): ControlDrawer {
             return when (type) {
                 DrawerType.ARC -> ArcControlDrawer(
                     colors,
                     arcStrokeWidth,
-                    arcSweepAngle
+                    arcSweepAngle,
+                    isBounded
                 )
 
                 DrawerType.CIRCLE_ARC -> CircleArcControlDrawer(
                     colors,
                     arcStrokeWidth,
                     arcSweepAngle,
-                    circleRadiusRatio
+                    circleRadiusRatio,
+                    isBounded
                 )
 
                 DrawerType.CIRCLE -> CircleControlDrawer(
                     colors,
-                    circleRadiusRatio
+                    circleRadiusRatio,
+                    isBounded
                 )
             }
         }

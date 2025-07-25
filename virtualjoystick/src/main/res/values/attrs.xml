@@ -16,6 +16,7 @@
 
         <attr name="controlDrawer_primaryColor" format="color" />
         <attr name="controlDrawer_accentColor" format="color" />
+        <attr name="controlDrawer_bounded" format="boolean" />
 
         <attr name="arcControlDrawer_sweepAngle" format="float" />
         <attr name="arcControlDrawer_strokeWidth" format="float" />

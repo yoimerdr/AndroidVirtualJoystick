@@ -17,20 +17,30 @@ open class CircleControlDrawer(
     /**
      * The circle drawer properties.
      */
-    private val properties: CircleProperties
+    private val properties: CircleProperties,
 ) : ColorfulControlDrawer(properties) {
 
     /**
      * @param colors The colors for the drawer.
      * @param ratio The ratio value for the circle radius length.
      */
-    constructor(colors: ColorsScheme, ratio: Float) : this(CircleProperties(colors, ratio))
+    @JvmOverloads
+    constructor(
+        colors: ColorsScheme,
+        ratio: Float,
+        isBounded: Boolean = true,
+    ) : this(CircleProperties(colors, ratio, isBounded))
 
     /**
      * @param color The unique initial color for the drawer.
      * @param ratio The ratio value for the circle radius length.
      */
-    constructor(@ColorInt color: Int, ratio: Float) : this(ColorsScheme(color), ratio)
+    @JvmOverloads
+    constructor(
+        @ColorInt color: Int,
+        ratio: Float,
+        isBounded: Boolean = true,
+    ) : this(ColorsScheme(color), ratio, isBounded)
 
     init {
         properties.apply {
@@ -51,7 +61,24 @@ open class CircleControlDrawer(
             properties.ratio = getRadiusRatio(ratio)
         }
 
-    open class CircleProperties(colors: ColorsScheme, var ratio: Float) : ColorfulProperties(colors)
+    var isBounded: Boolean
+        /**
+         * Gets whether the circle is bounded by the control radius.
+         */
+        get() = properties.isBounded
+        /**
+         * Sets whether the circle is bounded by the control radius.
+         * @param isBounded The new value for the bounded state.
+         */
+        set(isBounded) {
+            properties.isBounded = isBounded
+        }
+
+    open class CircleProperties @JvmOverloads constructor(
+        colors: ColorsScheme,
+        var ratio: Float,
+        var isBounded: Boolean = true,
+    ) : ColorfulProperties(colors)
 
     companion object {
         /**
@@ -103,7 +130,11 @@ open class CircleControlDrawer(
     /**
      * Gets the maximum distance to where the center position of the circle can be.
      */
-    protected open fun getMaxDistance(control: Control): Double = control.radius - getCircleRadius(control)
+    protected open fun getMaxDistance(control: Control): Double = control.radius.let {
+        if (isBounded)
+            it - getCircleRadius(control)
+        else it
+    }
 
     /**
      * Gets the current position where the control is located
@@ -112,11 +143,10 @@ open class CircleControlDrawer(
      */
     protected open fun getPosition(control: Control): ImmutablePosition {
         val maxRadius = getMaxDistance(control)
-        return if(control.distance > maxRadius) {
+        return if (control.distance > maxRadius) {
             Circle.fromImmutableCenter(maxRadius, control.center)
                 .parametricPositionOf(control.angle)
-        }
-        else control.position
+        } else control.position
     }
 
     override fun draw(canvas: Canvas, control: Control) {

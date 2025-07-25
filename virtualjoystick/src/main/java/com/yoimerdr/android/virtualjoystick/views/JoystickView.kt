@@ -103,6 +103,7 @@ class JoystickView @JvmOverloads constructor(
     init {
         var primaryColor = ContextCompat.getColor(context, R.color.drawer_primary)
         var accentColor = ContextCompat.getColor(context, R.color.drawer_accent)
+        var isBounded = true
 
         var invalidRadius: Float = resources.getDimensionPixelSize(R.dimen.invalidRadius).toFloat()
         var backgroundRes: Int = R.drawable.circlefor_bg
@@ -139,6 +140,11 @@ class JoystickView @JvmOverloads constructor(
                     R.styleable.JoystickView_controlDrawer_accentColor,
                     accentColor
                 )
+                isBounded = styles.getBoolean(
+                    R.styleable.JoystickView_controlDrawer_bounded,
+                    isBounded
+                )
+
                 controlType = Control.DrawerType.fromId(
                     styles.getInt(
                         R.styleable.JoystickView_controlType,
@@ -183,6 +189,7 @@ class JoystickView @JvmOverloads constructor(
                     .arcSweepAngle(arcSweepAngle)
                     .circleRadiusRatio(circleRadiusProportion)
                     .type(controlType)
+                    .bounded(isBounded)
             }.directionType(directionType)
             .invalidRadius(invalidRadius)
             .build()

@@ -14,6 +14,7 @@ import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.Position
 import com.yoimerdr.android.virtualjoystick.geometry.factory.RectFFactory
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
+import androidx.core.graphics.withSave
 
 /**
  * A [ControlDrawer] that draws an arc.
@@ -23,7 +24,7 @@ open class ArcControlDrawer(
     /**
      * The arc drawer properties.
      */
-   private val properties: ArcProperties
+    private val properties: ArcProperties,
 ) : ColorfulControlDrawer(properties) {
 
     /**
@@ -31,14 +32,40 @@ open class ArcControlDrawer(
      * @param strokeWidth The stroke width of the paint.
      * @param sweepAngle The arc sweep angle.
      */
-    constructor(colors: ColorsScheme, strokeWidth: Float, sweepAngle: Float) : this(ArcProperties(colors, strokeWidth, sweepAngle))
+    @JvmOverloads
+    constructor(
+        colors: ColorsScheme,
+        strokeWidth: Float,
+        sweepAngle: Float,
+        isBounded: Boolean = true,
+    ) : this(
+        ArcProperties(
+            colors,
+            strokeWidth,
+            sweepAngle,
+            isBounded
+        )
+    )
 
     /**
      * @param color The unique initial color for the drawer.
      * @param strokeWidth The stroke width of the paint.
      * @param sweepAngle The arc sweep angle.
      */
-    constructor(@ColorInt color: Int, strokeWidth: Float, sweepAngle: Float) : this(ColorsScheme(color), strokeWidth, sweepAngle)
+    @JvmOverloads
+    constructor(
+        @ColorInt color: Int,
+        strokeWidth: Float,
+        sweepAngle: Float,
+        isBounded: Boolean = true,
+    ) : this(
+        ColorsScheme(
+            color
+        ),
+        strokeWidth,
+        sweepAngle,
+        isBounded
+    )
 
     /**
      * A [Circle] representation for the arc position.
@@ -86,7 +113,25 @@ open class ArcControlDrawer(
             properties.sweepAngle = getSweepAngle(angle)
         }
 
-    open class ArcProperties(colors: ColorsScheme, var strokeWidth: Float, var sweepAngle: Float) : ColorfulProperties(colors)
+    var isBounded: Boolean
+        /**
+         * Gets whether the circle is bounded by the control radius.
+         */
+        get() = properties.isBounded
+        /**
+         * Sets whether the circle is bounded by the control radius.
+         * @param isBounded The new value for the bounded state.
+         */
+        set(isBounded) {
+            properties.isBounded = isBounded
+        }
+
+    open class ArcProperties @JvmOverloads constructor(
+        colors: ColorsScheme,
+        var strokeWidth: Float,
+        var sweepAngle: Float,
+        var isBounded: Boolean = true,
+    ) : ColorfulProperties(colors)
 
     companion object {
         /**
@@ -177,13 +222,20 @@ open class ArcControlDrawer(
          * @see [Canvas.rotate]
          */
         @JvmStatic
-        fun drawArrow(canvas: Canvas, x: Float, y: Float, arrowLength: Float, rotateAngle: Float, paint: Paint) {
+        fun drawArrow(
+            canvas: Canvas,
+            x: Float,
+            y: Float,
+            arrowLength: Float,
+            rotateAngle: Float,
+            paint: Paint,
+        ) {
             val arrowPath = pathArrow(x, y, arrowLength)
             canvas.apply {
-                save()
-                rotate(rotateAngle, x, y)
-                drawPath(arrowPath, paint)
-                restore()
+                withSave {
+                    rotate(rotateAngle, x, y)
+                    drawPath(arrowPath, paint)
+                }
             }
         }
 
@@ -213,7 +265,13 @@ open class ArcControlDrawer(
          * @see [Canvas.rotate]
          */
         @JvmStatic
-        fun drawArrow(canvas: Canvas, position: ImmutablePosition, arrowLength: Float, rotateAngle: Float, paint: Paint) {
+        fun drawArrow(
+            canvas: Canvas,
+            position: ImmutablePosition,
+            arrowLength: Float,
+            rotateAngle: Float,
+            paint: Paint,
+        ) {
             position.apply {
                 drawArrow(canvas, x, y, arrowLength, rotateAngle, paint)
             }
@@ -229,7 +287,12 @@ open class ArcControlDrawer(
          * @see [Canvas.rotate]
          */
         @JvmStatic
-        fun drawArrow(canvas: Canvas, position: ImmutablePosition, arrowLength: Float, paint: Paint) {
+        fun drawArrow(
+            canvas: Canvas,
+            position: ImmutablePosition,
+            arrowLength: Float,
+            paint: Paint,
+        ) {
             drawArrow(canvas, position, arrowLength, 0f, paint)
         }
     }
@@ -238,7 +301,11 @@ open class ArcControlDrawer(
      * Gets the distance value between the arc position and the control center.
      * @param control The [Control] from where the drawer is used.
      */
-    protected open fun getDistance(control: Control): Double = control.radius - strokeWidth * 2
+    protected open fun getDistance(control: Control): Double = control.radius.let {
+        if (isBounded)
+            it - strokeWidth * 2
+        else it
+    }
 
     /**
      * The bounds of oval used to define the shape and size of the arc.
@@ -249,7 +316,7 @@ open class ArcControlDrawer(
     }
 
     override fun draw(canvas: Canvas, control: Control) {
-        if(control.distance < control.invalidRadius)
+        if (control.distance < control.invalidRadius)
             return
 
         drawShapes(canvas, control)
