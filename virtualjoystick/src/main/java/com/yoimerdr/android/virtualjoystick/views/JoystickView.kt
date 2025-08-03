@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.annotation.FloatRange
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.yoimerdr.android.virtualjoystick.R
@@ -98,9 +99,25 @@ class JoystickView @JvmOverloads constructor(
      */
     val angle: Double get() = mControl.angle
 
+    /**
+     * Calculates the centered position between the [position] and the [center].
+     * */
     val centeredPosition: ImmutablePosition get() = mControl.centeredPosition
 
+    /**
+     * Calculates the normalized device coordinates (NDC) position.
+     * */
     val ndcPosition: ImmutablePosition get() = mControl.ndcPosition
+
+    /**
+     * Calculates the magnitude of the [position] relative to the [center].
+     * */
+    val magnitude: Double
+        @FloatRange(
+            from = 0.0,
+            to = 1.0
+        )
+        get() = mControl.magnitude
 
 
     init {

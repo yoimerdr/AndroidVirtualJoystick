@@ -392,9 +392,15 @@ abstract class Control(
      */
     open val position: ImmutablePosition get() = mPosition.toImmutable()
 
+    /**
+     * Calculates the centered position between the control position and center.
+     */
     open val centeredPosition: ImmutablePosition
         get() = FixedPosition(deltaX(), deltaY())
 
+    /**
+     * Calculates the normalized device coordinates (NDC) position of the control.
+     */
     open val ndcPosition: ImmutablePosition
         get() = FixedPosition(deltaX() / radius, deltaY() / radius)
 
@@ -423,6 +429,18 @@ abstract class Control(
      * Gets the radius of the view where the control is used.
      */
     val radius: Double get() = mViewCircle.radius
+
+    /**
+     * Calculates the magnitude of the control position [position] relative to the [center].
+     *
+     * The calculated magnitude ignores the [invalidRadius] value.
+     * */
+    val magnitude: Double
+        @FloatRange(
+            from = 0.0,
+            to = 1.0
+        )
+        get() = mViewCircle.magnitudeTo(mPosition)
 
     /**
      * Validates the control position values.

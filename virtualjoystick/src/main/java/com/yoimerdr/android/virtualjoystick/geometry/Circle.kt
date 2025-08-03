@@ -1,5 +1,6 @@
 package com.yoimerdr.android.virtualjoystick.geometry
 
+import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
 import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
@@ -124,6 +125,24 @@ class Circle(
      */
     fun angleTo(x: Float, y: Float): Double {
         return angleTo(FixedPosition(x, y))
+    }
+
+    @FloatRange(
+        from = 0.0,
+        to = 1.0
+    )
+    fun magnitudeTo(position: ImmutablePosition): Double {
+        val distance = distanceTo(position)
+
+        return (distance / radius).coerceIn(0.0, 1.0)
+    }
+
+    @FloatRange(
+        from = 0.0,
+        to = 1.0
+    )
+    fun magnitudeTo(x: Float, y: Float): Double {
+        return magnitudeTo(FixedPosition(x, y))
     }
 
     /**
