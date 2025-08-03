@@ -9,4 +9,5 @@
     <string name="joystick_drawer_type">Drawer type</string>
     <string name="joystick_bounded">Bounded</string>
     <string name="joystick_move_action">Start move action</string>
+    <string name="joystick_magnitude">Magnitude: %.2f</string>
 </resources>

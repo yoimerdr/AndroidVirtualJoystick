@@ -25,9 +25,9 @@
         android:layout_marginTop="16dp"
         android:text="@string/joystick_position"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/tvDirection"
-        app:layout_constraintStart_toStartOf="@+id/tvDirection"
-        app:layout_constraintTop_toBottomOf="@+id/tvDirection" />
+        app:layout_constraintEnd_toEndOf="@+id/tvMagnitude"
+        app:layout_constraintStart_toStartOf="@+id/tvMagnitude"
+        app:layout_constraintTop_toBottomOf="@+id/tvMagnitude" />
 
     <TextView
         android:id="@+id/tvNdcPosition"
@@ -39,6 +39,17 @@
         app:layout_constraintEnd_toEndOf="@+id/tvPosition"
         app:layout_constraintStart_toStartOf="@+id/tvPosition"
         app:layout_constraintTop_toBottomOf="@+id/tvPosition" />
+
+    <TextView
+        android:id="@+id/tvMagnitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/joystick_magnitude"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvDirection"
+        app:layout_constraintStart_toStartOf="@+id/tvDirection"
+        app:layout_constraintTop_toBottomOf="@+id/tvDirection" />
 
     <com.yoimerdr.android.virtualjoystick.views.JoystickView
         android:id="@+id/vJoystick"
@@ -177,7 +188,7 @@
         android:layout_marginTop="8dp"
         android:clickable="true"
         android:focusable="true"
-        android:contentDescription="Start move action"
+        android:contentDescription="@string/joystick_move_action"
         app:layout_constraintEnd_toEndOf="@+id/spnForceDirection"
         app:layout_constraintTop_toBottomOf="@+id/spnForceDirection"
         app:srcCompat="@drawable/outline_play_arrow_24" />

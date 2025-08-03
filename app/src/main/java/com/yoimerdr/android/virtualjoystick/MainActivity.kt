@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val tvDirection: TextView get() = binding.tvDirection
+    private val tvMagnitude: TextView get() = binding.tvMagnitude
     private val tvPosition: TextView get() = binding.tvPosition
     private val tvNdcPosition: TextView get() = binding.tvNdcPosition
     private val vJoystick: JoystickView get() = binding.vJoystick
@@ -69,6 +70,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var positionFormat: String
     private lateinit var directionFormat: String
+    private lateinit var magnitudeFormat: String
+    private lateinit var ndcPositionFormat: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +86,9 @@ class MainActivity : AppCompatActivity() {
         ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items)
 
     private fun iniViews() {
+        val control = Control.Builder()
+            .build()
+
         spnPrimaryColor.adapter = simpleArrayAdapter(colors.keys.toList())
         spnAccentColor.adapter = simpleArrayAdapter(colors.keys.toList())
         spnDrawerType.adapter = simpleArrayAdapter(drawers.keys.toList())
@@ -91,6 +97,8 @@ class MainActivity : AppCompatActivity() {
         spnBounded.adapter = simpleArrayAdapter(boundedTypes.keys.toList())
         directionFormat = getString(R.string.joystick_direction)
         positionFormat = getString(R.string.joystick_position)
+        magnitudeFormat = getString(R.string.joystick_magnitude)
+        ndcPositionFormat = getString(R.string.joystick_ndc_position)
     }
 
     private fun initEvents() {
@@ -212,6 +220,7 @@ class MainActivity : AppCompatActivity() {
             vJoystick.move(direction)
         }
 
+
         vJoystick.apply {
             setMoveStartListener {
                 onMovement(it)
@@ -281,8 +290,11 @@ class MainActivity : AppCompatActivity() {
         vJoystick.apply {
             val position = position
             val ndcPosition = ndcPosition
+            val magnitude = magnitude
+            tvMagnitude.text = magnitudeFormat.format(magnitude)
             tvPosition.text = positionFormat.format(position.x, position.y)
-            tvNdcPosition.text = positionFormat.format(ndcPosition.x, ndcPosition.y)
+            tvNdcPosition.text = ndcPositionFormat.format(ndcPosition.x, ndcPosition.y)
+
         }
     }
 
