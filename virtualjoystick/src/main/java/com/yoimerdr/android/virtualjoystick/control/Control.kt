@@ -561,7 +561,9 @@ abstract class Control(
         if (distance <= invalidRadius)
             return Direction.NONE
 
-        val angleDegrees = Math.toDegrees(angle)
+        val angleDegrees = Math.toDegrees(
+            mViewCircle.angleTo(position)
+        )
 
         if (directionType == DirectionType.COMPLETE)
             return when (Plane.quadrantOf(angleDegrees, Plane.MaxQuadrants.EIGHT, true)) {
