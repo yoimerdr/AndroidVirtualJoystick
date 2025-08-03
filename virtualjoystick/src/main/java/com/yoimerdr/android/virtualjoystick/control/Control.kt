@@ -461,26 +461,35 @@ abstract class Control(
      * It updates the drawer position and center.
      * @param size The size of the view.
      * @throws LowerNumberException If any of the position coordinates is negative.
+     *
      */
+    @Deprecated(
+        "This method is deprecated and never used by JoystickView. Override the protected onBoundsChange instead.",
+    )
     @Throws(LowerNumberException::class)
     open fun onSizeChanged(size: ImmutableSize) {
-        onSizeChanged(
-            Rect(
-                0, 0,
-                size.width,
-                size.height
-            )
-        )
     }
 
-    open fun onSizeChanged(rect: Rect) {
-        rect.apply {
+    /**
+     * Bounds the control center and the radius.
+     *
+     * @param bounds The bounds of the view.
+     */
+    protected open fun onBoundsChange(bounds: Rect) {
+        bounds.apply {
             (min(width(), height()) / 2f).also {
                 mCenter.set(centerX().toFloat(), centerY().toFloat())
                 mViewCircle.radius = it.toDouble()
                 toCenter()
             }
         }
+    }
+
+    /**
+     * Internal method to set the bounds of the control.
+     * */
+    internal fun setBounds(bounds: Rect) {
+        onBoundsChange(bounds)
     }
 
 

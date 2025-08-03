@@ -323,10 +323,23 @@ class JoystickView @JvmOverloads constructor(
         }
     }
 
+    private class JoystickControl(
+        var control: Control,
+    ) : Control(
+        control.invalidRadius,
+        control.directionType
+    ) {
+        override var drawer: ControlDrawer
+            get() = control.drawer
+            set(value) {
+                control.drawer = value
+            }
+    }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         viewBounds.let { bounds ->
-            mControl.onSizeChanged(bounds)
+            mControl.setBounds(bounds)
             background?.let {
                 it.bounds = bounds
             }
@@ -564,7 +577,7 @@ class JoystickView @JvmOverloads constructor(
         mControl = control.apply {
             val bounds = viewBounds
             if (!bounds.isEmpty) {
-                onSizeChanged(bounds)
+                setBounds(bounds)
                 setPosition(mControl.position)
                 invalidate()
             }
