@@ -85,4 +85,22 @@ abstract class ColorfulControlDrawer(
             setColors(primary, accent)
         }
     }
+
+    /**
+     * Sets the primary color of [colors] and paint.
+     *
+     * @param colors The schema from which the primary color is to be set.
+     */
+    open fun setPrimaryColor(colors: ColorsScheme) {
+        primaryColor = colors.primary
+    }
+
+    /**
+     * Sets the accent color of [colors] and paint.
+     *
+     * @param colors The schema from which the primary color is to be set.
+     */
+    open fun setAccentColor(colors: ColorsScheme) {
+        accentColor = colors.accent
+    }
 }

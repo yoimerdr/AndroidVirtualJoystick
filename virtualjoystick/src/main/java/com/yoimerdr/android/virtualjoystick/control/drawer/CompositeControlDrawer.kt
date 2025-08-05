@@ -14,7 +14,8 @@ open class CompositeControlDrawer @JvmOverloads constructor(
     /**
      * The interface to call before each draw.
      */
-    protected open val beforeDraw: BeforeDraw? = null
+    protected open val beforeDraw: BeforeDraw? = null,
+    protected open val afterDraw: AfterDraw? = null,
 ) : ControlDrawer {
 
     /**
@@ -30,10 +31,24 @@ open class CompositeControlDrawer @JvmOverloads constructor(
         fun before(drawer: ControlDrawer, control: Control)
     }
 
+    /**
+     * Interface for call after each draw.
+     */
+    fun interface AfterDraw {
+        /**
+         * Called after each [ControlDrawer] draw.
+         *
+         * @param drawer The current [ControlDrawer]
+         * @param control The [Control] from where the drawer is used.
+         */
+        fun after(drawer: ControlDrawer, control: Control)
+    }
+
     override fun draw(canvas: Canvas, control: Control) {
         drawers.forEach { drawer ->
             beforeDraw?.before(drawer, control)
             drawer.draw(canvas, control)
+            afterDraw?.after(drawer, control)
         }
     }
 }
