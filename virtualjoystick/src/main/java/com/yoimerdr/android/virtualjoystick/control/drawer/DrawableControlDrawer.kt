@@ -11,6 +11,7 @@ import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.annotation.FloatRange
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.yoimerdr.android.virtualjoystick.control.Control
@@ -18,6 +19,7 @@ import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.factory.RectFFactory
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
+import com.yoimerdr.android.virtualjoystick.utils.extensions.greaterThan
 import com.yoimerdr.android.virtualjoystick.utils.log.Logger
 
 /**
@@ -38,6 +40,10 @@ open class DrawableControlDrawer(
     @JvmOverloads
     constructor(
         drawable: Drawable,
+        @FloatRange(
+            from = 0.0,
+            fromInclusive = false
+        )
         scale: Float,
         @ColorInt color: Int = Color.TRANSPARENT,
         isBounded: Boolean = true,
@@ -106,16 +112,23 @@ open class DrawableControlDrawer(
         /**
          * Gets the scale for the dimensions of the size of the drawable resource.
          */
+        @FloatRange(
+            from = 0.0,
+            fromInclusive = false
+        )
         get() = properties.scale
         /**
          * Sets the scale for the dimensions of the size of the drawable resource.
          * @throws scale The new scale value.
          * @throws IllegalArgumentException If the scale is negative or zero.
          */
-        @Throws(IllegalArgumentException::class)
-        set(scale) {
-            if (scale <= 0)
-                throw IllegalArgumentException("The scale value must be a value greater than zero.")
+        set(
+            @FloatRange(
+                from = 0.0,
+                fromInclusive = false
+            )
+            scale
+        ) {
             if (this.scale != scale) {
                 properties.scale = scale
                 convertDrawableToBitmap()
@@ -154,10 +167,19 @@ open class DrawableControlDrawer(
 
     open class DrawableProperties @JvmOverloads constructor(
         var drawable: Drawable,
-        var scale: Float,
+        @FloatRange(
+            from = 0.0,
+            fromInclusive = false
+        )
+        scale: Float,
         @ColorInt color: Int = Color.TRANSPARENT,
         var isBounded: Boolean = true,
-    ) : ColorfulProperties(ColorsScheme(color, Color.TRANSPARENT))
+    ) : ColorfulProperties(ColorsScheme(color, Color.TRANSPARENT)) {
+        var scale = scale.greaterThan(0f)
+            set(value) {
+                field = value.greaterThan(0f)
+            }
+    }
 
     companion object {
 

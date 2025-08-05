@@ -35,6 +35,10 @@ import kotlin.math.min
  * Custom control must inherit from this class.
  */
 abstract class Control(
+    @FloatRange(
+        from = 0.0,
+        fromInclusive = false
+    )
     invalidRadius: Float,
     /**
      * The control directions type.
@@ -67,10 +71,19 @@ abstract class Control(
      *
      * @see [Control.direction]
      */
-    var invalidRadius: Float = invalidRadius
-        set(value) {
-            field = value
-            validateInvalidRadius()
+    @FloatRange(
+        from = 0.0,
+        fromInclusive = false
+    )
+    var invalidRadius: Float = invalidRadius.requirePositive()
+        set(
+            @FloatRange(
+                from = 0.0,
+                fromInclusive = false
+            )
+            value,
+        ) {
+            field = value.requirePositive()
         }
 
     /**
@@ -79,10 +92,6 @@ abstract class Control(
      * Must be initialized in classes that inherit from [Control].
      */
     abstract var drawer: ControlDrawer
-
-    init {
-        validateInvalidRadius()
-    }
 
     /**
      * The possibles directions of the control.
@@ -423,7 +432,9 @@ abstract class Control(
      * Calculates the angle (clockwise) formed from the current position and center.
      * @return A value in the range from 0 to 2PI radians.
      */
-    val angle: Double get() = mViewCircle.angleTo(mPosition)
+    val angle: Double
+        @FloatRange(from = 0.0, to = Circle.RADIAN_SPIN)
+        get() = mViewCircle.angleTo(mPosition)
 
     /**
      * Gets the radius of the view where the control is used.
@@ -451,17 +462,6 @@ abstract class Control(
     protected fun validatePositionValues() {
         mPosition.x.requirePositive()
         mPosition.y.requirePositive()
-    }
-
-    /**
-     * Validates the [invalidRadius] value.
-     *
-     * @throws IllegalArgumentException If [invalidRadius] value is negative.
-     */
-    @Throws(IllegalArgumentException::class)
-    private fun validateInvalidRadius() {
-        if (invalidRadius < 0)
-            throw IllegalArgumentException("Invalid radius value must be positive.")
     }
 
     /**

@@ -68,20 +68,24 @@ open class RatioCircleControlDrawer(
         /**
          * Gets the circle radius ratio.
          */
+        @FloatRange(
+            from = MIN_RADIUS_RATIO.toDouble(),
+            to = MAX_RADIUS_RATIO.toDouble(),
+        )
         get() = properties.ratio
         /**
          * Sets the circle radius ratio.
          * @param ratio The new circle radius ratio. Must be a value in the range from [MIN_RADIUS_RATIO] to [MAX_RADIUS_RATIO]
          */
-        set(ratio) {
-            properties.ratio = getRadiusRatio(ratio)
+        set(
+            @FloatRange(
+                from = MIN_RADIUS_RATIO.toDouble(),
+                to = MAX_RADIUS_RATIO.toDouble(),
+            )
+            ratio,
+        ) {
+            properties.ratio = ratio
         }
-
-    init {
-        properties.apply {
-            ratio = getRadiusRatio(ratio)
-        }
-    }
 
     open class RatioCircleProperties @JvmOverloads constructor(
         colors: ColorsScheme,
@@ -89,11 +93,16 @@ open class RatioCircleControlDrawer(
             from = MIN_RADIUS_RATIO.toDouble(),
             to = MAX_RADIUS_RATIO.toDouble(),
         )
-        var ratio: Float,
+        ratio: Float,
         isBounded: Boolean = true,
     ) : BasicCircleProperties(
         colors, isBounded
-    )
+    ) {
+        var ratio = getRadiusRatio(ratio)
+            set(value) {
+                field = getRadiusRatio(value)
+            }
+    }
 
     override fun getCircleRadius(control: Control): Double = control.radius * ratio
 }

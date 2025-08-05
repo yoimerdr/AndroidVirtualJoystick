@@ -1,5 +1,6 @@
 package com.yoimerdr.android.virtualjoystick.geometry
 
+import android.annotation.SuppressLint
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
@@ -13,8 +14,9 @@ object Plane {
     enum class MaxQuadrants {
         FOUR,
         EIGHT;
+
         fun toInt(): Int {
-            return if(this == FOUR) 4
+            return if (this == FOUR) 4
             else 8
         }
     }
@@ -29,45 +31,38 @@ object Plane {
      * @throws IllegalArgumentException If the [angle] is negative.
      */
     @JvmStatic
+    @JvmOverloads
     @Throws(IllegalArgumentException::class)
-    fun quadrantOf(angle: Double, maxQuadrants: MaxQuadrants, useMiddle: Boolean): Int {
+    @IntRange(from = 1,to = 8)
+    fun quadrantOf(
+        angle: Double,
+        maxQuadrants: MaxQuadrants = MaxQuadrants.FOUR,
+        useMiddle: Boolean = false,
+    ): Int {
         angle.requirePositive()
         val quadrants = maxQuadrants.toInt()
         val angleQuadrant = Circle.DEGREE_SPIN / quadrants
 
         var startAngle = 0.0f
-        var end = if(useMiddle) angleQuadrant / 2 else angleQuadrant
+        var end = if (useMiddle) angleQuadrant / 2 else angleQuadrant
 
-        val mAngle = if(angle > Circle.DEGREE_SPIN) angle.mod(Circle.DEGREE_SPIN) else angle
+        val mAngle = if (angle > Circle.DEGREE_SPIN) angle.mod(Circle.DEGREE_SPIN) else angle
 
-        for(quadrant in 0 .. quadrants) {
-            if(mAngle in startAngle .. end) {
-                return if(useMiddle && quadrant == quadrants) 1
+        for (quadrant in 0..quadrants) {
+            if (mAngle in startAngle..end) {
+                return if (useMiddle && quadrant == quadrants) 1
                 else quadrant + 1
             }
 
             startAngle = end
 
-            end += if(useMiddle && quadrant == quadrants) angleQuadrant / 2
+            end += if (useMiddle && quadrant == quadrants) angleQuadrant / 2
             else angleQuadrant
         }
 
         return quadrants
     }
 
-    /**
-     * Gets the quadrant of the given angle.
-     * @param angle The angle (degrees) of the position. Must be positive.
-     * @param maxQuadrants The max quadrants in the circle.
-     * @return if [maxQuadrants] is [MaxQuadrants.FOUR], a value in the range 1 to 4;
-     * otherwise, a value in the range 1 to 8.
-     * @throws IllegalArgumentException If the [angle] is negative.
-     */
-    @JvmStatic
-    @Throws(IllegalArgumentException::class)
-    fun quadrantOf(angle: Double, maxQuadrants: MaxQuadrants): Int {
-        return quadrantOf(angle, maxQuadrants, false)
-    }
 
     /**
      * Gets the quadrant of the given angle.
@@ -79,21 +74,9 @@ object Plane {
     @JvmStatic
     @IntRange(from = 1, to = 4)
     @Throws(IllegalArgumentException::class)
+    @SuppressLint("Range")
     fun quadrantOf(angle: Double, useMiddle: Boolean): Int {
         return quadrantOf(angle, MaxQuadrants.FOUR, useMiddle)
-    }
-
-    /**
-     * Gets the quadrant of the given angle.
-     * @param angle The degree of the position. Must be in range 0 to 360.
-     * @return A value in the range 1 to 4.
-     * @throws IllegalArgumentException If the [angle] is negative.
-     */
-    @JvmStatic
-    @IntRange(from = 1, to = 4)
-    @Throws(IllegalArgumentException::class)
-    fun quadrantOf(angle: Double): Int {
-        return quadrantOf(angle, false)
     }
 
     /**
@@ -133,7 +116,7 @@ object Plane {
     fun angleBetween(positionA: ImmutablePosition, positionB: ImmutablePosition): Double {
         var angle = atan2(positionA.deltaY(positionB), positionA.deltaX(positionB)).toDouble()
 
-        if(angle < 0)
+        if (angle < 0)
             angle += Circle.RADIAN_SPIN
 
         return angle

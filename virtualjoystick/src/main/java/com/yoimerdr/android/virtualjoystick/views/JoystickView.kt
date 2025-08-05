@@ -26,6 +26,7 @@ import com.yoimerdr.android.virtualjoystick.utils.log.Logger
 import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.postDelayed
+import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import kotlin.math.min
 
 /**
@@ -73,7 +74,6 @@ class JoystickView @JvmOverloads constructor(
      */
     private val mTouchHandler: JoystickTouchHandler = JoystickTouchHandler(this, holdInterval)
 
-
     private var mControl: Control
 
 
@@ -97,7 +97,9 @@ class JoystickView @JvmOverloads constructor(
      *
      * @return A value in the range from 0 to 2PI radians.
      */
-    val angle: Double get() = mControl.angle
+    val angle: Double
+        @FloatRange(from = 0.0, to = Circle.RADIAN_SPIN)
+        get() = mControl.angle
 
     /**
      * Calculates the centered position between the [position] and the [center].
@@ -340,18 +342,6 @@ class JoystickView @JvmOverloads constructor(
         }
     }
 
-    private class JoystickControl(
-        var control: Control,
-    ) : Control(
-        control.invalidRadius,
-        control.directionType
-    ) {
-        override var drawer: ControlDrawer
-            get() = control.drawer
-            set(value) {
-                control.drawer = value
-            }
-    }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)

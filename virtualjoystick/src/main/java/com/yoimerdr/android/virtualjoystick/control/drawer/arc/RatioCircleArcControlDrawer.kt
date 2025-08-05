@@ -31,6 +31,10 @@ open class RatioCircleArcControlDrawer(
         colors: ColorsScheme,
         strokeWidth: Float,
         sweepAngle: Float,
+        @FloatRange(
+            from = RatioCircleControlDrawer.MIN_RADIUS_RATIO.toDouble(),
+            to = RatioCircleControlDrawer.MAX_RADIUS_RATIO.toDouble(),
+        )
         ratio: Float,
         isBounded: Boolean = true,
     ) : this(
@@ -53,6 +57,10 @@ open class RatioCircleArcControlDrawer(
         @ColorInt color: Int,
         strokeWidth: Float,
         sweepAngle: Float,
+        @FloatRange(
+            from = RatioCircleControlDrawer.MIN_RADIUS_RATIO.toDouble(),
+            to = RatioCircleControlDrawer.MAX_RADIUS_RATIO.toDouble(),
+        )
         ratio: Float,
     ) : this(ColorsScheme(color), strokeWidth, sweepAngle, ratio)
 
@@ -76,7 +84,7 @@ open class RatioCircleArcControlDrawer(
             )
             ratio,
         ) {
-            properties.circleProperties.ratio = RatioCircleControlDrawer.getRadiusRatio(ratio)
+            properties.circleProperties.ratio = ratio
         }
 
     protected open class CircleDrawer(private val properties: RatioCircleArcProperties) :

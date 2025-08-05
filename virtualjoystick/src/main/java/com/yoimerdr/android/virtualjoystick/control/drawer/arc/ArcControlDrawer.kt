@@ -37,7 +37,14 @@ open class ArcControlDrawer(
     @JvmOverloads
     constructor(
         colors: ColorsScheme,
+        @FloatRange(
+            from = MIN_STROKE_WIDTH.toDouble()
+        )
         strokeWidth: Float,
+        @FloatRange(
+            from = MIN_SWEEP_ANGLE.toDouble(),
+            to = MAX_SWEEP_ANGLE.toDouble()
+        )
         sweepAngle: Float,
         isBounded: Boolean = true,
     ) : this(
@@ -57,7 +64,14 @@ open class ArcControlDrawer(
     @JvmOverloads
     constructor(
         @ColorInt color: Int,
+        @FloatRange(
+            from = MIN_STROKE_WIDTH.toDouble()
+        )
         strokeWidth: Float,
+        @FloatRange(
+            from = MIN_SWEEP_ANGLE.toDouble(),
+            to = MAX_SWEEP_ANGLE.toDouble()
+        )
         sweepAngle: Float,
         isBounded: Boolean = true,
     ) : this(
@@ -75,11 +89,6 @@ open class ArcControlDrawer(
     protected open val arcCircle: Circle = Circle(1f, Position())
 
     init {
-        properties.apply {
-            this.sweepAngle = getSweepAngle(sweepAngle)
-            this.strokeWidth = getStrokeWidth(strokeWidth)
-        }
-
         paint.apply {
             style = Paint.Style.STROKE
             color = colors.primary
@@ -91,13 +100,21 @@ open class ArcControlDrawer(
         /**
          * Gets the stroke width of the paint.
          */
+        @FloatRange(
+            from = MIN_STROKE_WIDTH.toDouble()
+        )
         get() = properties.strokeWidth
         /**
          * Sets the stroke width of the paint.
          *
          * @param strokeWidth The new stroke width. The minimum value must be [MIN_STROKE_WIDTH].
          */
-        set(strokeWidth) {
+        set(
+            @FloatRange(
+                from = MIN_STROKE_WIDTH.toDouble()
+            )
+            strokeWidth
+        ) {
             properties.strokeWidth = getStrokeWidth(strokeWidth)
         }
 
@@ -105,14 +122,24 @@ open class ArcControlDrawer(
         /**
          * Gets the arc sweep angle.
          */
+        @FloatRange(
+            from = MIN_SWEEP_ANGLE.toDouble(),
+            to = MAX_SWEEP_ANGLE.toDouble()
+        )
         get() = properties.sweepAngle
         /**
          * Sets the arc sweep angle.
          *
          * @param angle The new sweep angle. Must be a sexagesimal degree in the range [MIN_SWEEP_ANGLE] to [MAX_SWEEP_ANGLE].
          */
-        set(angle) {
-            properties.sweepAngle = getSweepAngle(angle)
+        set(
+            @FloatRange(
+                from = MIN_SWEEP_ANGLE.toDouble(),
+                to = MAX_SWEEP_ANGLE.toDouble()
+            )
+            angle,
+        ) {
+            properties.sweepAngle = angle
         }
 
     var isBounded: Boolean
@@ -130,10 +157,28 @@ open class ArcControlDrawer(
 
     open class ArcProperties @JvmOverloads constructor(
         colors: ColorsScheme,
-        var strokeWidth: Float,
-        var sweepAngle: Float,
+        @FloatRange(
+            from = MIN_STROKE_WIDTH.toDouble()
+        )
+        strokeWidth: Float,
+        @FloatRange(
+            from = MIN_SWEEP_ANGLE.toDouble(),
+            to = MAX_SWEEP_ANGLE.toDouble()
+        )
+        sweepAngle: Float,
         var isBounded: Boolean = true,
-    ) : ColorfulProperties(colors)
+    ) : ColorfulProperties(colors) {
+
+        var sweepAngle = getSweepAngle(sweepAngle)
+            set(value) {
+                field = getSweepAngle(value)
+            }
+
+        var strokeWidth = getStrokeWidth(strokeWidth)
+            set(value) {
+                field = getStrokeWidth(value)
+            }
+    }
 
     companion object {
         /**

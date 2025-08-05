@@ -5,6 +5,7 @@ import androidx.annotation.FloatRange
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
+import com.yoimerdr.android.virtualjoystick.utils.extensions.greaterThan
 
 /**
  * A [ControlDrawer] that draws a given circle based on a radius value.
@@ -20,6 +21,10 @@ open class RadiusCircleControlDrawer(
     @JvmOverloads
     constructor(
         colors: ColorsScheme,
+        @FloatRange(
+            from = 0.0,
+            fromInclusive = false
+        )
         radius: Float,
         isBounded: Boolean = true,
     ) : this(RadiusCircleProperties(colors, radius, isBounded))
@@ -31,6 +36,10 @@ open class RadiusCircleControlDrawer(
     @JvmOverloads
     constructor(
         @ColorInt color: Int,
+        @FloatRange(
+            from = 0.0,
+            fromInclusive = false
+        )
         radius: Float,
         isBounded: Boolean = true,
     ) : this(ColorsScheme(color), radius, isBounded)
@@ -61,9 +70,14 @@ open class RadiusCircleControlDrawer(
         colors: ColorsScheme,
         @FloatRange(
             from = 0.0, fromInclusive = false
-        ) var radius: Float,
+        ) radius: Float,
         isBounded: Boolean = true,
-    ) : BasicCircleProperties(colors, isBounded)
+    ) : BasicCircleProperties(colors, isBounded) {
+        var radius = radius.greaterThan(0f)
+            set(value) {
+                field = value.greaterThan(0f)
+            }
+    }
 
     override fun getCircleRadius(control: Control): Double = radius.toDouble()
         .coerceAtMost(control.radius)

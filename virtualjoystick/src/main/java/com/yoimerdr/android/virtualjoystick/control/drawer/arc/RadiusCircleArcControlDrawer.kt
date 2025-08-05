@@ -31,6 +31,10 @@ open class RadiusCircleArcControlDrawer(
         colors: ColorsScheme,
         strokeWidth: Float,
         sweepAngle: Float,
+        @FloatRange(
+            from = 0.0,
+            fromInclusive = false
+        )
         radius: Float,
         isBounded: Boolean = true,
     ) : this(
@@ -53,6 +57,10 @@ open class RadiusCircleArcControlDrawer(
         @ColorInt color: Int,
         strokeWidth: Float,
         sweepAngle: Float,
+        @FloatRange(
+            from = 0.0,
+            fromInclusive = false
+        )
         radius: Float,
     ) : this(ColorsScheme(color), strokeWidth, sweepAngle, radius)
 

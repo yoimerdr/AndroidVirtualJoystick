@@ -20,7 +20,7 @@ open class HighlightControlDrawer(
     /**
      * The highlight drawer properties.
      */
-    private val properties: HighlightProperties
+    private val properties: HighlightProperties,
 ) : ColorfulControlDrawer(properties) {
 
     /**
@@ -28,13 +28,19 @@ open class HighlightControlDrawer(
      * @param strictColor If true, the [color] will be used as such, without modifying its alpha channel.
      * @param innerRadiusRatio A ratio value to calculate the inner distance from the center to the inner arc.
      */
-    constructor(@ColorInt color: Int, strictColor: Boolean, innerRadiusRatio: Float) : this(HighlightProperties(color, strictColor, innerRadiusRatio))
+    constructor(@ColorInt color: Int, strictColor: Boolean, innerRadiusRatio: Float) : this(
+        HighlightProperties(color, strictColor, innerRadiusRatio)
+    )
 
     /**
      * @param color The highlight color. It will be consider as the [ColorfulControlDrawer.primaryColor]. Also, its alpha channel will be changed.
      * @param innerRadiusRatio A ratio value to calculate the inner distance from the center to the inner arc.
      */
-    constructor(@ColorInt color: Int, innerRadiusRatio: Float) : this(color, false, innerRadiusRatio)
+    constructor(@ColorInt color: Int, innerRadiusRatio: Float) : this(
+        color,
+        false,
+        innerRadiusRatio
+    )
 
 
     /**
@@ -49,7 +55,7 @@ open class HighlightControlDrawer(
     protected val trapezoidPath = Path()
 
     init {
-        if(!isStrictColor) {
+        if (!isStrictColor) {
             this.colors.apply {
                 primary = getAlphaRangedColor(primary)
             }
@@ -73,7 +79,7 @@ open class HighlightControlDrawer(
          * @param color The new primary color.
          */
         set(@ColorInt color) {
-            super.primaryColor = if(isStrictColor) color else getAlphaRangedColor(color)
+            super.primaryColor = if (isStrictColor) color else getAlphaRangedColor(color)
         }
 
 
@@ -82,12 +88,11 @@ open class HighlightControlDrawer(
          * Gets the value that determines that the primary color should be taken as set or not.
          */
         get() = properties.strictColor
-
         /**
          * Sets the value that determines that the (new) primary color should be taken as set or not.
          */
         set(isStrictColor) {
-            if(this.isStrictColor != isStrictColor) {
+            if (this.isStrictColor != isStrictColor) {
                 properties.strictColor = isStrictColor
                 primaryColor = primaryColor
             }
@@ -97,20 +102,39 @@ open class HighlightControlDrawer(
         /**
          * Gets the inner ratio value to calculate the inner distance from the control center to the inner arc of the trapezoid.
          */
+        @FloatRange(
+            from = MIN_INNER_RADIUS_RATIO.toDouble(),
+            to = MIN_INNER_RADIUS_RATIO.toDouble()
+        )
         get() = properties.innerRatio
         /**
          * Sets the inner ratio value.
          * @param ratio The new ratio value. Must be a value in the range from [MIN_INNER_RADIUS_RATIO] to [MAX_INNER_RADIUS_RATIO].
          */
-        set(ratio) {
-            properties.innerRatio = getInnerRadiusRatio(ratio)
+        set(
+            @FloatRange(
+                from = MIN_INNER_RADIUS_RATIO.toDouble(),
+                to = MIN_INNER_RADIUS_RATIO.toDouble()
+            )
+            ratio,
+        ) {
+            properties.innerRatio = ratio
         }
 
     class HighlightProperties(
         @ColorInt color: Int,
         var strictColor: Boolean,
-        var innerRatio: Float
-    ) : ColorfulProperties(ColorsScheme(color, Color.TRANSPARENT))
+        @FloatRange(
+            from = MIN_INNER_RADIUS_RATIO.toDouble(),
+            to = MIN_INNER_RADIUS_RATIO.toDouble()
+        )
+        innerRatio: Float,
+    ) : ColorfulProperties(ColorsScheme(color, Color.TRANSPARENT)) {
+        var innerRatio = getInnerRadiusRatio(innerRatio)
+            set(value) {
+                field = getInnerRadiusRatio(value)
+            }
+    }
 
     companion object {
         /**
@@ -166,14 +190,17 @@ open class HighlightControlDrawer(
          * @return A valid radius ratio value in the range [MIN_INNER_RADIUS_RATIO] to [MAX_INNER_RADIUS_RATIO]
          */
         @JvmStatic
-        @FloatRange(from = MIN_INNER_RADIUS_RATIO.toDouble(), to = MIN_INNER_RADIUS_RATIO.toDouble())
+        @FloatRange(
+            from = MIN_INNER_RADIUS_RATIO.toDouble(),
+            to = MIN_INNER_RADIUS_RATIO.toDouble()
+        )
         fun getInnerRadiusRatio(ratio: Float): Float {
             return ratio.coerceIn(MIN_INNER_RADIUS_RATIO, MAX_INNER_RADIUS_RATIO)
         }
     }
 
     override fun draw(canvas: Canvas, control: Control) {
-        if(control.distance < control.invalidRadius)
+        if (control.distance < control.invalidRadius)
             return
 
         drawTrapezoid(canvas, control)
@@ -187,7 +214,7 @@ open class HighlightControlDrawer(
      */
     protected open fun drawTrapezoid(canvas: Canvas, control: Control) {
         getCurrentQuadrant(control).also {
-            if(it != lastQuadrant) {
+            if (it != lastQuadrant) {
                 lastQuadrant = it
                 fillTrapezoid(control, it, getSweepAngleOf(control.directionType))
             }
@@ -215,7 +242,7 @@ open class HighlightControlDrawer(
      * @param sweepAngle The sweep angle (degrees) for the circular trapezoid.
      */
     protected open fun fillTrapezoid(control: Control, quadrant: Int, sweepAngle: Float) {
-        if(quadrant == 0)
+        if (quadrant == 0)
             return
 
         trapezoidPath.reset()
@@ -255,7 +282,7 @@ open class HighlightControlDrawer(
      * @return 90 if [directionType] is [Control.DirectionType.SIMPLE]; Otherwise, 45
      */
     protected open fun getSweepAngleOf(directionType: Control.DirectionType): Float {
-        return if(directionType == Control.DirectionType.SIMPLE) 90f
+        return if (directionType == Control.DirectionType.SIMPLE) 90f
         else 45f
     }
 
@@ -266,9 +293,13 @@ open class HighlightControlDrawer(
      * @return If control direction type is [Control.DirectionType.SIMPLE], a value in the range 1 to 4;
      * otherwise, a value in the range 1 to 8.
      */
+    @IntRange(
+        from = 1,
+        to = 8
+    )
     protected open fun getCurrentQuadrant(control: Control): Int {
         val angle = Math.toDegrees(control.angle)
-        return if(control.directionType == Control.DirectionType.SIMPLE)
+        return if (control.directionType == Control.DirectionType.SIMPLE)
             Plane.quadrantOf(angle, true)
         else Plane.quadrantOf(angle, Plane.MaxQuadrants.EIGHT, true)
     }
