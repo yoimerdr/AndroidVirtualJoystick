@@ -28,6 +28,7 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.extensions.firstOrdinal
 import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
 import kotlin.math.min
+import kotlin.math.sqrt
 
 /**
  * Represents a virtual joystick control.
@@ -495,9 +496,9 @@ abstract class Control(
      */
     protected open fun onBoundsChange(bounds: Rect) {
         bounds.apply {
-            (min(width(), height()) / 2f).also {
-                mCenter.set(centerX().toFloat(), centerY().toFloat())
-                mViewCircle.radius = it.toDouble()
+            (min(width(), height()) * 0.5).also {
+                mCenter.set(exactCenterX(), exactCenterY())
+                mViewCircle.radius = it
                 toCenter()
             }
         }
@@ -591,10 +592,18 @@ abstract class Control(
      * Calculates the position from the given direction.
      *
      * @param direction The direction from which the position will be calculated.
+     * @param magnitude The magnitude for the position.
      */
-    fun positionFrom(direction: Direction): ImmutablePosition {
+    @JvmOverloads
+    fun positionFrom(direction: Direction, magnitude: Float = 1f): ImmutablePosition {
         val center = center
         var radius = radius
+        val force = magnitude.coerceIn(0f, 1f)
+
+        if (force <= 0f)
+            return center
+
+        radius *= force
 
         return when (direction) {
             Direction.NONE -> center
@@ -603,7 +612,7 @@ abstract class Control(
             Direction.LEFT -> FixedPosition(center.x - radius, center.y)
             Direction.RIGHT -> FixedPosition(center.x + radius, center.y)
             else -> {
-                radius /= kotlin.math.sqrt(2.0f)
+                radius /= sqrt(2.0f)
                 when (direction) {
                     Direction.UP_LEFT -> FixedPosition(
                         center.x - radius,

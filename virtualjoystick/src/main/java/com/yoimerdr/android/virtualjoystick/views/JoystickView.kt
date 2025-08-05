@@ -46,7 +46,8 @@ class JoystickView @JvmOverloads constructor(
             height - paddingBottom
         )
 
-    private val viewRadius: Double get() = viewBounds.width() / 2.0
+    private val viewRadius: Double
+        get() = mControl.radius
 
     /**
      * The control movement listener.
@@ -418,7 +419,6 @@ class JoystickView @JvmOverloads constructor(
             return true
         }
 
-
         try {
             mControl.setPosition(touchPosition)
         } catch (e: LowerNumberException) {
@@ -629,8 +629,10 @@ class JoystickView @JvmOverloads constructor(
      * Moves the joystick in the specified direction.
      *
      * @param direction The direction to move the joystick.
+     * @param magnitude The magnitude for the position.
      */
-    fun move(direction: Control.Direction) {
-        move(mControl.positionFrom(direction))
+    @JvmOverloads
+    fun move(direction: Control.Direction, magnitude: Float = 1f) {
+        move(mControl.positionFrom(direction, magnitude))
     }
 }
