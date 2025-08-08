@@ -11,6 +11,8 @@ import kotlin.math.hypot
 
 object Plane {
 
+    const val SQRT_2 = 1.414213562373095
+
     enum class MaxQuadrants {
         FOUR,
         EIGHT;
