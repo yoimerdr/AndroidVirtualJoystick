@@ -56,7 +56,7 @@
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="32dp"
         app:arcControlDrawer_sweepAngle="100"
         app:controlDrawer_accentColor="#FFFFFF"
         app:controlDrawer_bounded="false"
@@ -167,11 +167,11 @@
         android:id="@+id/tvForceDirection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:text="@string/joystick_direction_type"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/vJoystick" />
+        app:layout_constraintBottom_toTopOf="@+id/vJoystick"
+        app:layout_constraintEnd_toEndOf="@+id/spnDirectionType"
+        app:layout_constraintTop_toBottomOf="@+id/tvNdcPosition" />
 
     <Spinner
         android:id="@+id/spnForceDirection"
@@ -181,16 +181,40 @@
         app:layout_constraintEnd_toEndOf="@+id/tvForceDirection"
         app:layout_constraintTop_toBottomOf="@+id/tvForceDirection" />
 
+    <TextView
+        android:id="@+id/tvForceMagnitude"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/joystick_magnitude"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/spnForceDirection"
+        app:layout_constraintStart_toStartOf="@+id/spnForceDirection"
+        app:layout_constraintTop_toBottomOf="@+id/spnForceDirection"
+        tools:text="@string/joystick_magnitude" />
+
+    <SeekBar
+        android:id="@+id/sbForceMagnitude"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="100"
+        android:progressTint="#13BCFF"
+        app:layout_constraintEnd_toEndOf="@+id/spnForceDirection"
+        app:layout_constraintStart_toStartOf="@+id/spnForceDirection"
+        app:layout_constraintTop_toBottomOf="@+id/tvForceMagnitude" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnForceDirection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:clickable="true"
-        android:focusable="true"
         android:contentDescription="@string/joystick_move_action"
+        android:focusable="true"
+        app:backgroundTint="#13BCFF"
         app:layout_constraintEnd_toEndOf="@+id/spnForceDirection"
-        app:layout_constraintTop_toBottomOf="@+id/spnForceDirection"
+        app:layout_constraintTop_toBottomOf="@+id/sbForceMagnitude"
         app:srcCompat="@drawable/outline_play_arrow_24" />
 
 

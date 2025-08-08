@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +34,8 @@ class MainActivity : AppCompatActivity() {
     private val spnForceDirection: Spinner get() = binding.spnForceDirection
     private val btnForceDirection: FloatingActionButton get() = binding.btnForceDirection
     private val spnBounded: Spinner get() = binding.spnBounded
+    private val tvForceMagnitude: TextView get() = binding.tvForceMagnitude
+    private val sbForceMagnitude: SeekBar get() = binding.sbForceMagnitude
 
     private var drawer: ControlDrawer? = null
 
@@ -86,9 +89,6 @@ class MainActivity : AppCompatActivity() {
         ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items)
 
     private fun iniViews() {
-        val control = Control.Builder()
-            .build()
-
         spnPrimaryColor.adapter = simpleArrayAdapter(colors.keys.toList())
         spnAccentColor.adapter = simpleArrayAdapter(colors.keys.toList())
         spnDrawerType.adapter = simpleArrayAdapter(drawers.keys.toList())
@@ -216,8 +216,30 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        sbForceMagnitude.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean,
+                ) {
+                    tvForceMagnitude.text = magnitudeFormat.format(progress / 100f)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+                }
+
+            }
+        )
+
         btnForceDirection.setOnClickListener {
-            vJoystick.move(direction)
+            val magnitude = sbForceMagnitude.progress / 100f
+            vJoystick.move(direction, magnitude)
         }
 
 
