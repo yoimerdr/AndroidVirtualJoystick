@@ -3,6 +3,7 @@ package com.yoimerdr.android.virtualjoystick.control
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
+import androidx.annotation.CallSuper
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import com.yoimerdr.android.virtualjoystick.control.Control.Direction
@@ -22,13 +23,13 @@ import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.MutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.Plane
+import com.yoimerdr.android.virtualjoystick.geometry.Plane.SQRT_2
 import com.yoimerdr.android.virtualjoystick.geometry.position.Position
 import com.yoimerdr.android.virtualjoystick.geometry.size.ImmutableSize
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.extensions.firstOrdinal
 import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
 import kotlin.math.min
-import kotlin.math.sqrt
 
 /**
  * Represents a virtual joystick control.
@@ -60,12 +61,16 @@ abstract class Control(
      */
     private val mCenter: MutablePosition = Position()
 
-
     /**
      * Circle representing the area of the view where the control is used.
      */
     private val mViewCircle: Circle = Circle(1f, mCenter)
 
+    private var mDirection: Direction? = null
+
+    private var mDistance: Float? = null
+
+    private var mAngle: Double? = null
 
     /**
      * Invalid radius to be taken into account when obtaining control direction.
@@ -386,7 +391,12 @@ abstract class Control(
      */
 
     open val direction: Direction
-        get() = directionFrom(mPosition)
+        get() {
+            if (mDirection == null)
+                mDirection = directionFrom(mPosition)
+
+            return mDirection!!
+        }
 
     /**
      * Gets the immutable position of control center.
@@ -427,7 +437,12 @@ abstract class Control(
      * Calculates the distance between current position and center.
      * @return The calculated distance.
      */
-    val distance: Float get() = mViewCircle.distanceTo(mPosition)
+    val distance: Float
+        get() {
+            if (mDistance == null)
+                mDistance = mViewCircle.distanceTo(mPosition)
+            return mDistance!!
+        }
 
     /**
      * Calculates the angle (clockwise) formed from the current position and center.
@@ -435,7 +450,11 @@ abstract class Control(
      */
     val angle: Double
         @FloatRange(from = 0.0, to = Circle.RADIAN_SPIN)
-        get() = mViewCircle.angleTo(mPosition)
+        get() {
+            if (mAngle == null)
+                mAngle = mViewCircle.angleTo(mPosition)
+            return mAngle!!
+        }
 
     /**
      * Gets the radius of the view where the control is used.
@@ -452,7 +471,11 @@ abstract class Control(
             from = 0.0,
             to = 1.0
         )
-        get() = mViewCircle.magnitudeTo(mPosition)
+        get() {
+            val distance = this.distance
+
+            return (distance / radius).coerceIn(0.0, 1.0)
+        }
 
     /**
      * Validates the control position values.
@@ -472,6 +495,16 @@ abstract class Control(
     private fun validatePositionLimits() {
         if (distance > radius)
             mPosition.set(parametricPosition)
+    }
+
+    @CallSuper
+    /**
+     * Invalidates the control cached values
+     * */
+    protected open fun invalidate() {
+        mDistance = null
+        mAngle = null
+        mDirection = null
     }
 
     /**
@@ -494,12 +527,20 @@ abstract class Control(
      *
      * @param bounds The bounds of the view.
      */
+    @CallSuper
+    @Throws(LowerNumberException::class)
     protected open fun onBoundsChange(bounds: Rect) {
         bounds.apply {
             (min(width(), height()) * 0.5).also {
-                mCenter.set(exactCenterX(), exactCenterY())
                 mViewCircle.radius = it
-                toCenter()
+
+                val x = exactCenterX()
+                val y = exactCenterY()
+                if (mCenter.x != x || mCenter.y != y) {
+                    mCenter.set(x, y)
+                    invalidate()
+                    toCenter()
+                }
             }
         }
     }
@@ -544,9 +585,12 @@ abstract class Control(
      */
     @Throws(LowerNumberException::class)
     fun setPosition(x: Float, y: Float) {
-        mPosition.set(x, y)
-        validatePositionLimits()
-        validatePositionValues()
+        if (mPosition.x != x || mPosition.y != y) {
+            mPosition.set(x, y)
+            invalidate()
+            validatePositionLimits()
+            validatePositionValues()
+        }
     }
 
     /**
@@ -557,13 +601,17 @@ abstract class Control(
      * @param position The position from which the direction will be calculated.
      */
     fun directionFrom(position: ImmutablePosition): Direction {
-        val distance = mViewCircle.distanceTo(position)
+        val distance: Float = if (position == mPosition)
+            this.distance
+        else mViewCircle.distanceTo(position)
 
         if (distance <= invalidRadius)
             return Direction.NONE
 
         val angleDegrees = Math.toDegrees(
-            mViewCircle.angleTo(position)
+            if (position == mPosition)
+                this.angle
+            else mViewCircle.angleTo(position)
         )
 
         if (directionType == DirectionType.COMPLETE)
@@ -612,7 +660,7 @@ abstract class Control(
             Direction.LEFT -> FixedPosition(center.x - radius, center.y)
             Direction.RIGHT -> FixedPosition(center.x + radius, center.y)
             else -> {
-                radius /= sqrt(2.0f)
+                radius /= SQRT_2
                 when (direction) {
                     Direction.UP_LEFT -> FixedPosition(
                         center.x - radius,
