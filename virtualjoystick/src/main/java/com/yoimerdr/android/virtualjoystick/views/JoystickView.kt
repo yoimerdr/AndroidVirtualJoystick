@@ -55,6 +55,16 @@ class JoystickView @JvmOverloads constructor(
     private var mMoveListener: MoveListener? = null
 
     /**
+     * The control movement start listener.
+     */
+    private var mMoveStartListener: MoveStartListener? = null
+
+    /**
+     * The control movement end listener.
+     */
+    private var mMoveEndListener: MoveEndListener? = null
+
+    /**
      * The interval for the joystick listener call when it is hold.
      */
     var holdInterval: Long = HOLD_INTERVAL
@@ -303,16 +313,6 @@ class JoystickView @JvmOverloads constructor(
     interface MovesListener : MoveStartListener, MoveListener, MoveEndListener
 
     /**
-     * The control movement start listener.
-     */
-    private var mMoveStartListener: MoveStartListener? = null
-
-    /**
-     * The control movement end listener.
-     */
-    private var mMoveEndListener: MoveEndListener? = null
-
-    /**
      * A handler for control holds.
      */
     private class JoystickTouchHandler(
@@ -342,7 +342,6 @@ class JoystickView @JvmOverloads constructor(
             return false
         }
     }
-
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -499,12 +498,7 @@ class JoystickView @JvmOverloads constructor(
     }
 
     private val colorfulDrawer: ColorfulControlDrawer?
-        get() = mControl.drawer
-            .let {
-                if (it is ColorfulControlDrawer)
-                    it
-                else null
-            }
+        get() = mControl.drawer as? ColorfulControlDrawer
 
     /**
      * Changes the primary colour of the current control's drawer.
@@ -513,8 +507,9 @@ class JoystickView @JvmOverloads constructor(
      * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
      */
     fun setPrimaryColor(@ColorInt color: Int) {
-        colorfulDrawer?.primaryColor = color
-        invalidate()
+        colorfulDrawer?.let {
+            setColors(it, color, it.accentColor)
+        }
     }
 
     /**
@@ -524,8 +519,9 @@ class JoystickView @JvmOverloads constructor(
      * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
      */
     fun setAccentColor(@ColorInt color: Int) {
-        colorfulDrawer?.accentColor = color
-        invalidate()
+        colorfulDrawer?.let {
+            setColors(it, it.primaryColor, color)
+        }
     }
 
     /**
@@ -535,8 +531,9 @@ class JoystickView @JvmOverloads constructor(
      * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
      */
     fun setColors(colors: ColorsScheme) {
-        colorfulDrawer?.setColors(colors)
-        invalidate()
+        colorfulDrawer?.let {
+            setColors(it, colors.primary, colors.accent)
+        }
     }
 
     /**
@@ -549,8 +546,20 @@ class JoystickView @JvmOverloads constructor(
         @ColorInt primaryColor: Int,
         @ColorInt accentColor: Int,
     ) {
-        colorfulDrawer?.setColors(primaryColor, accentColor)
-        invalidate()
+        colorfulDrawer?.let {
+            setColors(it, primaryColor, accentColor)
+        }
+    }
+
+    private fun setColors(
+        drawer: ColorfulControlDrawer,
+        @ColorInt primaryColor: Int,
+        @ColorInt accentColor: Int,
+    ) {
+        if (drawer.primaryColor != primaryColor || drawer.accentColor != accentColor) {
+            drawer.setColors(primaryColor, accentColor)
+            invalidate()
+        }
     }
 
     /**
