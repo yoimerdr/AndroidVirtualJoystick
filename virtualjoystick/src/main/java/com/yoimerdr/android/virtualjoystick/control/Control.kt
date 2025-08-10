@@ -30,6 +30,7 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import com.yoimerdr.android.virtualjoystick.utils.extensions.firstOrdinal
 import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
 import kotlin.math.min
+import kotlin.math.round
 
 /**
  * Represents a virtual joystick control.
@@ -102,16 +103,65 @@ abstract class Control(
     /**
      * The possibles directions of the control.
      */
-    enum class Direction {
-        UP,
-        LEFT,
-        RIGHT,
-        DOWN,
-        UP_RIGHT,
-        UP_LEFT,
-        DOWN_RIGHT,
-        DOWN_LEFT,
-        NONE
+    enum class Direction(
+        val quadrant: Int,
+    ) {
+        RIGHT(1),
+        DOWN_RIGHT(2),
+        DOWN(3),
+        DOWN_LEFT(4),
+        LEFT(5),
+        UP_LEFT(6),
+        UP(7),
+        UP_RIGHT(8),
+        NONE(0);
+
+        companion object {
+            @JvmStatic
+            infix fun Direction.quadrant(quadrantType: Plane.MaxQuadrants): Int {
+                val quadrant = this.quadrant
+                if (quadrantType == Plane.MaxQuadrants.EIGHT)
+                    return quadrant
+
+                return round(this.quadrant / 2.0).toInt()
+            }
+
+            @JvmStatic
+            infix fun Direction.quadrant(directionType: DirectionType): Int {
+                val type = if (directionType == DirectionType.COMPLETE)
+                    Plane.MaxQuadrants.EIGHT
+                else Plane.MaxQuadrants.FOUR
+
+                return quadrant(type)
+            }
+
+            @JvmStatic
+            @JvmOverloads
+            fun fromQuadrant(
+                quadrant: Int,
+                quadrantType: Plane.MaxQuadrants = Plane.MaxQuadrants.EIGHT,
+            ): Direction {
+                if (quadrantType == Plane.MaxQuadrants.EIGHT)
+                    return when (quadrant) {
+                        1 -> RIGHT
+                        2 -> DOWN_RIGHT
+                        3 -> DOWN
+                        4 -> DOWN_LEFT
+                        5 -> LEFT
+                        6 -> UP_LEFT
+                        7 -> UP
+                        8 -> UP_RIGHT
+                        else -> NONE
+                    }
+                return when (quadrant) {
+                    1 -> RIGHT
+                    2 -> DOWN
+                    3 -> LEFT
+                    4 -> UP
+                    else -> NONE
+                }
+            }
+        }
     }
 
     /**
@@ -444,6 +494,9 @@ abstract class Control(
             return mDistance!!
         }
 
+    val squaredDistance: Float
+        get() = mViewCircle.squaredDistanceTo(mPosition)
+
     /**
      * Calculates the angle (clockwise) formed from the current position and center.
      * @return A value in the range from 0 to 2PI radians.
@@ -614,26 +667,12 @@ abstract class Control(
             else mViewCircle.angleTo(position)
         )
 
-        if (directionType == DirectionType.COMPLETE)
-            return when (Plane.quadrantOf(angleDegrees, Plane.MaxQuadrants.EIGHT, true)) {
-                1 -> Direction.RIGHT
-                2 -> Direction.DOWN_RIGHT
-                3 -> Direction.DOWN
-                4 -> Direction.DOWN_LEFT
-                5 -> Direction.LEFT
-                6 -> Direction.UP_LEFT
-                7 -> Direction.UP
-                8 -> Direction.UP_RIGHT
-                else -> Direction.NONE
-            }
+        val quadrantType = if (directionType == DirectionType.COMPLETE) Plane.MaxQuadrants.EIGHT
+        else Plane.MaxQuadrants.FOUR
 
-        return when (Plane.quadrantOf(angleDegrees, true)) {
-            1 -> Direction.RIGHT
-            2 -> Direction.DOWN
-            3 -> Direction.LEFT
-            4 -> Direction.UP
-            else -> Direction.NONE
-        }
+        val quadrant = Plane.quadrantOf(angleDegrees, quadrantType, true)
+
+        return Direction.fromQuadrant(quadrant, quadrantType)
     }
 
     /**
@@ -687,6 +726,8 @@ abstract class Control(
             }
         }
     }
+
+    open fun redraw() = distance > invalidRadius
 
     /**
      * Sets the current position to center.
