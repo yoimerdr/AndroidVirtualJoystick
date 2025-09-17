@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.control.drawer
+package com.yoimerdr.android.virtualjoystick.drawer.core
 
 import android.graphics.Canvas
 import com.yoimerdr.android.virtualjoystick.control.Control

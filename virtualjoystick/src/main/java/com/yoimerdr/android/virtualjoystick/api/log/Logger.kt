@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.utils.log
+package com.yoimerdr.android.virtualjoystick.api.log
 
 import android.util.Log
 import kotlin.reflect.KClass
@@ -53,7 +53,7 @@ object Logger {
      * @param message The warning message.
      */
     @JvmStatic
-    fun <T : Any> warn(from: T, message: Any) = Logger.warn(from::class, message)
+    fun <T : Any> warn(from: T, message: Any) = warn(from::class, message)
 
     /**
      * Log an error with the simple name of the provided class as the tag.
@@ -79,5 +79,5 @@ object Logger {
      * @param message The error message.
      */
     @JvmStatic
-    fun <T : Any> errorFromClass(from: T, message: Any) = Logger.error(from::class, message.toString())
+    fun <T : Any> errorFromClass(from: T, message: Any) = error(from::class, message.toString())
 }

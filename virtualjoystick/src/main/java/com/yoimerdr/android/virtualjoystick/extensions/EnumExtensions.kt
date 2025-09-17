@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.utils.extensions
+package com.yoimerdr.android.virtualjoystick.extensions
 
 import kotlin.enums.EnumEntries
 

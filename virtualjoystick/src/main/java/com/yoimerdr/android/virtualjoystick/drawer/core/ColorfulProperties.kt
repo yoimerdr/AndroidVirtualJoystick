@@ -1,29 +1,17 @@
-package com.yoimerdr.android.virtualjoystick.control.drawer
+package com.yoimerdr.android.virtualjoystick.drawer.core
 
 import android.graphics.Paint
 import androidx.annotation.ColorInt
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
-/**
- * A drawer that use an [Paint] and [colors] for draw the control representation.
- */
-abstract class ColorfulControlDrawer(
-    private val properties: ColorfulProperties
-) : ControlDrawer {
+open class ColorfulProperties @JvmOverloads constructor(
+    val colors: ColorsScheme,
+    val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG),
+) : SimpleDrawer.SimpleProperties() {
 
-    open class ColorfulProperties(open val colors: ColorsScheme) {
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    init {
+        paint.color = colors.primary
     }
-
-    /**
-     * The drawer colors.
-     */
-    val colors: ColorsScheme get() = properties.colors
-
-    /**
-     * The drawer paint.
-     */
-    val paint: Paint get() = properties.paint
 
     /**
      * An [IntArray] of the current [colors] properties.
@@ -33,7 +21,6 @@ abstract class ColorfulControlDrawer(
     val colorsArray: IntArray
         @ColorInt
         get() = intArrayOf(primaryColor, accentColor)
-
 
     open var primaryColor: Int
         /**
@@ -46,6 +33,7 @@ abstract class ColorfulControlDrawer(
          * @param color The new primary color.
          */
         set(@ColorInt color) {
+            hasChanged = primaryColor != color
             colors.primary = color
             paint.color = color
         }
@@ -61,6 +49,7 @@ abstract class ColorfulControlDrawer(
          * @param color The new accent color.
          */
         set(@ColorInt color) {
+            hasChanged = accentColor != color
             colors.accent = color
         }
 
@@ -71,8 +60,11 @@ abstract class ColorfulControlDrawer(
      * @param accent The new accent color.
      */
     open fun setColors(@ColorInt primary: Int, @ColorInt accent: Int) {
+        val hasChanged = primaryColor != primary || accent != accentColor
         primaryColor = primary
         accentColor = accent
+
+        this.hasChanged = hasChanged
     }
 
     /**

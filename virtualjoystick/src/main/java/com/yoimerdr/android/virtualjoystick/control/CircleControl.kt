@@ -1,18 +1,18 @@
 package com.yoimerdr.android.virtualjoystick.control
 
-import com.yoimerdr.android.virtualjoystick.control.drawer.circle.RatioCircleControlDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.shapes.circle.CircleDrawer
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
- * [Control] that uses by default by the [RatioCircleControlDrawer].
+ * [Control] that uses by default by the [CircleDrawer] with [CircleDrawer.withRatio].
  */
 open class CircleControl(
     colors: ColorsScheme,
     invalidRadius: Float,
     directionType: DirectionType,
-    radiusRatio: Float
+    radiusRatio: Float,
 ) : SimpleControl(
-    RatioCircleControlDrawer(colors, radiusRatio),
+    CircleDrawer.withRatio(colors, radiusRatio),
     invalidRadius,
     directionType
 )

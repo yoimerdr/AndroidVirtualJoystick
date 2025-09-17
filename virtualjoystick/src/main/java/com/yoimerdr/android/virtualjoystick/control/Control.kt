@@ -7,16 +7,15 @@ import androidx.annotation.CallSuper
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import com.yoimerdr.android.virtualjoystick.control.Control.Direction
-import com.yoimerdr.android.virtualjoystick.control.drawer.arc.ArcControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.arc.RatioCircleArcControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.ColorfulControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.DrawableControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.arc.BaseCircleArcControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.arc.RadiusCircleArcControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.circle.BaseCircleControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.circle.RadiusCircleControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.circle.RatioCircleControlDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.shapes.arc.ArcDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.ConfigurableDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.drawable.DrawableDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.shapes.arc.CircleArcDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.shapes.path.WedgeDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.shapes.circle.CircleDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.DrawerRadius
+import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
 import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
@@ -27,10 +26,9 @@ import com.yoimerdr.android.virtualjoystick.geometry.Plane.SQRT_2
 import com.yoimerdr.android.virtualjoystick.geometry.position.Position
 import com.yoimerdr.android.virtualjoystick.geometry.size.ImmutableSize
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
-import com.yoimerdr.android.virtualjoystick.utils.extensions.firstOrdinal
-import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
+import com.yoimerdr.android.virtualjoystick.extensions.firstOrdinal
+import com.yoimerdr.android.virtualjoystick.extensions.requirePositive
 import kotlin.math.min
-import kotlin.math.round
 
 /**
  * Represents a virtual joystick control.
@@ -119,11 +117,16 @@ abstract class Control(
         companion object {
             @JvmStatic
             infix fun Direction.quadrant(quadrantType: Plane.MaxQuadrants): Int {
-                val quadrant = this.quadrant
                 if (quadrantType == Plane.MaxQuadrants.EIGHT)
                     return quadrant
 
-                return round(this.quadrant / 2.0).toInt()
+                return when (this) {
+                    RIGHT -> 1
+                    DOWN, DOWN_RIGHT, DOWN_LEFT -> 2
+                    LEFT -> 3
+                    UP, UP_RIGHT, UP_LEFT -> 4
+                    else -> 0
+                }
             }
 
             @JvmStatic
@@ -133,6 +136,17 @@ abstract class Control(
                 else Plane.MaxQuadrants.FOUR
 
                 return quadrant(type)
+            }
+
+            @JvmStatic
+            infix fun Direction.direction(type: DirectionType): Direction {
+                if (type == DirectionType.SIMPLE)
+                    return when (this) {
+                        UP, UP_RIGHT, UP_LEFT -> UP
+                        DOWN, DOWN_RIGHT, DOWN_LEFT -> DOWN
+                        else -> this
+                    }
+                return this
             }
 
             @JvmStatic
@@ -195,7 +209,8 @@ abstract class Control(
     enum class DrawerType {
         CIRCLE,
         ARC,
-        CIRCLE_ARC;
+        CIRCLE_ARC,
+        WEDGE;
 
         companion object {
             /**
@@ -212,10 +227,9 @@ abstract class Control(
     /**
      * A builder class to build a drawer from some of the defaults for the control.
      *
-     * @see [ArcControlDrawer]
-     * @see [RatioCircleControlDrawer]
-     * @see [RadiusCircleControlDrawer]
-     * @see [RatioCircleArcControlDrawer]
+     * @see [ArcDrawer]
+     * @see [CircleDrawer]
+     * @see [CircleArcDrawer]
      */
     class DrawerBuilder {
         private val colors: ColorsScheme = ColorsScheme(Color.RED, Color.WHITE)
@@ -228,35 +242,49 @@ abstract class Control(
 
         // for circle type
         private var circleRadius: Float? = null
-        private var circleRadiusRatio: Float? = 0.25f
+        private var circleRadiusRatio: Float? = null
+
+        // for path types
+        private var pathStrictColor = false
+
+        // shared
+        private var radius: DrawerRadius = DrawerRadius.Ratio(0.25f)
 
         companion object {
             @JvmStatic
             fun from(drawer: ControlDrawer): DrawerBuilder {
                 return DrawerBuilder().apply {
-                    if (drawer is ColorfulControlDrawer)
-                        colors.set(drawer.colors)
+                    if (drawer !is ConfigurableDrawer)
+                        return@apply
 
-                    when (drawer) {
-                        is BaseCircleArcControlDrawer -> isBounded = drawer.isBounded
-                        is BaseCircleControlDrawer -> isBounded = drawer.isBounded
-                        is DrawableControlDrawer -> isBounded = drawer.isBounded
+                    val properties = drawer.properties
+
+                    if (properties is ColorfulProperties)
+                        colors.set(properties.colors)
+
+                    isBounded = when (properties) {
+                        is CircleArcDrawer.CircleArcProperties -> properties.isBounded
+                        is CircleDrawer.CircleProperties -> properties.isBounded
+                        is DrawableDrawer.DrawableProperties -> properties.isBounded
+                        else -> isBounded
                     }
 
-                    when (drawer) {
-                        is ArcControlDrawer -> {
-                            arcStrokeWidth = drawer.strokeWidth
-                            arcSweepAngle = drawer.sweepAngle
+                    when (properties) {
+                        is CircleArcDrawer.CircleArcProperties -> {
+                            radius = properties.circleProperties.radius
                         }
 
-                        is RatioCircleControlDrawer -> {
-                            circleRadiusRatio = drawer.ratio
-                            circleRadius = null
+                        is ArcDrawer.ArcProperties -> {
+                            arcStrokeWidth = properties.strokeWidth
+                            arcSweepAngle = properties.sweepAngle
                         }
 
-                        is RadiusCircleControlDrawer -> {
-                            circleRadius = drawer.radius
-                            circleRadiusRatio = null
+                        is CircleDrawer.CircleProperties -> {
+                            radius = properties.radius
+                        }
+
+                        is WedgeDrawer.WedgeProperties -> {
+                            radius = properties.radius
                         }
                     }
 
@@ -285,7 +313,7 @@ abstract class Control(
         }
 
         fun arcStrokeWidth(width: Float): DrawerBuilder {
-            arcStrokeWidth = ArcControlDrawer.getStrokeWidth(width)
+            arcStrokeWidth = ArcDrawer.getStrokeWidth(width)
             return this
         }
 
@@ -294,7 +322,7 @@ abstract class Control(
         fun arcStrokeWidth(width: Int) = arcStrokeWidth(width.toFloat())
 
         fun arcSweepAngle(angle: Float): DrawerBuilder {
-            arcSweepAngle = ArcControlDrawer.getSweepAngle(angle)
+            arcSweepAngle = ArcDrawer.getSweepAngle(angle)
             return this
         }
 
@@ -303,7 +331,7 @@ abstract class Control(
         fun arcSweepAngle(angle: Int) = arcSweepAngle(angle.toFloat())
 
         fun circleRadiusRatio(ratio: Float): DrawerBuilder {
-            circleRadiusRatio = RatioCircleControlDrawer.getRadiusRatio(ratio)
+            circleRadiusRatio = DrawerRadius.Ratio.getValidRatio(ratio)
             circleRadius = null
             return this
         }
@@ -321,6 +349,20 @@ abstract class Control(
             return this
         }
 
+        fun circleRadius(
+            radius: DrawerRadius,
+        ): DrawerBuilder {
+            circleRadius = null
+            circleRadiusRatio = null
+            this.radius = radius
+            return this
+        }
+
+        fun pathStrictColor(isStrict: Boolean): DrawerBuilder {
+            pathStrictColor = isStrict
+            return this
+        }
+
         fun type(type: DrawerType): DrawerBuilder {
             this.type = type
             return this
@@ -332,49 +374,43 @@ abstract class Control(
         }
 
         fun build(): ControlDrawer {
-            val radiusOrRatio = if (circleRadiusRatio == null && circleRadius != null)
-                circleRadius!! to true
-            else (circleRadiusRatio ?: 0.25f) to false
+            val radius = if (circleRadius != null) {
+                if (circleRadius!! > 0f)
+                    DrawerRadius.Radial(circleRadius!!)
+                else DrawerRadius.Zero
+            } else if (circleRadiusRatio != null) {
+                if (circleRadiusRatio!! > 0f)
+                    DrawerRadius.Ratio(circleRadiusRatio!!)
+                else DrawerRadius.Zero
+            } else this.radius
 
             return when (type) {
-                DrawerType.ARC -> ArcControlDrawer(
+                DrawerType.ARC -> ArcDrawer(
                     colors,
                     arcStrokeWidth,
                     arcSweepAngle,
                     isBounded
                 )
 
-                DrawerType.CIRCLE_ARC -> {
-                    if (radiusOrRatio.second)
-                        RadiusCircleArcControlDrawer(
-                            colors,
-                            arcStrokeWidth,
-                            arcSweepAngle,
-                            radiusOrRatio.first,
-                            isBounded
-                        )
-                    else RatioCircleArcControlDrawer(
-                        colors,
-                        arcStrokeWidth,
-                        arcSweepAngle,
-                        radiusOrRatio.first,
-                        isBounded
-                    )
-                }
+                DrawerType.CIRCLE_ARC -> CircleArcDrawer(
+                    colors,
+                    arcStrokeWidth,
+                    arcSweepAngle,
+                    radius,
+                    isBounded
+                )
 
-                DrawerType.CIRCLE -> {
-                    if (radiusOrRatio.second)
-                        RadiusCircleControlDrawer(
-                            colors,
-                            radiusOrRatio.first,
-                            isBounded
-                        )
-                    else RatioCircleControlDrawer(
-                        colors,
-                        radiusOrRatio.first,
-                        isBounded
-                    )
-                }
+                DrawerType.CIRCLE -> CircleDrawer(
+                    colors,
+                    radius,
+                    isBounded
+                )
+
+                DrawerType.WEDGE -> WedgeDrawer(
+                    colors.primary,
+                    pathStrictColor,
+                    radius
+                )
             }
         }
     }
@@ -727,7 +763,11 @@ abstract class Control(
         }
     }
 
-    open fun redraw() = distance > invalidRadius
+    /**
+     * Checks whether the control is the active zone
+     * */
+    open val isActive: Boolean
+        get() = distance > invalidRadius
 
     /**
      * Sets the current position to center.

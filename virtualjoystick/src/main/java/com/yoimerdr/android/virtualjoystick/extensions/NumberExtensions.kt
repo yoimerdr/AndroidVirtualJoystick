@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.utils.extensions
+package com.yoimerdr.android.virtualjoystick.extensions
 
 import com.yoimerdr.android.virtualjoystick.exceptions.LargeNumberException
 import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException

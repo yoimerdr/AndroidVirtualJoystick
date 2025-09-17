@@ -1,6 +1,6 @@
 package com.yoimerdr.android.virtualjoystick.control
 
-import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
 
 open class SimpleControl(
     override var drawer: ControlDrawer,

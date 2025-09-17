@@ -15,18 +15,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.yoimerdr.android.virtualjoystick.R
 import com.yoimerdr.android.virtualjoystick.control.Control
-import com.yoimerdr.android.virtualjoystick.control.drawer.ColorfulControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
 import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.Plane
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
-import com.yoimerdr.android.virtualjoystick.utils.log.Logger
+import com.yoimerdr.android.virtualjoystick.api.log.Logger
 import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.postDelayed
+import com.yoimerdr.android.virtualjoystick.control.Control.Direction.Companion.direction
+import com.yoimerdr.android.virtualjoystick.drawer.core.ConfigurableDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
+import com.yoimerdr.android.virtualjoystick.extensions.firstOrdinal
 import kotlin.math.min
 
 /**
@@ -37,17 +40,6 @@ class JoystickView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defaultStyle: Int = 0,
 ) : View(context, attrs, defaultStyle) {
-
-    private val viewBounds: Rect
-        get() = Rect(
-            paddingLeft,
-            paddingTop,
-            width - paddingRight,
-            height - paddingBottom
-        )
-
-    private val viewRadius: Double
-        get() = mControl.radius
 
     /**
      * The control movement listener.
@@ -65,28 +57,28 @@ class JoystickView @JvmOverloads constructor(
     private var mMoveEndListener: MoveEndListener? = null
 
     /**
-     * The interval for the joystick listener call when it is hold.
-     */
-    var holdInterval: Long = HOLD_INTERVAL
-        /**
-         * Changes the current interval for the joystick listener call when the control is hold.
-         * @param interval An interval value in ms.
-         */
-        set(interval) {
-            field = getHoldInterval(interval)
-            mTouchHandler.apply {
-                holdInterval = field
-                activeHoldInterval = field
-            }
-        }
-
-    /**
      * The control holds handler.
      */
-    private val mTouchHandler: JoystickTouchHandler = JoystickTouchHandler(this, holdInterval)
+    private val mTouchHandler: JoystickTouchHandler
 
     private var mControl: Control
 
+    private val colorfulProperties: ColorfulProperties?
+        get() {
+            val properties = (mControl.drawer as? ConfigurableDrawer)?.properties
+            return properties as? ColorfulProperties
+        }
+
+    private val viewBounds: Rect
+        get() = Rect(
+            paddingLeft,
+            paddingTop,
+            width - paddingRight,
+            height - paddingBottom
+        )
+
+    private val viewRadius: Double
+        get() = mControl.radius
 
     /**
      * Gets the current position.
@@ -132,14 +124,31 @@ class JoystickView @JvmOverloads constructor(
         )
         get() = mControl.magnitude
 
+    /**
+     * The interval for the joystick listener call when it is hold.
+     */
+    var holdInterval: Long = HOLD_INTERVAL
+        /**
+         * Changes the current interval for the joystick listener call when the control is hold.
+         * @param interval An interval value in ms.
+         */
+        set(interval) {
+            field = getHoldInterval(interval)
+            mTouchHandler.apply {
+                holdInterval = field
+                activeHoldInterval = field
+            }
+        }
 
     init {
+        mTouchHandler = JoystickTouchHandler(this, holdInterval)
+
         var primaryColor = ContextCompat.getColor(context, R.color.drawer_primary)
         var accentColor = ContextCompat.getColor(context, R.color.drawer_accent)
         var isBounded = true
 
         var invalidRadius: Float = resources.getDimensionPixelSize(R.dimen.invalidRadius).toFloat()
-        var backgroundRes: Int = R.drawable.circlefor_bg
+        var backgroundRes: Int = BackgroundAspect.CLASSIC.resId
         var controlType = Control.DrawerType.CIRCLE
         var directionType = Control.DirectionType.COMPLETE
 
@@ -177,7 +186,6 @@ class JoystickView @JvmOverloads constructor(
                     R.styleable.JoystickView_controlDrawer_bounded,
                     isBounded
                 )
-
                 controlType = Control.DrawerType.fromId(
                     styles.getInt(
                         R.styleable.JoystickView_controlType,
@@ -190,9 +198,14 @@ class JoystickView @JvmOverloads constructor(
                         0
                     )
                 )
-                backgroundRes = getBackgroundResOf(controlType).let {
-                    styles.getResourceId(R.styleable.JoystickView_background, it)
+                backgroundRes = styles.getInt(
+                    R.styleable.JoystickView_aspect,
+                    0
+                ).let {
+                    BackgroundAspect.fromId(it).resId
                 }
+                backgroundRes =
+                    styles.getResourceId(R.styleable.JoystickView_background, backgroundRes)
 
                 // arc types
                 arcStrokeWidth = styles.getFloat(
@@ -211,7 +224,7 @@ class JoystickView @JvmOverloads constructor(
                 )
             }
         } else {
-            backgroundRes = getBackgroundResOf(controlType)
+            backgroundRes = BackgroundAspect.CLASSIC.resId
         }
 
         mControl = Control.Builder()
@@ -231,7 +244,7 @@ class JoystickView @JvmOverloads constructor(
         background = try {
             getCompatDrawable(backgroundRes)
         } catch (_: Exception) {
-            getCompatDrawable(getBackgroundResOf(controlType))
+            getCompatDrawable(BackgroundAspect.CLASSIC.resId)
         }
     }
 
@@ -240,6 +253,22 @@ class JoystickView @JvmOverloads constructor(
      */
     private fun getCompatDrawable(@DrawableRes id: Int): Drawable? =
         ResourcesCompat.getDrawable(resources, id, context.theme)
+
+    enum class BackgroundAspect(
+        @DrawableRes
+        val resId: Int,
+    ) {
+        CLASSIC(R.drawable.circlefor_bg),
+        MODERN(R.drawable.arcfor_bg),
+        MODERN_DPAD(R.drawable.dpad_modern);
+
+        companion object {
+            @JvmStatic
+            fun fromId(id: Int): BackgroundAspect {
+                return entries.firstOrdinal(id, CLASSIC)
+            }
+        }
+    }
 
     companion object {
         /**
@@ -265,10 +294,14 @@ class JoystickView @JvmOverloads constructor(
          */
         @JvmStatic
         @DrawableRes
+        @Deprecated(
+            "Unnecessary specification, use enum class BackgroundType instead.",
+            replaceWith = ReplaceWith("")
+        )
         fun getBackgroundResOf(type: Control.DrawerType): Int {
             return when (type) {
-                Control.DrawerType.ARC -> R.drawable.arcfor_bg
-                else -> R.drawable.circlefor_bg
+                Control.DrawerType.ARC -> BackgroundAspect.MODERN.resId
+                else -> BackgroundAspect.CLASSIC.resId
             }
         }
     }
@@ -490,24 +523,33 @@ class JoystickView @JvmOverloads constructor(
      * If you only want to change the the [type], use [setType]
      * @param type The new control type.
      */
+    @Deprecated(
+        "Unnecessary specification, use setAspect and setType instead.",
+        replaceWith = ReplaceWith("apply { setAspect(type)\nsetType(type) }")
+    )
     fun setTypeAndBackground(type: Control.DrawerType) {
+        getCompatDrawable(getBackgroundResOf(type))?.let {
+            background = it
+        }
         setType(type)
-        val drawable = getCompatDrawable(getBackgroundResOf(type))
-        if (drawable != null)
-            background = drawable
     }
 
-    private val colorfulDrawer: ColorfulControlDrawer?
-        get() = mControl.drawer as? ColorfulControlDrawer
+    fun setBackgroundAspect(type: BackgroundAspect) {
+        getCompatDrawable(
+            type.resId
+        )?.let {
+            background = it
+        }
+    }
 
     /**
      * Changes the primary colour of the current control's drawer.
      *
      * If the current control's drawer is custom (not defined in the package)
-     * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
+     * that does not inherit from [ColorfulProperties], nothing will be changed.
      */
     fun setPrimaryColor(@ColorInt color: Int) {
-        colorfulDrawer?.let {
+        colorfulProperties?.let {
             setColors(it, color, it.accentColor)
         }
     }
@@ -516,10 +558,10 @@ class JoystickView @JvmOverloads constructor(
      * Changes the accent color of the current control's drawer.
      *
      * If the current control's drawer is custom (not defined in the package)
-     * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
+     * that does not inherit from [ColorfulProperties], nothing will be changed.
      */
     fun setAccentColor(@ColorInt color: Int) {
-        colorfulDrawer?.let {
+        colorfulProperties?.let {
             setColors(it, it.primaryColor, color)
         }
     }
@@ -528,10 +570,10 @@ class JoystickView @JvmOverloads constructor(
      * Changes the colors of the current control's drawer.
      *
      * If the current control's drawer is custom (not defined in the package)
-     * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
+     * that does not inherit from [ColorfulProperties], nothing will be changed.
      */
     fun setColors(colors: ColorsScheme) {
-        colorfulDrawer?.let {
+        colorfulProperties?.let {
             setColors(it, colors.primary, colors.accent)
         }
     }
@@ -540,26 +582,25 @@ class JoystickView @JvmOverloads constructor(
      * Changes the colors of the current control's drawer.
      *
      * If the current control's drawer is custom (not defined in the package)
-     * that does not inherit from [ColorfulControlDrawer], nothing will be changed.
+     * that does not inherit from [ColorfulProperties], nothing will be changed.
      */
     fun setColors(
         @ColorInt primaryColor: Int,
         @ColorInt accentColor: Int,
     ) {
-        colorfulDrawer?.let {
+        colorfulProperties?.let {
             setColors(it, primaryColor, accentColor)
         }
     }
 
     private fun setColors(
-        drawer: ColorfulControlDrawer,
+        properties: ColorfulProperties,
         @ColorInt primaryColor: Int,
         @ColorInt accentColor: Int,
     ) {
-        if (drawer.primaryColor != primaryColor || drawer.accentColor != accentColor) {
-            drawer.setColors(primaryColor, accentColor)
+        properties.setColors(primaryColor, accentColor)
+        if (properties.changed())
             invalidate()
-        }
     }
 
     /**
@@ -642,6 +683,6 @@ class JoystickView @JvmOverloads constructor(
      */
     @JvmOverloads
     fun move(direction: Control.Direction, magnitude: Float = 1f) {
-        move(mControl.positionFrom(direction, magnitude))
+        move(mControl.positionFrom(direction direction mControl.directionType, magnitude))
     }
 }

@@ -8,7 +8,7 @@ import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.MutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.Position
-import com.yoimerdr.android.virtualjoystick.utils.extensions.greaterThan
+import com.yoimerdr.android.virtualjoystick.extensions.greaterThan
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -113,6 +113,11 @@ class Circle(
     fun distanceTo(x: Float, y: Float): Float {
         return distanceTo(FixedPosition(x, y))
     }
+
+    fun squaredDistanceTo(position: ImmutablePosition): Float =
+        Plane.squaredDistanceBetween(position, center)
+
+    fun squaredDistanceTo(x: Float, y: Float): Float = squaredDistanceTo(FixedPosition(x, y))
 
     /**
      * Calculates the angle formed from the given position and the circle center.

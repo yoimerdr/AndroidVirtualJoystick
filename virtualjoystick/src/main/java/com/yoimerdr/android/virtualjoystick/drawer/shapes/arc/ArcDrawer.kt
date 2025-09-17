@@ -1,4 +1,4 @@
-package com.yoimerdr.android.virtualjoystick.control.drawer.arc
+package com.yoimerdr.android.virtualjoystick.drawer.shapes.arc
 
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -15,19 +15,20 @@ import com.yoimerdr.android.virtualjoystick.geometry.position.Position
 import com.yoimerdr.android.virtualjoystick.geometry.factory.RectFFactory
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import androidx.core.graphics.withSave
-import com.yoimerdr.android.virtualjoystick.control.drawer.ColorfulControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
+import com.yoimerdr.android.virtualjoystick.drawer.core.SimpleDrawer
 
 /**
  * A [ControlDrawer] that draws an arc.
  * Draws the arc positioned almost in [Control.parametricPosition].
  */
-open class ArcControlDrawer(
+open class ArcDrawer(
     /**
      * The arc drawer properties.
      */
-    private val properties: ArcProperties,
-) : ColorfulControlDrawer(properties) {
+    override val properties: ArcProperties,
+) : SimpleDrawer() {
 
     /**
      * @param colors The colors for the drawer.
@@ -88,72 +89,14 @@ open class ArcControlDrawer(
      */
     protected open val arcCircle: Circle = Circle(1f, Position())
 
-    init {
-        paint.apply {
+    override fun configure() {
+        properties.paint.apply {
             style = Paint.Style.STROKE
-            color = colors.primary
+            color = properties.colors.primary
             this.strokeWidth = properties.strokeWidth
         }
     }
 
-    var strokeWidth: Float
-        /**
-         * Gets the stroke width of the paint.
-         */
-        @FloatRange(
-            from = MIN_STROKE_WIDTH.toDouble()
-        )
-        get() = properties.strokeWidth
-        /**
-         * Sets the stroke width of the paint.
-         *
-         * @param strokeWidth The new stroke width. The minimum value must be [MIN_STROKE_WIDTH].
-         */
-        set(
-            @FloatRange(
-                from = MIN_STROKE_WIDTH.toDouble()
-            )
-            strokeWidth
-        ) {
-            properties.strokeWidth = getStrokeWidth(strokeWidth)
-        }
-
-    var sweepAngle: Float
-        /**
-         * Gets the arc sweep angle.
-         */
-        @FloatRange(
-            from = MIN_SWEEP_ANGLE.toDouble(),
-            to = MAX_SWEEP_ANGLE.toDouble()
-        )
-        get() = properties.sweepAngle
-        /**
-         * Sets the arc sweep angle.
-         *
-         * @param angle The new sweep angle. Must be a sexagesimal degree in the range [MIN_SWEEP_ANGLE] to [MAX_SWEEP_ANGLE].
-         */
-        set(
-            @FloatRange(
-                from = MIN_SWEEP_ANGLE.toDouble(),
-                to = MAX_SWEEP_ANGLE.toDouble()
-            )
-            angle,
-        ) {
-            properties.sweepAngle = angle
-        }
-
-    var isBounded: Boolean
-        /**
-         * Gets whether the circle is bounded by the control radius.
-         */
-        get() = properties.isBounded
-        /**
-         * Sets whether the circle is bounded by the control radius.
-         * @param isBounded The new value for the bounded state.
-         */
-        set(isBounded) {
-            properties.isBounded = isBounded
-        }
 
     open class ArcProperties @JvmOverloads constructor(
         colors: ColorsScheme,
@@ -349,8 +292,8 @@ open class ArcControlDrawer(
      * @param control The [Control] from where the drawer is used.
      */
     protected open fun getDistance(control: Control): Double = control.radius.let {
-        if (isBounded)
-            it - strokeWidth * 2
+        if (properties.isBounded)
+            it - properties.strokeWidth * 2
         else it
     }
 
@@ -362,8 +305,8 @@ open class ArcControlDrawer(
         return RectFFactory.fromCircle(arcCircle)
     }
 
-    override fun draw(canvas: Canvas, control: Control) {
-        if (control.distance < control.invalidRadius)
+    override fun onDraw(canvas: Canvas, control: Control) {
+        if (!control.isActive)
             return
 
         drawShapes(canvas, control)
@@ -382,12 +325,14 @@ open class ArcControlDrawer(
         }
 
         val angle: Double = control.angle
-        val startAngle: Double = Math.toDegrees(angle) - sweepAngle / 2
+        val startAngle: Double = Math.toDegrees(angle) - properties.sweepAngle / 2
 
-        paint.apply {
-            shader = getPaintShader(control, angle, startAngle)
-            style = Paint.Style.STROKE
-        }
+        properties
+            .paint.apply {
+                shader = getPaintShader(control, angle, startAngle)
+                color = properties.colors.primary
+                style = Paint.Style.STROKE
+            }
 
         drawArc(canvas, control, startAngle.toFloat())
         drawArrow(canvas, control, angle)
@@ -404,7 +349,7 @@ open class ArcControlDrawer(
      */
     protected open fun drawArc(canvas: Canvas, control: Control, startArcAngle: Float) {
         val oval = getOval(control)
-        canvas.drawArc(oval, startArcAngle, sweepAngle, false, paint)
+        canvas.drawArc(oval, startArcAngle, properties.sweepAngle, false, properties.paint)
     }
 
     /**
@@ -416,15 +361,17 @@ open class ArcControlDrawer(
      */
     protected open fun drawArrow(canvas: Canvas, control: Control, angle: Double) {
         arcCircle.apply {
-            radius += strokeWidth
+            radius += properties.strokeWidth
             val position = parametricPositionOf(angle)
+
+            val paint = properties.paint
             paint.apply {
-                color = colors.accent
+                color = properties.colors.accent
                 style = Paint.Style.FILL_AND_STROKE
             }
 
             val arrowSweepAngle = Math.toDegrees(angle) - 90
-            drawArrow(canvas, position, strokeWidth, arrowSweepAngle.toFloat(), paint)
+            drawArrow(canvas, position, properties.strokeWidth, arrowSweepAngle.toFloat(), paint)
         }
     }
 
@@ -438,10 +385,12 @@ open class ArcControlDrawer(
      */
     protected open fun getPaintShader(control: Control, angle: Double, startAngle: Double): Shader {
         val position = arcCircle.parametricPositionOf(control.angle)
+        val (primary, accent) = properties.colors
+
         return RadialGradient(
             position.x, position.y,
             getDistance(control).toFloat(),
-            colorsArray,
+            intArrayOf(accent, primary),
             null,
             Shader.TileMode.CLAMP
         )

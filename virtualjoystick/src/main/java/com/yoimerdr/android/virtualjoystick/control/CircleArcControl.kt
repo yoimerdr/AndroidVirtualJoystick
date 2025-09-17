@@ -1,10 +1,10 @@
 package com.yoimerdr.android.virtualjoystick.control
 
-import com.yoimerdr.android.virtualjoystick.control.drawer.arc.RatioCircleArcControlDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.shapes.arc.CircleArcDrawer
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
- * [Control] that uses by default by the [RatioCircleArcControlDrawer].
+ * [Control] that uses by default by the [CircleArcDrawer.withRatio].
  */
 open class CircleArcControl(
     colors: ColorsScheme,
@@ -12,9 +12,9 @@ open class CircleArcControl(
     directionType: DirectionType,
     strokeWidth: Float,
     sweepAngle: Float,
-    radiusProportion: Float
+    radiusProportion: Float,
 ) : SimpleControl(
-    RatioCircleArcControlDrawer(colors, strokeWidth, sweepAngle, radiusProportion),
+    CircleArcDrawer.withRatio(colors, strokeWidth, sweepAngle, radiusProportion),
     invalidRadius,
     directionType
 )

@@ -1,12 +1,13 @@
-package com.yoimerdr.android.virtualjoystick.control.drawer
+package com.yoimerdr.android.virtualjoystick.drawer.composite
 
 import android.graphics.Canvas
 import com.yoimerdr.android.virtualjoystick.control.Control
+import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
 
 /**
  * A [ControlDrawer] that uses other drawers to draw.
  */
-open class CompositeControlDrawer @JvmOverloads constructor(
+open class CompositeDrawer @JvmOverloads constructor(
     /**
      *  The control drawers to use.
      */

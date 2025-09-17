@@ -5,7 +5,7 @@ import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
-import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
+import com.yoimerdr.android.virtualjoystick.extensions.requirePositive
 import kotlin.math.atan2
 import kotlin.math.hypot
 
@@ -35,7 +35,7 @@ object Plane {
     @JvmStatic
     @JvmOverloads
     @Throws(IllegalArgumentException::class)
-    @IntRange(from = 1,to = 8)
+    @IntRange(from = 1, to = 8)
     fun quadrantOf(
         angle: Double,
         maxQuadrants: MaxQuadrants = MaxQuadrants.FOUR,
@@ -82,17 +82,6 @@ object Plane {
     }
 
     /**
-     * Calculates the distance between the given positions.
-     * @param positionA The position A.
-     * @param positionB The position B
-     * @return The distance between the 2 positions.
-     */
-    @JvmStatic
-    fun distanceBetween(positionA: ImmutablePosition, positionB: ImmutablePosition): Float {
-        return hypot(positionA.deltaX(positionB), positionA.deltaY(positionB))
-    }
-
-    /**
      * Calculates the distance between the given coordinates.
      * @param xA The x coordinate of position the A.
      * @param yA The y coordinate of position the A.
@@ -103,6 +92,31 @@ object Plane {
     @JvmStatic
     fun distanceBetween(xA: Float, yA: Float, xB: Float, yB: Float): Float {
         return hypot(xA - xB, yA - yB)
+    }
+
+    @JvmStatic
+    fun squaredDistanceBetween(xA: Float, yA: Float, xB: Float, yB: Float): Float {
+        val x = xA - xB
+        val y = yA - yB
+
+        return x * x + y * y
+    }
+
+    /**
+     * Calculates the distance between the given positions.
+     * @param positionA The position A.
+     * @param positionB The position B
+     * @return The distance between the 2 positions.
+     */
+    @JvmStatic
+    fun distanceBetween(positionA: ImmutablePosition, positionB: ImmutablePosition): Float {
+        return distanceBetween(positionA.x, positionA.y, positionB.x, positionB.y)
+    }
+
+
+    @JvmStatic
+    fun squaredDistanceBetween(positionA: ImmutablePosition, positionB: ImmutablePosition): Float {
+        return squaredDistanceBetween(positionA.x, positionA.y, positionB.x, positionB.y)
     }
 
     /**

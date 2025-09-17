@@ -4,6 +4,7 @@
         <attr name="background" format="reference" />
         <attr name="moveInterval" format="integer" />
         <attr name="invalidRadius" format="dimension" />
+
         <attr name="controlType" format="enum">
             <enum name="circle" value="0" />
             <enum name="arc" value="1" />
@@ -12,6 +13,11 @@
         <attr name="directionType" format="enum">
             <enum name="complete" value="0" />
             <enum name="simple" value="1" />
+        </attr>
+        <attr name="aspect" format="enum">
+            <enum name="classic" value="0" />
+            <enum name="modern" value="1" />
+            <enum name="directional" value="2" />
         </attr>
 
         <attr name="controlDrawer_primaryColor" format="color" />

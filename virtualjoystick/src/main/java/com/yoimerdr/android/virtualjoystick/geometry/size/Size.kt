@@ -2,7 +2,7 @@ package com.yoimerdr.android.virtualjoystick.geometry.size
 
 import androidx.annotation.IntRange
 import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
-import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
+import com.yoimerdr.android.virtualjoystick.extensions.requirePositive
 
 
 /**
