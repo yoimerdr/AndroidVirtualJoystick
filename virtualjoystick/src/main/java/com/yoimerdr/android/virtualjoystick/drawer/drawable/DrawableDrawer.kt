@@ -282,5 +282,6 @@ open class DrawableDrawer(
         cache.recycle()
         cache.width = width.toInt()
         cache.height = height.toInt()
+        super.onChange()
     }
 }

@@ -11,7 +11,12 @@ class DrawableBitCache @JvmOverloads constructor(
 ) {
 
     var size = size
-        private set
+        set(value) {
+            if (field != value) {
+                field = value
+                recycle()
+            }
+        }
 
     var drawable = drawable
         set(value) {
@@ -61,12 +66,5 @@ class DrawableBitCache @JvmOverloads constructor(
     fun recycle() {
         mBitmap?.recycle()
         mBitmap = null
-    }
-
-    fun setSize(size: Size) {
-        if (this.size != size) {
-            this.size = size
-            recycle()
-        }
     }
 }

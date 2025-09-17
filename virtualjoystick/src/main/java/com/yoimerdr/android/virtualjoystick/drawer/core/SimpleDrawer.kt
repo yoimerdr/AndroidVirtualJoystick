@@ -131,8 +131,12 @@ open class SimpleDrawer(
 
     }
 
+    /**
+     * Called when the properties have changed.
+     */
+    @CallSuper
     protected open fun onChange() {
-
+        properties.resolve()
     }
 
     /**
