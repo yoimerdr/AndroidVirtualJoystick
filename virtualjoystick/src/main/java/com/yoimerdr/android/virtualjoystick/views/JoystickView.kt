@@ -258,8 +258,9 @@ class JoystickView @JvmOverloads constructor(
         @DrawableRes
         val resId: Int,
     ) {
-        CLASSIC(R.drawable.circlefor_bg),
-        MODERN(R.drawable.arcfor_bg),
+        CLASSIC(R.drawable.classic),
+        MODERN(R.drawable.modern),
+        CLASSIC_DPAD(R.drawable.dpad_classic),
         MODERN_DPAD(R.drawable.dpad_modern);
 
         companion object {
