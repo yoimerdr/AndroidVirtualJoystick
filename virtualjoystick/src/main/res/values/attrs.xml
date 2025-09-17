@@ -17,7 +17,9 @@
         <attr name="aspect" format="enum">
             <enum name="classic" value="0" />
             <enum name="modern" value="1" />
-            <enum name="directional" value="2" />
+            <enum name="dpad_classic" value="2" />
+            <enum name="dpad_standard" value="3" />
+            <enum name="dpad_modern" value="4" />
         </attr>
 
         <attr name="controlDrawer_primaryColor" format="color" />

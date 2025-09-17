@@ -260,8 +260,9 @@ class JoystickView @JvmOverloads constructor(
     ) {
         CLASSIC(R.drawable.classic),
         MODERN(R.drawable.modern),
-        CLASSIC_DPAD(R.drawable.dpad_classic),
-        MODERN_DPAD(R.drawable.dpad_modern);
+        DPAD_CLASSIC(R.drawable.dpad_classic),
+        DPAD_STANDARD(R.drawable.dpad_standard),
+        DPAD_MODERN(R.drawable.dpad_modern);
 
         companion object {
             @JvmStatic
