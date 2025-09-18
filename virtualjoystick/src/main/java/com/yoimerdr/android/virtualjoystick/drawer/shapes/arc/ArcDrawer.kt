@@ -90,14 +90,6 @@ open class ArcDrawer(
      */
     protected open val arcCircle: Circle = Circle(1f, Position())
 
-    override fun configure() {
-        properties.paint.apply {
-            style = Paint.Style.STROKE
-            color = properties.colors.primary
-            strokeWidth = properties.strokeWidth
-        }
-    }
-
     /**
      * @param colors The colors for the drawer.
      * @param strokeWidth The stroke width of the paint.
@@ -118,30 +110,38 @@ open class ArcDrawer(
         var isBounded: Boolean = true,
     ) : ColorfulProperties(colors) {
 
+        init {
+            paint.apply {
+                style = Paint.Style.STROKE
+                this.strokeWidth = clampStrokeWidth(strokeWidth)
+            }
+        }
+
         /**
          * The sweep angle of the arc.
          * */
-        var sweepAngle = getSweepAngle(sweepAngle)
+        var sweepAngle = clampSweepAngle(sweepAngle)
             /**
              * Sets the sweep angle of the arc.
              *
-             * @see [getSweepAngle]
+             * @see [clampSweepAngle]
              * */
             set(value) {
-                field = getSweepAngle(value)
+                field = clampSweepAngle(value)
             }
 
         /**
          * The width of the arc line
          * */
-        var strokeWidth = getStrokeWidth(strokeWidth)
+        var strokeWidth = clampStrokeWidth(strokeWidth)
             /**
              * Sets the width of the arc line
              *
-             * @see [getStrokeWidth]
+             * @see [clampStrokeWidth]
              * */
             set(value) {
-                field = getStrokeWidth(value)
+                field = clampStrokeWidth(value)
+                paint.strokeWidth = field
             }
     }
 
@@ -162,7 +162,7 @@ open class ArcDrawer(
         const val MIN_STROKE_WIDTH: Float = 5f
 
         /**
-         * Checks if the [sweepAngle] value meets the valid range.
+         * Clamps the [sweepAngle] value in the valid range.
          *
          * @param sweepAngle The angle (degrees) value.
          *
@@ -170,12 +170,12 @@ open class ArcDrawer(
          */
         @JvmStatic
         @FloatRange(from = MIN_SWEEP_ANGLE.toDouble(), to = MAX_SWEEP_ANGLE.toDouble())
-        fun getSweepAngle(sweepAngle: Float): Float {
+        fun clampSweepAngle(sweepAngle: Float): Float {
             return sweepAngle.coerceIn(MIN_SWEEP_ANGLE, MAX_SWEEP_ANGLE)
         }
 
         /**
-         * Checks if the [strokeWidth] value meets the valid range.
+         * Clamps the [strokeWidth] value in the valid range.
          *
          * @param strokeWidth The angle value.
          *
@@ -183,7 +183,7 @@ open class ArcDrawer(
          */
         @JvmStatic
         @FloatRange(from = MIN_SWEEP_ANGLE.toDouble())
-        fun getStrokeWidth(strokeWidth: Float): Float {
+        fun clampStrokeWidth(strokeWidth: Float): Float {
             return strokeWidth.coerceAtLeast(MIN_STROKE_WIDTH)
         }
 
@@ -309,12 +309,8 @@ open class ArcDrawer(
         }
     }
 
-    /**
-     * Calculate the maximum distance from the center that can be reached.
-     *
-     * @param control The [Control] from where the drawer is used.
-     */
-    protected open fun getDistance(control: Control): Double = control.radius.let {
+
+    override fun getMaxDistance(control: Control): Double = control.radius.let {
         if (properties.isBounded)
             it - properties.strokeWidth * 2
         else it
@@ -344,7 +340,7 @@ open class ArcDrawer(
     protected open fun drawShapes(canvas: Canvas, control: Control) {
         arcCircle.apply {
             setCenter(control.center)
-            radius = getDistance(control)
+            radius = getMaxDistance(control)
         }
 
         val angle: Double = control.angle
@@ -412,7 +408,7 @@ open class ArcDrawer(
 
         return RadialGradient(
             position.x, position.y,
-            getDistance(control).toFloat(),
+            getMaxDistance(control).toFloat(),
             intArrayOf(accent, primary),
             null,
             Shader.TileMode.CLAMP

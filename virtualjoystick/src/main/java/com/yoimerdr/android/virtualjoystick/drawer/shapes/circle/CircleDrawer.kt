@@ -158,10 +158,7 @@ open class CircleDrawer(
      */
     protected open fun getCircleRadius(control: Control): Double = properties.radius.getValue(control)
 
-    /**
-     * Gets the maximum distance to where the center position of the circle can be.
-     */
-    protected open fun getMaxDistance(control: Control): Double = control.radius.let {
+    override fun getMaxDistance(control: Control): Double = control.radius.let {
         if (properties.isBounded)
             it - getCircleRadius(control)
         else it

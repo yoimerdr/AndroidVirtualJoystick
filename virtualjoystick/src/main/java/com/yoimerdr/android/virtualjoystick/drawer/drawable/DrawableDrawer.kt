@@ -262,13 +262,13 @@ open class DrawableDrawer(
     /**
      * Gets the scaled width dimension of the drawable.
      */
-    protected val width: Float
+    protected open val width: Float
         get() = properties.drawable.intrinsicWidth * properties.scale
 
     /**
      * Gets for the scaled height dimension of the drawable.
      */
-    protected val height: Float
+    protected open val height: Float
         get() = properties.drawable.intrinsicHeight * properties.scale
 
     /**
@@ -281,12 +281,7 @@ open class DrawableDrawer(
      */
     protected val halfHeight: Float get() = height / 2f
 
-
-    /**
-     * Calculates the maximum distance from the center of the control
-     * that the drawable can reach.
-     * */
-    protected open fun getMaxRadius(control: Control): Double {
+    override fun getMaxDistance(control: Control): Double {
         return if (properties.isBounded)
             control.radius - maxOf(halfWidth, halfHeight)
         else control.radius
@@ -298,7 +293,7 @@ open class DrawableDrawer(
      * @param control The [Control] from where the drawer is used.
      */
     protected open fun getPosition(control: Control): ImmutablePosition {
-        val max = getMaxRadius(control)
+        val max = getMaxDistance(control)
         return if (max <= 0) {
             withLogger("DrawableDrawer") {
                 error(

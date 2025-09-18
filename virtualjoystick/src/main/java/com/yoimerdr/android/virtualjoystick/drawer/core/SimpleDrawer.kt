@@ -89,13 +89,20 @@ open class SimpleDrawer(
     }
 
     /**
-     * Gets the current direction of the control.
+     * Calculates the current direction of the control.
      *
      * By default, it returns the control's direction.
      *
      * @param control The current control.
      */
-    protected open fun getCurrentDirection(control: Control): Control.Direction = control.direction
+    protected open fun getDirection(control: Control): Control.Direction = control.direction
+
+    /**
+     * Calculate the maximum distance from the center that can be reached.
+     *
+     * @param control The [Control] from where the drawer is used.
+     */
+    protected open fun getMaxDistance(control: Control): Double = control.radius
 
     override fun canDraw(control: Control): Boolean = true
 
@@ -106,7 +113,7 @@ open class SimpleDrawer(
             mConfigured = true
         }
 
-        val direction = getCurrentDirection(control)
+        val direction = getDirection(control)
 
         if (!isValid(control)) {
             lastDirection = direction

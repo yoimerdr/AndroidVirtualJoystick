@@ -2,7 +2,6 @@ package com.yoimerdr.android.virtualjoystick.drawer.shapes.path
 
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.Path
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
@@ -20,18 +19,6 @@ abstract class PathDrawer(
 ) : SimpleDrawer() {
 
     protected val path = Path()
-
-    override fun configure() {
-        properties.apply {
-            if (!isStrictColor) {
-                paint.apply {
-                    shader = null
-                    strokeWidth = 0f
-                    style = Paint.Style.FILL
-                }
-            }
-        }
-    }
 
     /**
      * @param color The color of the path.
@@ -126,18 +113,11 @@ abstract class PathDrawer(
     }
 
     /**
-     * Calculate the maximum distance from the center that can be reached.
-     *
-     * @param control The [Control] from where the drawer is used.
-     */
-    protected open fun getOuterDistance(control: Control): Double = control.radius
-
-    /**
      * Calculates the distance value between the inner position and the center.
      *
      * @param control The [Control] from where the drawer is used.
      */
-    protected abstract fun getInnerDistance(control: Control): Double
+    protected abstract fun getMinDistance(control: Control): Double
 
     /**
      * Called to update the path of the drawer.

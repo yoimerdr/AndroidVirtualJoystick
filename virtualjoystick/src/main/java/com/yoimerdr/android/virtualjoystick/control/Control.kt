@@ -379,7 +379,7 @@ abstract class Control(
         }
 
         fun arcStrokeWidth(width: Float): DrawerBuilder {
-            arcStrokeWidth = ArcDrawer.getStrokeWidth(width)
+            arcStrokeWidth = ArcDrawer.clampStrokeWidth(width)
             return this
         }
 
@@ -388,7 +388,7 @@ abstract class Control(
         fun arcStrokeWidth(width: Int) = arcStrokeWidth(width.toFloat())
 
         fun arcSweepAngle(angle: Float): DrawerBuilder {
-            arcSweepAngle = ArcDrawer.getSweepAngle(angle)
+            arcSweepAngle = ArcDrawer.clampSweepAngle(angle)
             return this
         }
 
@@ -397,7 +397,7 @@ abstract class Control(
         fun arcSweepAngle(angle: Int) = arcSweepAngle(angle.toFloat())
 
         fun circleRadiusRatio(ratio: Float): DrawerBuilder {
-            circleRadiusRatio = DrawerRadius.Ratio.getValidRatio(ratio)
+            circleRadiusRatio = DrawerRadius.Ratio.clampRatio(ratio)
             circleRadius = null
             return this
         }

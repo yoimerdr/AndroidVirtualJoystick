@@ -5,7 +5,6 @@ import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.shapes.circle.CircleDrawer.CircleProperties
 import com.yoimerdr.android.virtualjoystick.drawer.core.DrawerRadius
-import com.yoimerdr.android.virtualjoystick.drawer.shapes.circle.CircleDrawer
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
@@ -138,6 +137,80 @@ open class CircleArcDrawer protected constructor(
             DrawerRadius.Ratio(ratio),
             isBounded
         )
+
+        /**
+         * Creates a [CircleArcDrawer] with a radius based on a ratio.
+         * @param color The color for the drawer.
+         * @param strokeWidth The stroke width of the paint.
+         * @param sweepAngle The arc sweep angle.
+         * @param ratio The ratio value.
+         * @param isBounded Indicates whether the maximum distance is bounded.
+         *
+         * @see [DrawerRadius.Ratio]
+         * */
+        @JvmOverloads
+        @JvmStatic
+        fun withRatio(
+            color: Int,
+            strokeWidth: Float,
+            sweepAngle: Float,
+            ratio: Float,
+            isBounded: Boolean = true,
+        ) = CircleArcDrawer(
+            color,
+            strokeWidth,
+            sweepAngle,
+            DrawerRadius.Ratio(ratio),
+            isBounded
+        )
+
+        /**
+         * Creates a [CircleArcDrawer] with a radius value.
+         * @param colors The colors for the drawer.
+         * @param strokeWidth The stroke width of the paint.
+         * @param sweepAngle The arc sweep angle.
+         * @param radius The radius value.
+         * @param isBounded Indicates whether the maximum distance is bounded.
+         *
+         * @see [DrawerRadius.Fixed]
+         * */
+        fun withRadius(
+            colors: ColorsScheme,
+            strokeWidth: Float,
+            sweepAngle: Float,
+            radius: Float,
+            isBounded: Boolean = true,
+        ) = CircleArcDrawer(
+            colors,
+            strokeWidth,
+            sweepAngle,
+            DrawerRadius.Fixed(radius),
+            isBounded
+        )
+
+        /**
+         * Creates a [CircleArcDrawer] with a radius value.
+         * @param color The color for the drawer.
+         * @param strokeWidth The stroke width of the paint.
+         * @param sweepAngle The arc sweep angle.
+         * @param radius The radius value.
+         * @param isBounded Indicates whether the maximum distance is bounded.
+         *
+         * @see [DrawerRadius.Fixed]
+         * */
+        fun withRadius(
+            color: Int,
+            strokeWidth: Float,
+            sweepAngle: Float,
+            radius: Float,
+            isBounded: Boolean = true,
+        ) = CircleArcDrawer(
+            color,
+            strokeWidth,
+            sweepAngle,
+            DrawerRadius.Fixed(radius),
+            isBounded
+        )
     }
 
     private var mCircleDrawer: ControlDrawer? = circleDrawer
@@ -164,8 +237,8 @@ open class CircleArcDrawer protected constructor(
     protected open fun getCircleRadius(control: Control): Double =
         properties.circleProperties.radius.getValue(control)
 
-    override fun getDistance(control: Control): Double {
-        val max = super.getDistance(control)
+    override fun getMaxDistance(control: Control): Double {
+        val max = super.getMaxDistance(control)
 
         return (control.distance + getCircleRadius(control))
             .coerceAtMost(max)

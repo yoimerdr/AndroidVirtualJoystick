@@ -187,7 +187,7 @@ open class WedgeDrawer(
         )
     }
 
-    override fun getInnerDistance(control: Control): Double = properties.radius.getValue(control)
+    override fun getMinDistance(control: Control): Double = properties.radius.getValue(control)
 
     /**
      * Resets and fills the path of the wedge.
@@ -206,10 +206,10 @@ open class WedgeDrawer(
         val mode = properties.mode
 
         // the outer circle is required, so no handle the exception
-        val outerCircle = Circle.fromImmutableCenter(getOuterDistance(control), center)
+        val outerCircle = Circle.fromImmutableCenter(getMaxDistance(control), center)
         val innerCircle = try {
             // handle exception for non inner circle (radius <= 0)
-            Circle(getInnerDistance(control), outerCircle.center)
+            Circle(getMinDistance(control), outerCircle.center)
         } catch (_: LowerNumberException) {
             null
         }

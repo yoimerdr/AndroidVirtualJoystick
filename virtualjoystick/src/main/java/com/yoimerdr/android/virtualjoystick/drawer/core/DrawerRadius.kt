@@ -59,7 +59,7 @@ sealed class DrawerRadius {
             const val MAX_RADIUS_RATIO = 0.80f
 
             /**
-             * Checks if the [ratio] value meets the valid range.
+             * Clamps the [ratio] value in the valid range.
              *
              * @param ratio The ratio value.
              *
@@ -67,12 +67,12 @@ sealed class DrawerRadius {
              */
             @JvmStatic
             @FloatRange(from = MIN_RADIUS_RATIO.toDouble(), to = MAX_RADIUS_RATIO.toDouble())
-            fun getValidRatio(ratio: Float): Float {
+            fun clampRatio(ratio: Float): Float {
                 return ratio.coerceIn(MIN_RADIUS_RATIO, MAX_RADIUS_RATIO)
             }
         }
 
-        val ratio = getValidRatio(ratio)
+        val ratio = clampRatio(ratio)
 
         override fun getValue(control: Control): Double = control.radius * ratio
     }
