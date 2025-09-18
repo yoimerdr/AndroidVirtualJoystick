@@ -11,7 +11,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.FloatRange
 import androidx.core.content.ContextCompat
 import com.yoimerdr.android.virtualjoystick.api.drawable.DrawableBitCache
-import com.yoimerdr.android.virtualjoystick.api.log.Logger
+import com.yoimerdr.android.virtualjoystick.api.log.LoggerSupplier.withLogger
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.SimpleDrawer
@@ -147,15 +147,15 @@ open class DrawableDrawer(
         /**
          * Check whether the dimensions of the drawable are similar,
          * if not log an error message.
-         * @see [Logger.errorFromClass]
          */
         protected fun checkDrawableSize() {
             drawable.apply {
                 if (intrinsicHeight != intrinsicWidth)
-                    Logger.errorFromClass(
-                        this@DrawableProperties,
-                        "To avoid unexpected behavior, the width and height of the drawable should be the same."
-                    )
+                    withLogger("DrawableProperties") {
+                        error(
+                            "To avoid unexpected behavior, the width and height of the drawable should be the same.",
+                        )
+                    }
             }
         }
     }
@@ -255,10 +255,13 @@ open class DrawableDrawer(
     protected open fun getPosition(control: Control): ImmutablePosition {
         val max = getMaxRadius(control)
         return if (max <= 0) {
-            Logger.errorFromClass(
-                this,
-                "The size of the scaled drawable (width and height) is too large with respect to the view where the control is used. Try scaling it using a smaller value for the scale property of this drawer."
-            )
+            withLogger("DrawableDrawer") {
+                error(
+                    "The size of the scaled drawable is too large with respect to the view.",
+                    "Try scaling it using a smaller value for the scale property of this drawer."
+                )
+            }
+
             control.center
         } else if (control.distance > max)
             Circle.fromImmutableCenter(max, control.center)

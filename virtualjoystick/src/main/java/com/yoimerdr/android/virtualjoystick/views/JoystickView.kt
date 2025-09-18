@@ -22,10 +22,10 @@ import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.Plane
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
-import com.yoimerdr.android.virtualjoystick.api.log.Logger
 import com.yoimerdr.android.virtualjoystick.views.handler.TouchHoldEventHandler
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.postDelayed
+import com.yoimerdr.android.virtualjoystick.api.log.LoggerSupplier.withLogger
 import com.yoimerdr.android.virtualjoystick.control.Control.Direction.Companion.direction
 import com.yoimerdr.android.virtualjoystick.drawer.core.ConfigurableDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
@@ -460,7 +460,9 @@ class JoystickView @JvmOverloads constructor(
         try {
             mControl.setPosition(touchPosition)
         } catch (e: LowerNumberException) {
-            Logger.errorFromClass(this@JoystickView, e)
+            withLogger("JoystickView") {
+                error(e,)
+            }
             return false
         }
 
