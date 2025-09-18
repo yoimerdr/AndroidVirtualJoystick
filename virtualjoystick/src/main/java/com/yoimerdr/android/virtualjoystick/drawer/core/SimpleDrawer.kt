@@ -98,6 +98,8 @@ open class SimpleDrawer(
      */
     protected open fun getCurrentDirection(control: Control): Control.Direction = control.direction
 
+    override fun canDraw(control: Control): Boolean = true
+
     @CallSuper
     override fun draw(canvas: Canvas, control: Control) {
         if (!mConfigured) {
@@ -147,5 +149,10 @@ open class SimpleDrawer(
      */
     protected open fun onDraw(canvas: Canvas, control: Control) {
 
+    }
+
+    override fun release() {
+        lastDirection = null
+        lastType = null
     }
 }

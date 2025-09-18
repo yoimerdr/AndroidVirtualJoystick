@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.FloatRange
@@ -407,6 +408,7 @@ class JoystickView @JvmOverloads constructor(
         setMeasuredDimension(side, side)
     }
 
+    @CallSuper
     override fun draw(canvas: Canvas) {
         background?.let {
             it.bounds = viewBounds
@@ -429,6 +431,7 @@ class JoystickView @JvmOverloads constructor(
 
     private fun movementEnd() {
         mControl.toCenter()
+        mControl.release()
         mMoveEndListener?.onMoveEnd()
     }
 
@@ -448,7 +451,8 @@ class JoystickView @JvmOverloads constructor(
             if (!mControl.isInCenter()) {
                 mTouchHandler.cancelHold()
                 movementEnd()
-                invalidate()
+                if (mControl.canDraw())
+                    invalidate()
             }
             return true
         }
@@ -461,7 +465,8 @@ class JoystickView @JvmOverloads constructor(
         }
 
         return mTouchHandler.onTouchEvent(event).let {
-            invalidate()
+            if (mControl.canDraw())
+                invalidate()
             it
         }
 

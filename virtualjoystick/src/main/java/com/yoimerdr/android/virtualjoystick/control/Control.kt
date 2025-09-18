@@ -567,6 +567,12 @@ abstract class Control(
         }
 
     /**
+     * Checks whether the control is the active zone
+     * */
+    open val isActive: Boolean
+        get() = distance > invalidRadius
+
+    /**
      * Validates the control position values.
      *
      * @throws LowerNumberException If any of the position coordinates is negative.
@@ -648,7 +654,12 @@ abstract class Control(
      *
      */
     open fun onDraw(canvas: Canvas) {
-        drawer.draw(canvas, this)
+        if (canDraw())
+            drawer.draw(canvas, this)
+    }
+
+    open fun canDraw(): Boolean {
+        return (drawer as? ConfigurableDrawer)?.canDraw(this) ?: true
     }
 
     /**
@@ -764,12 +775,6 @@ abstract class Control(
     }
 
     /**
-     * Checks whether the control is the active zone
-     * */
-    open val isActive: Boolean
-        get() = distance > invalidRadius
-
-    /**
      * Sets the current position to center.
      * @throws LowerNumberException If any of the position coordinates is negative.
      */
@@ -794,4 +799,9 @@ abstract class Control(
      * @return The calculated difference.
      */
     fun deltaY(): Float = mPosition.deltaY(mCenter)
+
+    @CallSuper
+    open fun release() {
+        (drawer as? ConfigurableDrawer)?.release()
+    }
 }

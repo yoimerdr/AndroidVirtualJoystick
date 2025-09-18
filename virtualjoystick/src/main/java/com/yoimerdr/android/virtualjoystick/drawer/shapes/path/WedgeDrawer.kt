@@ -209,4 +209,8 @@ open class WedgeDrawer(
 
         super.draw(canvas, control)
     }
+
+    override fun canDraw(control: Control): Boolean {
+        return !isValid(control)
+    }
 }
