@@ -9,7 +9,7 @@ import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.factory.RectFFactory
 
 /**
- * A drawer that draws a clamped wedge.
+ * A drawer that draws a wedge.
  */
 open class WedgeDrawer(
     /**
@@ -20,23 +20,27 @@ open class WedgeDrawer(
 
     /**
      * @param color The primary color.
-     * @param strictColor If true, the [color] will be used as such, without modifying its alpha channel.
+     * @param isStrictColor Indicates if the color can be modified.
+     * @param radius The drawer radius.
+     * @param mode The wedge drawing mode.
      */
     @JvmOverloads
     constructor(
         @ColorInt color: Int,
-        strictColor: Boolean,
+        isStrictColor: Boolean,
         radius: DrawerRadius,
         mode: Mode = Mode.CURVE,
     ) : this(
         WedgeProperties(
-            color, strictColor,
+            color, isStrictColor,
             radius, mode
         )
     )
 
     /**
-     * @param color The primary color. Also, its alpha channel will be changed.
+     * @param color The primary color.
+     * @param radius The drawer radius.
+     * @param mode The wedge drawing mode.
      */
     @JvmOverloads
     constructor(
@@ -50,34 +54,75 @@ open class WedgeDrawer(
         mode
     )
 
+    /**
+     * The wedge drawing mode.
+     * */
     enum class Mode {
+        /**
+         * Indicates that the inner side of the wedge is drawn with a curve.
+         * */
         CURVE,
+
+        /**
+         * Indicates that the inner side of the wedge is drawn with a straight line.
+         * */
         STRAIGHT
     }
 
+    /**
+     * @param color The primary color.
+     * @param isStrictColor Indicates if the color can be modified.
+     * @param radius The drawer radius.
+     * @param mode The wedge drawing mode.
+     */
     open class WedgeProperties(
         @ColorInt color: Int,
-        strictColor: Boolean,
+        isStrictColor: Boolean,
+        /**
+         * The drawer radius.
+         * */
         var radius: DrawerRadius,
+        /**
+         * The drawer mode.
+         * */
         var mode: Mode = Mode.CURVE,
-    ) : PathProperties(color, strictColor)
+    ) : PathProperties(color, isStrictColor)
 
     companion object {
 
+        /**
+         * Creates a [WedgeDrawer] with a ratio-based radius.
+         *
+         * @param color The primary color.
+         * @param isStrictColor Indicates if the color can be modified.
+         * @param ratio The ratio value.
+         * @param mode The wedge drawing mode.
+         *
+         * @see [DrawerRadius.Ratio]
+         */
         @JvmStatic
         @JvmOverloads
         fun withRatio(
             @ColorInt color: Int,
-            strictColor: Boolean,
+            isStrictColor: Boolean,
             ratio: Float,
             mode: Mode = Mode.CURVE,
         ) = WedgeDrawer(
             color,
-            strictColor,
+            isStrictColor,
             DrawerRadius.Ratio(ratio),
             mode
         )
 
+        /**
+         * Creates a [WedgeDrawer] with a ratio-based radius.
+         *
+         * @param color The primary color.
+         * @param ratio The ratio value.
+         * @param mode The wedge drawing mode.
+         *
+         * @see [DrawerRadius.Ratio]
+         */
         @JvmStatic
         @JvmOverloads
         fun withRatio(
@@ -86,20 +131,40 @@ open class WedgeDrawer(
             mode: Mode = Mode.CURVE,
         ) = withRatio(color, false, ratio, mode)
 
+
+        /**
+         * Creates a [WedgeDrawer] with a radius.
+         *
+         * @param color The primary color.
+         * @param isStrictColor Indicates if the color can be modified.
+         * @param radius The radius value.
+         * @param mode The wedge drawing mode.
+         *
+         * @see [DrawerRadius.Fixed]
+         */
         @JvmStatic
         @JvmOverloads
         fun withRadius(
             @ColorInt color: Int,
-            strictColor: Boolean,
+            isStrictColor: Boolean,
             radius: Float,
             mode: Mode = Mode.CURVE,
         ) = WedgeDrawer(
             color,
-            strictColor,
-            DrawerRadius.Radial(radius),
+            isStrictColor,
+            DrawerRadius.Fixed(radius),
             mode
         )
 
+        /**
+         * Creates a [WedgeDrawer] with a radius.
+         *
+         * @param color The primary color.
+         * @param radius The radius value.
+         * @param mode The wedge drawing mode.
+         *
+         * @see [DrawerRadius.Fixed]
+         */
         @JvmStatic
         @JvmOverloads
         fun withRadius(
@@ -195,6 +260,7 @@ open class WedgeDrawer(
 
     /**
      * Gets the sweep angle for give direction type.
+     *
      * @param directionType The control direction type.
      * @return 90 if [directionType] is [Control.DirectionType.SIMPLE]; Otherwise, 45
      */

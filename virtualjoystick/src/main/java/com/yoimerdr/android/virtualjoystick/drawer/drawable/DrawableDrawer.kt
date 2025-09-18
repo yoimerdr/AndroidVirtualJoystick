@@ -34,6 +34,9 @@ open class DrawableDrawer(
 
     private var mCache: DrawableBitCache? = null
 
+    /**
+     * The bitmap cache for the drawable.
+     * */
     protected val cache: DrawableBitCache
         get() {
             if (mCache == null) {
@@ -45,6 +48,8 @@ open class DrawableDrawer(
     /**
      * @param drawable The drawable resource to be drawn.
      * @param scale The scale ratio to scale the dimensions of the [drawable].
+     * @param color The primary color to tint the drawable.
+     * @param isBounded Indicates whether the maximum distance is bounded.
      */
     @JvmOverloads
     constructor(
@@ -68,6 +73,8 @@ open class DrawableDrawer(
 
     /**
      * @param drawable The drawable resource to be drawn.
+     * @param color The primary color to tint the drawable.
+     * @param isBounded Indicates whether the maximum distance is bounded.
      */
     @JvmOverloads
     constructor(
@@ -81,6 +88,12 @@ open class DrawableDrawer(
         isBounded
     )
 
+    /**
+     * @param drawable The drawable resource to be drawn.
+     * @param scale The scale ratio to scale the dimensions of the [drawable].
+     * @param colors The colors for the drawer.
+     * @param isBounded Indicates whether the maximum distance is bounded.
+     * */
     open class DrawableProperties @JvmOverloads constructor(
         drawable: Drawable,
         @FloatRange(
@@ -89,9 +102,20 @@ open class DrawableDrawer(
         )
         scale: Float,
         colors: ColorsScheme,
+        /**
+         * Indicates whether the maximum distance is bounded.
+         * */
         var isBounded: Boolean = true,
     ) : ColorfulProperties(colors) {
 
+        /**
+         * Properties for a [DrawableDrawer].
+         * @param drawable The drawable resource to be drawn.
+         * @param scale The scale ratio to scale the dimensions of the [drawable].
+         * Must be a value greater than zero.
+         * @param color The primary color to tint the drawable.
+         * @param isBounded Indicates whether the maximum distance is bounded.
+         * */
         @JvmOverloads
         constructor(
             drawable: Drawable,
@@ -113,7 +137,13 @@ open class DrawableDrawer(
             drawable.setTint(colors.primary)
         }
 
+        /**
+         * The scale ratio
+         * */
         var scale = scale.greaterThan(0f)
+            /**
+             * Sets the scale ratio. Must be a value greater than zero.
+             * */
             set(value) {
                 field = value.greaterThan(0f)
                 hasChanged = true
@@ -133,7 +163,13 @@ open class DrawableDrawer(
                 hasChanged = false
             }
 
+        /**
+         * Gets the drawable resource.
+         * */
         open var drawable: Drawable = drawable
+            /**
+             * Sets the drawable resource and applies the primary color as tint.
+             * */
             set(value) {
                 if (field != value) {
                     field = value
@@ -180,9 +216,12 @@ open class DrawableDrawer(
 
         /**
          * Instance a [DrawableDrawer] from context and a [DrawableRes] id.
+         *
          * @param context The current activity or view context.
          * @param id The drawable resource id.
          * @param scale The scale ratio to scale the drawable. Must be a value greater than zero.
+         * @param color The primary color to tint the drawable.
+         * @param isBounded Indicates whether the maximum distance is bounded.
          * @throws NotFoundException If doesn't exist a drawable for the given id or the [scale] is not positive.
          */
         @JvmStatic
@@ -202,6 +241,8 @@ open class DrawableDrawer(
          * Instance a [DrawableDrawer] from context and a [DrawableRes] id.
          * @param context The current activity or view context.
          * @param id The drawable resource id.
+         * @param color The primary color to tint the drawable.
+         * @param isBounded Indicates whether the maximum distance is bounded.
          * @throws NotFoundException If doesn't exist a drawable for the given id.
          */
         @JvmStatic
@@ -241,6 +282,10 @@ open class DrawableDrawer(
     protected val halfHeight: Float get() = height / 2f
 
 
+    /**
+     * Calculates the maximum distance from the center of the control
+     * that the drawable can reach.
+     * */
     protected open fun getMaxRadius(control: Control): Double {
         return if (properties.isBounded)
             control.radius - maxOf(halfWidth, halfHeight)

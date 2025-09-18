@@ -4,8 +4,17 @@ import android.graphics.Paint
 import androidx.annotation.ColorInt
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
+/**
+ * Provides color properties for a drawer.
+ * */
 open class ColorfulProperties @JvmOverloads constructor(
+    /**
+     * The color scheme.
+     * */
     val colors: ColorsScheme,
+    /**
+     * The paint.
+     * */
     val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG),
 ) : SimpleDrawer.SimpleProperties() {
 

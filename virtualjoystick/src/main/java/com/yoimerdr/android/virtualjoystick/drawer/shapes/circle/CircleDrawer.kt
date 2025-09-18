@@ -5,6 +5,7 @@ import android.graphics.RadialGradient
 import android.graphics.Shader
 import androidx.annotation.ColorInt
 import com.yoimerdr.android.virtualjoystick.control.Control
+import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.DrawerRadius
 import com.yoimerdr.android.virtualjoystick.drawer.core.SimpleDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
@@ -12,13 +13,17 @@ import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
+/**
+ * A [ControlDrawer] that draws a circle.
+ * */
 open class CircleDrawer(
     override val properties: CircleProperties,
 ) : SimpleDrawer() {
 
     /**
      * @param colors The colors for the drawer.
-     * @param radius The the circle radius length.
+     * @param radius The the circle radius.
+     * @param isBounded Indicates whether the maximum distance is bounded.
      */
     @JvmOverloads
     constructor(
@@ -27,14 +32,33 @@ open class CircleDrawer(
         isBounded: Boolean = true,
     ) : this(CircleProperties(colors, radius, isBounded))
 
+    /**
+     * @param colors The colors for the drawer.
+     * @param radius The the circle radius.
+     * @param isBounded Indicates whether the maximum distance is bounded.
+     */
     open class CircleProperties @JvmOverloads constructor(
         colors: ColorsScheme,
+        /**
+         * The circle radius.
+         * */
         var radius: DrawerRadius,
+        /**
+         * Indicates whether the maximum distance is bounded.
+         * */
         var isBounded: Boolean = true,
     ) : ColorfulProperties(colors)
 
     companion object {
 
+        /**
+         * Creates a [CircleDrawer] with a radius based on a ratio.
+         * @param colors The colors for the drawer.
+         * @param ratio The ratio value.
+         * @param isBounded Indicates whether the maximum distance is bounded.
+         *
+         * @see [DrawerRadius.Ratio]
+         * */
         @JvmStatic
         @JvmOverloads
         fun withRatio(
@@ -47,6 +71,14 @@ open class CircleDrawer(
             isBounded
         )
 
+        /**
+         * Creates a [CircleDrawer] with a radius based on a ratio.
+         * @param color The color for the drawer.
+         * @param ratio The ratio value.
+         * @param isBounded Indicates whether the maximum distance is bounded.
+         *
+         * @see [DrawerRadius.Ratio]
+         * */
         @JvmStatic
         @JvmOverloads
         fun withRatio(
@@ -60,6 +92,14 @@ open class CircleDrawer(
             isBounded
         )
 
+        /**
+         * Creates a [CircleDrawer] with a radius based on a radius.
+         * @param colors The colors for the drawer.
+         * @param radius The radius value.
+         * @param isBounded Indicates whether the maximum distance is bounded.
+         *
+         * @see [DrawerRadius.Fixed]
+         * */
         @JvmStatic
         @JvmOverloads
         fun withRadius(
@@ -68,10 +108,18 @@ open class CircleDrawer(
             isBounded: Boolean = true,
         ) = CircleDrawer(
             colors,
-            DrawerRadius.Radial(radius),
+            DrawerRadius.Fixed(radius),
             isBounded
         )
 
+        /**
+         * Creates a [CircleDrawer] with a radius based on a radius.
+         * @param color The color for the drawer.
+         * @param radius The radius value.
+         * @param isBounded Indicates whether the maximum distance is bounded.
+         *
+         * @see [DrawerRadius.Fixed]
+         * */
         @JvmStatic
         @JvmOverloads
         fun withRadius(

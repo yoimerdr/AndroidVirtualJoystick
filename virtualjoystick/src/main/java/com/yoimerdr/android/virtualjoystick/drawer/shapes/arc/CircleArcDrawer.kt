@@ -5,12 +5,16 @@ import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.shapes.circle.CircleDrawer.CircleProperties
 import com.yoimerdr.android.virtualjoystick.drawer.core.DrawerRadius
+import com.yoimerdr.android.virtualjoystick.drawer.shapes.circle.CircleDrawer
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
  * A [ControlDrawer] that draws a circle accompanied by an arc.
  */
 open class CircleArcDrawer protected constructor(
+    /**
+     * The companion drawer
+     * */
     circleDrawer: ControlDrawer?,
     /**
      * The drawer properties.
@@ -18,6 +22,9 @@ open class CircleArcDrawer protected constructor(
     override val properties: CircleArcProperties,
 ) : ArcDrawer(properties) {
 
+    /**
+     * The drawer properties.
+     * */
     constructor(
         properties: CircleArcProperties,
     ) : this(
@@ -25,6 +32,13 @@ open class CircleArcDrawer protected constructor(
         properties
     )
 
+    /**
+     * @param colors The colors for the drawer.
+     * @param strokeWidth The stroke width of the paint.
+     * @param sweepAngle The arc sweep angle.
+     * @param radius The circle radius.
+     * @param isBounded Indicates whether the maximum distance is bounded.
+     */
     @JvmOverloads
     constructor(
         colors: ColorsScheme,
@@ -42,6 +56,13 @@ open class CircleArcDrawer protected constructor(
         )
     )
 
+    /**
+     * @param color The color for the drawer.
+     * @param strokeWidth The stroke width of the paint.
+     * @param sweepAngle The arc sweep angle.
+     * @param radius The circle radius.
+     * @param isBounded Indicates whether the maximum distance is bounded.
+     */
     @JvmOverloads
     constructor(
         color: Int,
@@ -57,6 +78,11 @@ open class CircleArcDrawer protected constructor(
         isBounded
     )
 
+    /**
+     * The custom circle drawer.
+     *
+     * @param rootProperties The root properties.
+     * */
     protected open class CircleDrawer(
         protected val rootProperties: CircleArcProperties,
     ) : com.yoimerdr.android.virtualjoystick.drawer.shapes.circle.CircleDrawer(
@@ -70,6 +96,13 @@ open class CircleArcDrawer protected constructor(
         }
     }
 
+    /**
+     * @param colors The colors for the drawer.
+     * @param strokeWidth The stroke width of the paint.
+     * @param sweepAngle The arc sweep angle.
+     * @param circleProperties The circle properties.
+     * @param isBounded Indicates whether the maximum distance is bounded.
+     */
     open class CircleArcProperties @JvmOverloads constructor(
         colors: ColorsScheme,
         strokeWidth: Float,
@@ -79,6 +112,17 @@ open class CircleArcDrawer protected constructor(
     ) : ArcProperties(colors, strokeWidth, sweepAngle, isBounded)
 
     companion object {
+
+        /**
+         * Creates a [CircleArcDrawer] with a radius based on a ratio.
+         * @param colors The colors for the drawer.
+         * @param strokeWidth The stroke width of the paint.
+         * @param sweepAngle The arc sweep angle.
+         * @param ratio The ratio value.
+         * @param isBounded Indicates whether the maximum distance is bounded.
+         *
+         * @see [DrawerRadius.Ratio]
+         * */
         @JvmOverloads
         @JvmStatic
         fun withRatio(
@@ -98,6 +142,11 @@ open class CircleArcDrawer protected constructor(
 
     private var mCircleDrawer: ControlDrawer? = circleDrawer
 
+    /**
+     * The companion drawer.
+     *
+     * It should be a [CircleDrawer], but it can be any other [ControlDrawer].
+     * */
     protected open var circleDrawer: ControlDrawer
         get() {
             if (mCircleDrawer == null)

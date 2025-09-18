@@ -1,7 +1,7 @@
 package com.yoimerdr.android.virtualjoystick.drawer.core
 
 /**
- * The contract for managing the properties of a configurable control drawer.
+ * The properties of a configurable control drawer.
  */
 interface DrawerProperties {
 

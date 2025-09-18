@@ -94,7 +94,6 @@ open class SimpleDrawer(
      * By default, it returns the control's direction.
      *
      * @param control The current control.
-     * @return The current direction of the control.
      */
     protected open fun getCurrentDirection(control: Control): Control.Direction = control.direction
 
@@ -103,8 +102,8 @@ open class SimpleDrawer(
     @CallSuper
     override fun draw(canvas: Canvas, control: Control) {
         if (!mConfigured) {
-            mConfigured = true
             configure()
+            mConfigured = true
         }
 
         val direction = getCurrentDirection(control)
@@ -127,7 +126,7 @@ open class SimpleDrawer(
      *
      * @param canvas The view canvas.
      * @param control The [Control] from where the drawer is used.
-     * @see isValid
+     * @see [isValid]
      */
     protected open fun onPrepare(canvas: Canvas, control: Control) {
 
@@ -135,6 +134,8 @@ open class SimpleDrawer(
 
     /**
      * Called when the properties have changed.
+     *
+     * @see [DrawerProperties.changed]
      */
     @CallSuper
     protected open fun onChange() {
@@ -142,7 +143,7 @@ open class SimpleDrawer(
     }
 
     /**
-     * Called to draw the control on the canvas.
+     * Called when the drawer is ready to draw.
      *
      * @param canvas The view canvas.
      * @param control The [Control] from where the drawer is used.

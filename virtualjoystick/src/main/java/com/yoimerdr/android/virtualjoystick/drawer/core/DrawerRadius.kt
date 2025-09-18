@@ -4,14 +4,25 @@ import androidx.annotation.FloatRange
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.extensions.greaterThan
 
+/**
+ * A sealed class for obtaining a radius value.
+ * */
 sealed class DrawerRadius {
     abstract fun getValue(control: Control): Double
 
+    /**
+     * The zero radius.
+     * */
     data object Zero : DrawerRadius() {
         override fun getValue(control: Control): Double = 0.0
     }
 
-    class Radial(
+    /**
+     * The fixed radius.
+     *
+     * @param radius The fixed radius value. Must be greater than 0.
+     * */
+    class Fixed(
         @FloatRange(
             from = 0.0,
             fromInclusive = false
@@ -23,6 +34,11 @@ sealed class DrawerRadius {
         override fun getValue(control: Control): Double = radius.toDouble()
     }
 
+    /**
+     * The radius based on a ratio of the control radius.
+     *
+     * @param ratio The ratio value in the range [MIN_RADIUS_RATIO] to [MAX_RADIUS_RATIO].
+     * */
     class Ratio(
         @FloatRange(
             from = MIN_RADIUS_RATIO.toDouble(),

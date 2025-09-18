@@ -6,7 +6,6 @@ import android.graphics.Rect
 import androidx.annotation.CallSuper
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
-import com.yoimerdr.android.virtualjoystick.control.Control.Direction
 import com.yoimerdr.android.virtualjoystick.drawer.shapes.arc.ArcDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.ConfigurableDrawer
@@ -16,6 +15,8 @@ import com.yoimerdr.android.virtualjoystick.drawer.shapes.path.WedgeDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.shapes.circle.CircleDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.DrawerRadius
 import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
+import com.yoimerdr.android.virtualjoystick.drawer.core.DrawerProperties
+import com.yoimerdr.android.virtualjoystick.drawer.shapes.path.PathDrawer
 import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
@@ -34,6 +35,9 @@ import kotlin.math.min
  * Represents a virtual joystick control.
  *
  * Custom control must inherit from this class.
+ *
+ * @param invalidRadius The radius within which the control is considered inactive.
+ * @param directionType The type of direction the control supports.
  */
 abstract class Control(
     @FloatRange(
@@ -43,9 +47,6 @@ abstract class Control(
     invalidRadius: Float,
     /**
      * The control directions type.
-     *
-     * Used to determine how many directions, in addition to [Direction.NONE],
-     * will be taken into account when calling [direction].
      */
     var directionType: DirectionType,
 ) {
@@ -65,16 +66,27 @@ abstract class Control(
      */
     private val mViewCircle: Circle = Circle(1f, mCenter)
 
+    /**
+     * Cache for the direction value.
+     * */
     private var mDirection: Direction? = null
 
+    /**
+     * Cache for the distance value.
+     * */
     private var mDistance: Float? = null
 
+    /**
+     * Cache for the angle value.
+     * */
     private var mAngle: Double? = null
 
     /**
-     * Invalid radius to be taken into account when obtaining control direction.
+     * Distance from the center at which control is not active.
      *
-     * @see [Control.direction]
+     * This means that the control is in a dead zone, so the [direction] will always be
+     * [Direction.NONE] and the [magnitude] will be 0.
+     * @see [Control.isActive]
      */
     @FloatRange(
         from = 0.0,
@@ -101,9 +113,7 @@ abstract class Control(
     /**
      * The possibles directions of the control.
      */
-    enum class Direction(
-        val quadrant: Int,
-    ) {
+    enum class Direction(val quadrant: Int) {
         RIGHT(1),
         DOWN_RIGHT(2),
         DOWN(3),
@@ -206,10 +216,36 @@ abstract class Control(
         }
     }
 
+    /**
+     * The possible types of drawers that can be built using [DrawerBuilder]
+     * */
     enum class DrawerType {
+        /**
+         * Mark the control drawer is for a circle shape.
+         *
+         * @see [CircleDrawer]
+         * */
         CIRCLE,
+
+        /**
+         * Mark the control drawer is for an arc shape.
+         *
+         * @see [ArcDrawer]
+         * */
         ARC,
+
+        /**
+         * Mark the control drawer is for a circle arc shape.
+         *
+         * @see [CircleArcDrawer]
+         * */
         CIRCLE_ARC,
+
+        /**
+         * Mark the control drawer is for a wedge shape.
+         *
+         * @see [WedgeDrawer]
+         * */
         WEDGE;
 
         companion object {
@@ -230,6 +266,7 @@ abstract class Control(
      * @see [ArcDrawer]
      * @see [CircleDrawer]
      * @see [CircleArcDrawer]
+     * @see [WedgeDrawer]
      */
     class DrawerBuilder {
         private val colors: ColorsScheme = ColorsScheme(Color.RED, Color.WHITE)
@@ -251,14 +288,24 @@ abstract class Control(
         private var radius: DrawerRadius = DrawerRadius.Ratio(0.25f)
 
         companion object {
+
+            /**
+             * Creates a [DrawerBuilder] from an existing [DrawerProperties].
+             *
+             * The properties supported are:
+             * - [ColorfulProperties.colors]
+             * - [ArcDrawer.ArcProperties.strokeWidth]
+             * - [ArcDrawer.ArcProperties.sweepAngle]
+             * - [CircleArcDrawer.CircleArcProperties.isBounded]
+             * - [CircleDrawer.CircleProperties.isBounded]
+             * - [CircleDrawer.CircleProperties.radius]
+             * - [DrawableDrawer.DrawableProperties.isBounded]
+             * - [PathDrawer.PathProperties.isStrictColor]
+             * - [WedgeDrawer.WedgeProperties.radius]
+             * */
             @JvmStatic
-            fun from(drawer: ControlDrawer): DrawerBuilder {
+            fun from(properties: DrawerProperties): DrawerBuilder {
                 return DrawerBuilder().apply {
-                    if (drawer !is ConfigurableDrawer)
-                        return@apply
-
-                    val properties = drawer.properties
-
                     if (properties is ColorfulProperties)
                         colors.set(properties.colors)
 
@@ -268,6 +315,9 @@ abstract class Control(
                         is DrawableDrawer.DrawableProperties -> properties.isBounded
                         else -> isBounded
                     }
+
+                    if (properties is PathDrawer.PathProperties)
+                        pathStrictColor = properties.isStrictColor
 
                     when (properties) {
                         is CircleArcDrawer.CircleArcProperties -> {
@@ -287,11 +337,27 @@ abstract class Control(
                             radius = properties.radius
                         }
                     }
-
                 }
             }
-        }
 
+            /**
+             * Creates a [DrawerBuilder] from an existing [ControlDrawer].
+             * */
+            @JvmStatic
+            fun from(drawer: ControlDrawer): DrawerBuilder {
+                return if (drawer is ConfigurableDrawer)
+                    from(drawer.properties)
+                else DrawerBuilder()
+            }
+
+            /**
+             * Creates a [DrawerBuilder] from an existing [Control].
+             * */
+            @JvmStatic
+            fun from(control: Control): DrawerBuilder {
+                return from(control.drawer)
+            }
+        }
 
         fun primaryColor(@ColorInt color: Int): DrawerBuilder {
             colors.primary = color
@@ -358,6 +424,12 @@ abstract class Control(
             return this
         }
 
+        /**
+         * Marks whether the path drawer can change the color
+         *
+         * @see [PathDrawer.PathProperties.isStrictColor]
+         * @see [WedgeDrawer.WedgeProperties.isStrictColor]
+         * */
         fun pathStrictColor(isStrict: Boolean): DrawerBuilder {
             pathStrictColor = isStrict
             return this
@@ -376,7 +448,7 @@ abstract class Control(
         fun build(): ControlDrawer {
             val radius = if (circleRadius != null) {
                 if (circleRadius!! > 0f)
-                    DrawerRadius.Radial(circleRadius!!)
+                    DrawerRadius.Fixed(circleRadius!!)
                 else DrawerRadius.Zero
             } else if (circleRadiusRatio != null) {
                 if (circleRadiusRatio!! > 0f)
@@ -417,11 +489,10 @@ abstract class Control(
 
 
     /**
-     * A builder class to build a control for the default ones.
+     * A builder class to build a simple control.
      *
-     * @see [ArcControl]
-     * @see [CircleControl]
-     * @see [CircleArcControl]
+     * @see [SimpleControl]
+     * @see [DrawerBuilder]
      */
     class Builder {
 
@@ -431,6 +502,24 @@ abstract class Control(
             private set
 
         companion object {
+
+            /**
+             * Creates a [Builder] from an existing [ControlDrawer].
+             *
+             * @see [DrawerBuilder.from]
+             * */
+            @JvmStatic
+            fun from(drawer: ControlDrawer): Builder {
+                return Builder().apply {
+                    this.drawer = DrawerBuilder.from(drawer)
+                }
+            }
+
+            /**
+             * Creates a [Builder] from an existing [Control].
+             *
+             * @see [DrawerBuilder.from]
+             * */
             @JvmStatic
             fun from(control: Control): Builder {
                 return Builder().apply {
@@ -463,19 +552,13 @@ abstract class Control(
     }
 
     /**
-     * Gets the direction to which the control is pointing.
-     * It is based on the [angle] value, but if [distance] is less than [invalidRadius], the
+     * Calculates the direction to which the control is pointing.
+     *
+     * * It is based on the [angle] value, but if [distance] is less than [invalidRadius], the
      * direction is considered as [Direction.NONE].
      *
-     * @return A [Direction] enum representing the direction.
-     *
-     * If [directionType] is [DirectionType.SIMPLE] possible values are:
-     * [Direction.NONE], [Direction.LEFT], [Direction.RIGHT],
-     * [Direction.UP] and [Direction.DOWN].
-     *
-     * Otherwise, possible values are all [Direction] enum entries.
+     * * The directions available depend on the [directionType] and [invalidRadius].
      */
-
     open val direction: Direction
         get() {
             if (mDirection == null)
@@ -511,17 +594,13 @@ abstract class Control(
         get() = FixedPosition(deltaX() / radius, deltaY() / radius)
 
     /**
-     * Gets the parametric position of current position in the view circle.
-     *
-     * @return A new instance of the parametric position.
+     * Calculates the parametric position of current position in the view circle.
      */
-
     open val parametricPosition: ImmutablePosition
         get() = mViewCircle.parametricPositionOf(angle)
 
     /**
      * Calculates the distance between current position and center.
-     * @return The calculated distance.
      */
     val distance: Float
         get() {
@@ -530,11 +609,15 @@ abstract class Control(
             return mDistance!!
         }
 
+    /**
+     * Calculates the squared distance between current position and center.
+     * */
     val squaredDistance: Float
         get() = mViewCircle.squaredDistanceTo(mPosition)
 
     /**
      * Calculates the angle (clockwise) formed from the current position and center.
+     *
      * @return A value in the range from 0 to 2PI radians.
      */
     val angle: Double
@@ -554,6 +637,8 @@ abstract class Control(
      * Calculates the magnitude of the control position [position] relative to the [center].
      *
      * The calculated magnitude ignores the [invalidRadius] value.
+     *
+     * @return A value in the range from 0.0 to 1.0
      * */
     val magnitude: Double
         @FloatRange(
@@ -567,7 +652,7 @@ abstract class Control(
         }
 
     /**
-     * Checks whether the control is the active zone
+     * Checks whether the control is in the active zone
      * */
     open val isActive: Boolean
         get() = distance > invalidRadius
@@ -592,10 +677,10 @@ abstract class Control(
             mPosition.set(parametricPosition)
     }
 
-    @CallSuper
     /**
      * Invalidates the control cached values
      * */
+    @CallSuper
     protected open fun invalidate() {
         mDistance = null
         mAngle = null
@@ -649,9 +734,9 @@ abstract class Control(
 
 
     /**
-     * Method to draw the control using the [drawer].
-     * @param canvas The canvas on which the control will be drawn
+     * Called when the control is ready to draw.
      *
+     * @param canvas The canvas on which the control will be drawn
      */
     open fun onDraw(canvas: Canvas) {
         if (canDraw())
@@ -696,7 +781,7 @@ abstract class Control(
     /**
      * Calculates the direction from the given position to the control center.
      *
-     * * The directions available depend on the [directionType] and [invalidRadius].
+     * The directions available depend on the [directionType] and [invalidRadius].
      *
      * @param position The position from which the direction will be calculated.
      */
@@ -800,6 +885,11 @@ abstract class Control(
      */
     fun deltaY(): Float = mPosition.deltaY(mCenter)
 
+    /**
+     * Release cache properties of a drawer, or of a custom control.
+     *
+     * @see [ConfigurableDrawer.release]
+     * */
     @CallSuper
     open fun release() {
         (drawer as? ConfigurableDrawer)?.release()

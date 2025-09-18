@@ -21,7 +21,6 @@ import com.yoimerdr.android.virtualjoystick.drawer.core.SimpleDrawer
 
 /**
  * A [ControlDrawer] that draws an arc.
- * Draws the arc positioned almost in [Control.parametricPosition].
  */
 open class ArcDrawer(
     /**
@@ -34,6 +33,7 @@ open class ArcDrawer(
      * @param colors The colors for the drawer.
      * @param strokeWidth The stroke width of the paint.
      * @param sweepAngle The arc sweep angle.
+     * @param isBounded Indicates whether the maximum distance is bounded.
      */
     @JvmOverloads
     constructor(
@@ -61,6 +61,7 @@ open class ArcDrawer(
      * @param color The unique initial color for the drawer.
      * @param strokeWidth The stroke width of the paint.
      * @param sweepAngle The arc sweep angle.
+     * @param isBounded Indicates whether the maximum distance is bounded.
      */
     @JvmOverloads
     constructor(
@@ -93,11 +94,16 @@ open class ArcDrawer(
         properties.paint.apply {
             style = Paint.Style.STROKE
             color = properties.colors.primary
-            this.strokeWidth = properties.strokeWidth
+            strokeWidth = properties.strokeWidth
         }
     }
 
-
+    /**
+     * @param colors The colors for the drawer.
+     * @param strokeWidth The stroke width of the paint.
+     * @param sweepAngle The arc sweep angle.
+     * @param isBounded Indicates whether the maximum distance is bounded.
+     */
     open class ArcProperties @JvmOverloads constructor(
         colors: ColorsScheme,
         @FloatRange(
@@ -112,12 +118,28 @@ open class ArcDrawer(
         var isBounded: Boolean = true,
     ) : ColorfulProperties(colors) {
 
+        /**
+         * The sweep angle of the arc.
+         * */
         var sweepAngle = getSweepAngle(sweepAngle)
+            /**
+             * Sets the sweep angle of the arc.
+             *
+             * @see [getSweepAngle]
+             * */
             set(value) {
                 field = getSweepAngle(value)
             }
 
+        /**
+         * The width of the arc line
+         * */
         var strokeWidth = getStrokeWidth(strokeWidth)
+            /**
+             * Sets the width of the arc line
+             *
+             * @see [getStrokeWidth]
+             * */
             set(value) {
                 field = getStrokeWidth(value)
             }
@@ -288,7 +310,8 @@ open class ArcDrawer(
     }
 
     /**
-     * Gets the distance value between the arc position and the control center.
+     * Calculate the maximum distance from the center that can be reached.
+     *
      * @param control The [Control] from where the drawer is used.
      */
     protected open fun getDistance(control: Control): Double = control.radius.let {
@@ -298,7 +321,7 @@ open class ArcDrawer(
     }
 
     /**
-     * The bounds of oval used to define the shape and size of the arc.
+     * The bounds oval used to define the shape and size of the arc.
      * @param control The [Control] from where the drawer is used.
      */
     protected open fun getOval(control: Control): RectF {

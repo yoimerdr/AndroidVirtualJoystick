@@ -4,7 +4,7 @@ import com.yoimerdr.android.virtualjoystick.drawer.shapes.arc.ArcDrawer
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
- * [Control] that uses by default by the [ArcDrawer].
+ * [Control] that uses by default the [ArcDrawer] as drawer.
  */
 open class ArcControl(
     colors: ColorsScheme,

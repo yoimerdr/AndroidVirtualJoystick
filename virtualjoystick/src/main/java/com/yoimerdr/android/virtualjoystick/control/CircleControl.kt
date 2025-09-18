@@ -4,7 +4,7 @@ import com.yoimerdr.android.virtualjoystick.drawer.shapes.circle.CircleDrawer
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
 /**
- * [Control] that uses by default by the [CircleDrawer] with [CircleDrawer.withRatio].
+ * [Control] that uses by default the [CircleDrawer.withRatio] as drawer.
  */
 open class CircleControl(
     colors: ColorsScheme,

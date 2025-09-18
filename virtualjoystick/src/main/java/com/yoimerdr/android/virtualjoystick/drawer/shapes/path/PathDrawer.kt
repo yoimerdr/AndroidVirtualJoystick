@@ -12,11 +12,12 @@ import com.yoimerdr.android.virtualjoystick.drawer.core.SimpleDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
-
+/**
+ * Abstract class for creating path-based drawers.
+ * */
 abstract class PathDrawer(
     override val properties: PathProperties,
 ) : SimpleDrawer() {
-
 
     protected val path = Path()
 
@@ -32,6 +33,12 @@ abstract class PathDrawer(
         }
     }
 
+    /**
+     * @param color The color of the path.
+     * @param isStrictColor Indicates if the color can be modified.
+     *
+     * @see [clampAlphaColor]
+     * */
     open class PathProperties(
         @ColorInt color: Int,
         var isStrictColor: Boolean,
@@ -54,6 +61,9 @@ abstract class PathDrawer(
                 )
             }
 
+        /**
+         * Unused in this class.
+         * */
         override var accentColor: Int
             get() = super.accentColor
             set(value) {
@@ -74,7 +84,7 @@ abstract class PathDrawer(
         const val MAX_ALPHA = 102
 
         /**
-         * Checks if the [alpha] value meets the valid range.
+         * Clamps the [alpha] value in the valid range.
          *
          * @param alpha The alpha channel value.
          *
@@ -90,9 +100,11 @@ abstract class PathDrawer(
         }
 
         /**
-         * Changes the alpha channel value of the given color to the one returned by [clampAlpha].
+         * Clamps the alpha value of the given color.
+         *
          * @param color The color to change the alpha channel value.
          * @return A new [ColorInt] with the new alpha channel value.
+         * @see [clampAlpha]
          */
         @JvmStatic
         @ColorInt
@@ -114,23 +126,35 @@ abstract class PathDrawer(
     }
 
     /**
-     * Gets the distance value between the outer position and the control center.
+     * Calculate the maximum distance from the center that can be reached.
+     *
      * @param control The [Control] from where the drawer is used.
      */
     protected open fun getOuterDistance(control: Control): Double = control.radius
 
     /**
-     * Gets the distance value between the inner position and the control center.
+     * Calculates the distance value between the inner position and the center.
+     *
      * @param control The [Control] from where the drawer is used.
      */
     protected abstract fun getInnerDistance(control: Control): Double
 
+    /**
+     * Called to update the path of the drawer.
+     *
+     * @param control The [Control] from where the drawer is used.
+     * @param direction The current [Control.Direction] of the control.
+     * @param directionType The current [Control.DirectionType] of the control.
+     * */
     abstract fun updatePath(
         control: Control,
         direction: Control.Direction,
         directionType: Control.DirectionType,
     )
 
+    /**
+     * Draws the path.
+     * */
     open fun drawPath(canvas: Canvas, control: Control) {
         canvas.drawPath(path, properties.paint)
     }
