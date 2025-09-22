@@ -9,6 +9,7 @@
             <enum name="circle" value="0" />
             <enum name="arc" value="1" />
             <enum name="circe_arc" value="2" />
+            <enum name="wedge" value="3" />
         </attr>
         <attr name="directionType" format="enum">
             <enum name="complete" value="0" />
