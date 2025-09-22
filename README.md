@@ -105,7 +105,7 @@ To use the library you can install it from [github packages](#github-packages-in
   // ....
   dependencies {
       // ....
-      implementation("com.yoimerdr.android:virtualjoystick:1.0.0")
+      implementation("com.yoimerdr.android:virtualjoystick:x.x.x")
   }
   ```
   
@@ -114,7 +114,7 @@ To use the library you can install it from [github packages](#github-packages-in
   // ....
   dependencies {
       // ....
-      implementation("com.yoimerdr.android:virtualjoystick:1.0.0")
+      implementation("com.yoimerdr.android:virtualjoystick:x.x.x")
   }
   ```
 
@@ -130,7 +130,7 @@ To use the library you can install it from [github packages](#github-packages-in
   // ....
   dependencies {
       // ....
-      implementation(files("libs/yoimerdr/android/virtualjoystick/1.0.0/virtualjoystick-1.0.0.aar"))
+      implementation(files("libs/yoimerdr/android/virtualjoystick/x.x.x/virtualjoystick-x.x.x.aar"))
   }
   ```
 * Groovy
@@ -138,7 +138,7 @@ To use the library you can install it from [github packages](#github-packages-in
   // ....
   dependencies {
       // ....
-      implementation files('libs/yoimerdr/android/virtualjoystick/1.0.0/virtualjoystick-1.0.0.aar')
+      implementation files('libs/yoimerdr/android/virtualjoystick/x.x.x/virtualjoystick-x.x.x.aar')
   }
   ```
   You can read a litter more about how to install an aar library [here](https://developer.android.com/studio/projects/android-library#psd-add-aar-jar-dependency)
@@ -170,10 +170,25 @@ And use it.
 ```kotlin
   // ....
   val joystick = findViewById<JoystickView>(R.id.vJoystick)
-  joystick.setMoveListener {
   
+  // listener for moving  
+  joystick.setMoveStartListener { direction ->
+      // Do something when the user starts to move (tap down) the joystick
   }
-  // ....
+  joystick.setMoveListener { direction ->
+      // Do something when the user moves (or hold down) the joystick
+  }
+  joystick.setMoveEndListener {
+      // Do something when the user stops moving (tap up) the joystick
+  }
+
+  // force the joystick to move
+  btnExample.setOnClickListener {
+      // to specific a direction
+      joystick.move(Control.Direction.UP, 1f) // direction and intensity (0f to 1f)
+      // to specific position
+      joystick.move(200, 200)
+  }
   ```
 
 ### Usage customization
@@ -186,26 +201,28 @@ If you use the JoystickView view in a layout (xml), you could place values to so
 * **moveInterval**
   
   It is an interval (integer) of time (ms) for which passed, to consider the touch on the joystick as maintained.
-  For now, it has a bad name, it will be changed in future versions.
 * **invalidRadius**
   
-  It is a dimension value to be taken into account when obtaining control direction. 
+  It is a dimension value to be consider a dead zone when obtaining control direction. 
   In other words, if the distance between the touch made by the user and the center of the JoystickView does not exceed this value, 
   the joystick direction is considered as NONE.
 
 * **controlType**
 
-  It is an enum that determines that the already defined ControlDrawer will be used as the initial drawer of the joystick. 
+  It is an enumeration that determines that the already defined Drawer will be used as the joystick's initial setting. 
   For now, it can be any of the following values:
   * arc
   
-    The drawer to be used will be CircleControlDrawer
+    The drawer to be used will be CircleDrawer
   * arc
 
-    The drawer to be used will be ArcControlDrawer
+    The drawer to be used will be ArcDrawer
   * circe_arc
 
-    The drawer to be used will be CircleArcControlDrawer
+    The drawer to be used will be CircleArcDrawer
+  * wedge
+
+    The drawer to be used will be WedgeDrawer
 
 * **directionType**
   It is an enum that determines how many directions the joystick will be able to pass to its listener.
@@ -245,7 +262,7 @@ To see how the joystick looks like with different configurations you could clone
 and run the application, but if you don't want to do that, here is a video that will show you how it looks like with some configuration changes.
 
 <div style="text-align: center">
-  <img src="./sample/joystick_app.gif" height="772" alt="joystick sample app"/>
+  <img src="./sample/joystick_demo.gif" height="772" alt="joystick sample app"/>
 </div>
 
 

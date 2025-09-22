@@ -62,10 +62,10 @@ class PathFileBuilder(first: Any) {
 }
 
 class LibraryProperties {
-    var compileSdk = 34
+    var compileSdk = 35
     var group = "com.yoimerdr.android"
     var name = "virtualjoystick"
-    var version = "2.0.0"
+    var version = "3.0.0"
     var copyright = "© 2024 Yoimer Davila"
     var minSdk = 21
 
