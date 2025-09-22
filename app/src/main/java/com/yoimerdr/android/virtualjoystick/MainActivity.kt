@@ -279,6 +279,7 @@ class MainActivity : AppCompatActivity() {
                     this@MainActivity,
                     R.drawable.baseline_adb_24,
                     color,
+                    bounded
                 )
                 -2 -> DirectionalDrawableDrawer(
                     listOf<Pair<Control.Direction, Int>>(
