@@ -58,6 +58,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="32dp"
         app:arcControlDrawer_sweepAngle="100"
+        app:aspect="dpad_modern"
         app:controlDrawer_accentColor="#FFFFFF"
         app:controlDrawer_bounded="false"
         app:controlDrawer_primaryColor="#FF0000"

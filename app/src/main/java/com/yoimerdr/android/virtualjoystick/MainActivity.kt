@@ -1,7 +1,6 @@
 package com.yoimerdr.android.virtualjoystick
 
 import android.graphics.Color
-import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -13,10 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.yoimerdr.android.virtualjoystick.databinding.ActivityMainBinding
 import com.yoimerdr.android.virtualjoystick.control.Control
-import com.yoimerdr.android.virtualjoystick.control.drawer.ControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.DrawableControlDrawer
-import com.yoimerdr.android.virtualjoystick.control.drawer.HighlightControlDrawer
-import com.yoimerdr.android.virtualjoystick.utils.log.Logger
+import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
+import com.yoimerdr.android.virtualjoystick.api.log.LoggerSupplier.DefaultLogger
+import com.yoimerdr.android.virtualjoystick.drawer.drawable.DrawableDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.drawable.DirectionalDrawableDrawer
 import com.yoimerdr.android.virtualjoystick.views.JoystickView
 
 class MainActivity : AppCompatActivity() {
@@ -47,17 +46,17 @@ class MainActivity : AppCompatActivity() {
         "Yellow" to Color.YELLOW
     )
 
-    private val drawers = mapOf(
-        "Circle" to Control.DrawerType.CIRCLE.ordinal,
-        "Arc" to Control.DrawerType.ARC.ordinal,
-        "Circle Arc" to Control.DrawerType.CIRCLE_ARC.ordinal,
-        "Highlight" to -1, "Drawable" to -2
+    private val drawers = Control.DrawerType.entries.associate {
+        it.titleName() to it.ordinal
+    } + mapOf(
+        "Drawable" to -1,
+        "State Drawable" to -2,
     )
 
-    private val directionTypes = mapOf(
-        "Complete" to Control.DirectionType.COMPLETE,
-        "Simple" to Control.DirectionType.SIMPLE
-    )
+
+    private val directionTypes = Control.DirectionType.entries.associateBy {
+        it.titleName()
+    }
 
     private val boundedTypes = mapOf(
         "True" to true,
@@ -75,6 +74,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var directionFormat: String
     private lateinit var magnitudeFormat: String
     private lateinit var ndcPositionFormat: String
+
+    companion object {
+        fun String.capitalize(): String {
+            return this.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase() else char.toString() }
+        }
+
+        fun Enum<*>.titleName(): String {
+            val name = name
+                .lowercase()
+                .split("_")
+                .joinToString(separator = " ") {
+                    it.capitalize()
+                }
+
+            return name.capitalize()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,14 +127,6 @@ class MainActivity : AppCompatActivity() {
             ) {
                 val selected = parent?.getItemAtPosition(position) ?: return
                 val color = colors[selected] ?: return
-
-                val drawer = drawer
-                if (drawer != null && drawer is DrawableControlDrawer) {
-                    if (drawer.drawable is VectorDrawable)
-                        drawer.drawable = drawer.drawable.apply {
-                            setTint(color)
-                        }
-                }
 
                 vJoystick.setPrimaryColor(color)
             }
@@ -246,17 +254,17 @@ class MainActivity : AppCompatActivity() {
         vJoystick.apply {
             setMoveStartListener {
                 onMovement(it)
-                Logger.log("START: $it")
+                DefaultLogger.log("START: $it")
             }
 
             setMoveEndListener {
                 onMovement(Control.Direction.NONE)
-                Logger.log("END")
+                DefaultLogger.log("END")
             }
 
             setMoveListener {
                 onMovement(it)
-                Logger.log("MOVE: $it")
+                DefaultLogger.log("MOVE: $it")
             }
         }
     }
@@ -265,17 +273,27 @@ class MainActivity : AppCompatActivity() {
         val typeId = drawers[drawerSelected] ?: return
         if (typeId < 0) {
             val color = colors[spnPrimaryColor.selectedItem] ?: return
+            tvDirection.isPressed
             drawer = when (typeId) {
-                -1 -> HighlightControlDrawer(color, 0.48f)
-                -2 -> {
+                -1 -> DrawableDrawer.fromDrawableRes(
+                    this@MainActivity,
+                    R.drawable.baseline_adb_24,
+                    color,
+                )
+                -2 -> DirectionalDrawableDrawer(
+                    listOf<Pair<Control.Direction, Int>>(
+                        Control.Direction.RIGHT to R.drawable.dpad_modern_r,
+                        Control.Direction.UP to R.drawable.dpad_modern_u,
+                        Control.Direction.LEFT to R.drawable.dpad_modern_l,
+                        Control.Direction.DOWN to R.drawable.dpad_modern_d,
+                    ).map {
+                        it.first to DrawableDrawer.getDrawable(
+                            this@MainActivity,
+                            it.second
+                        )
+                    }
 
-                    DrawableControlDrawer.fromDrawableRes(
-                        this@MainActivity,
-                        R.drawable.baseline_adb_24,
-                        color,
-                        bounded
-                    )
-                }
+                )
 
                 else -> null
             }
@@ -287,6 +305,16 @@ class MainActivity : AppCompatActivity() {
             val builder = if (drawer == null)
                 Control.DrawerBuilder()
             else Control.DrawerBuilder.from(drawer!!)
+
+            val drawerType = Control.DrawerType
+                .fromId(typeId)
+
+            if (drawerType in listOf(
+                    Control.DrawerType.WEDGE,
+                )
+            )
+                builder.circleRadiusRatio(0.43f)
+//                    .circleRadius(DrawerRadius.Zero)
 
             drawer = builder
                 .colors(
@@ -303,6 +331,7 @@ class MainActivity : AppCompatActivity() {
             vJoystick.setControlDrawer(
                 drawer!!
             )
+//            vJoystick.setInvalidRadius(0f)
         }
     }
 
