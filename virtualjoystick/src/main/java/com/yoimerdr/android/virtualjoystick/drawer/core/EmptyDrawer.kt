@@ -12,7 +12,7 @@ import com.yoimerdr.android.virtualjoystick.control.Control
  *
  * @property properties The properties associated with this control drawer.
  */
-open class SimpleDrawer(
+open class EmptyDrawer(
     override val properties: DrawerProperties,
 ) : ConfigurableDrawer {
 
@@ -64,7 +64,17 @@ open class SimpleDrawer(
      *
      * Subclasses can override this method to perform initial setup.
      */
-    protected open fun configure() {}
+    protected open fun onConfigured() {}
+
+    /**
+     * Called once to configure the drawer.
+     * */
+    fun configure() {
+        if (!mConfigured) {
+            onConfigured()
+            mConfigured = true
+        }
+    }
 
     /**
      * Invalidates the drawer, resetting the recorded values.
@@ -108,11 +118,6 @@ open class SimpleDrawer(
 
     @CallSuper
     override fun draw(canvas: Canvas, control: Control) {
-        if (!mConfigured) {
-            configure()
-            mConfigured = true
-        }
-
         val direction = getDirection(control)
 
         if (!isValid(control)) {

@@ -29,6 +29,7 @@ import com.yoimerdr.android.virtualjoystick.api.log.LoggerSupplier.withLogger
 import com.yoimerdr.android.virtualjoystick.control.Control.Direction.Companion.direction
 import com.yoimerdr.android.virtualjoystick.drawer.core.ConfigurableDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
+import com.yoimerdr.android.virtualjoystick.drawer.core.EmptyDrawer
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.extensions.firstOrdinal
 import kotlin.math.min
@@ -241,6 +242,8 @@ class JoystickView @JvmOverloads constructor(
             .invalidRadius(invalidRadius)
             .build()
 
+        val drawer = mControl.drawer as? EmptyDrawer
+        drawer?.configure()
 
         background = try {
             getCompatDrawable(backgroundRes)
@@ -461,7 +464,7 @@ class JoystickView @JvmOverloads constructor(
             mControl.setPosition(touchPosition)
         } catch (e: LowerNumberException) {
             withLogger("JoystickView") {
-                error(e,)
+                error(e)
             }
             return false
         }
@@ -631,6 +634,8 @@ class JoystickView @JvmOverloads constructor(
      */
     fun setControlDrawer(drawer: ControlDrawer) {
         mControl.drawer = drawer
+        if (drawer is EmptyDrawer)
+            drawer.configure()
         invalidate()
     }
 
@@ -647,6 +652,8 @@ class JoystickView @JvmOverloads constructor(
                 setPosition(mControl.position)
                 invalidate()
             }
+            val drawer = this.drawer as? EmptyDrawer
+            drawer?.configure()
         }
     }
 

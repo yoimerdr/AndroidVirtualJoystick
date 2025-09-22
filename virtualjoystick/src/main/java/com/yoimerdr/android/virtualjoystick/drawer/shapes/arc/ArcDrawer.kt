@@ -17,7 +17,7 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 import androidx.core.graphics.withSave
 import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
-import com.yoimerdr.android.virtualjoystick.drawer.core.SimpleDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.EmptyDrawer
 
 /**
  * A [ControlDrawer] that draws an arc.
@@ -27,7 +27,7 @@ open class ArcDrawer(
      * The arc drawer properties.
      */
     override val properties: ArcProperties,
-) : SimpleDrawer() {
+) : EmptyDrawer() {
 
     /**
      * @param colors The colors for the drawer.

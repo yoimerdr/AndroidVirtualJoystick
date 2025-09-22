@@ -7,7 +7,7 @@ import androidx.annotation.ColorInt
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.DrawerRadius
-import com.yoimerdr.android.virtualjoystick.drawer.core.SimpleDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.EmptyDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
@@ -18,7 +18,7 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
  * */
 open class CircleDrawer(
     override val properties: CircleProperties,
-) : SimpleDrawer() {
+) : EmptyDrawer() {
 
     /**
      * @param colors The colors for the drawer.

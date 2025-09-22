@@ -7,7 +7,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.control.Control.Direction.Companion.quadrant
-import com.yoimerdr.android.virtualjoystick.drawer.core.SimpleDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.EmptyDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
 import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
 
@@ -16,7 +16,7 @@ import com.yoimerdr.android.virtualjoystick.theme.ColorsScheme
  * */
 abstract class PathDrawer(
     override val properties: PathProperties,
-) : SimpleDrawer() {
+) : EmptyDrawer() {
 
     protected val path = Path()
 

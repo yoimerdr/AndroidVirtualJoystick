@@ -16,7 +16,7 @@ open class ColorfulProperties @JvmOverloads constructor(
      * The paint.
      * */
     val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG),
-) : SimpleDrawer.SimpleProperties() {
+) : EmptyDrawer.SimpleProperties() {
 
     init {
         paint.color = colors.primary

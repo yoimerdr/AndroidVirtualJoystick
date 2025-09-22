@@ -14,7 +14,7 @@ import com.yoimerdr.android.virtualjoystick.api.drawable.DrawableBitCache
 import com.yoimerdr.android.virtualjoystick.api.log.LoggerSupplier.withLogger
 import com.yoimerdr.android.virtualjoystick.control.Control
 import com.yoimerdr.android.virtualjoystick.drawer.core.ControlDrawer
-import com.yoimerdr.android.virtualjoystick.drawer.core.SimpleDrawer
+import com.yoimerdr.android.virtualjoystick.drawer.core.EmptyDrawer
 import com.yoimerdr.android.virtualjoystick.drawer.core.ColorfulProperties
 import com.yoimerdr.android.virtualjoystick.extensions.greaterThan
 import com.yoimerdr.android.virtualjoystick.geometry.Circle
@@ -30,7 +30,7 @@ open class DrawableDrawer(
      * The drawable drawer properties.
      */
     override val properties: DrawableProperties,
-) : SimpleDrawer(properties) {
+) : EmptyDrawer(properties) {
 
     private var mCache: DrawableBitCache? = null
 
