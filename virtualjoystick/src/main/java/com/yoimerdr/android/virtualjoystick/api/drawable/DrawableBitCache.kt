@@ -35,6 +35,7 @@ class DrawableBitCache @JvmOverloads constructor(
         set(value) {
             if (field != value) {
                 field = value
+                size = null
                 recycle()
             }
         }
