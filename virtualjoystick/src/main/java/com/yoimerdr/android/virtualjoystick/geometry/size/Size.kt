@@ -1,7 +1,8 @@
 package com.yoimerdr.android.virtualjoystick.geometry.size
 
+import androidx.annotation.IntRange
 import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
-import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
+import com.yoimerdr.android.virtualjoystick.extensions.requirePositive
 
 
 /**
@@ -10,24 +11,22 @@ import com.yoimerdr.android.virtualjoystick.utils.extensions.requirePositive
  * It will not accept negative values.
  */
 class Size(
+    @IntRange(from = 0)
     width: Int,
+    @IntRange(from = 0)
     height: Int,
 ) : MutableSize {
-    override var width: Int = width
+    override var width: Int = width.requirePositive()
         @Throws(LowerNumberException::class)
         set(width) {
             field = width.requirePositive()
         }
 
-    override var height: Int = height
+    override var height: Int = height.requirePositive()
         @Throws(LowerNumberException::class)
         set(height) {
             field = height.requirePositive()
         }
-
-    init {
-        validateNonNegativeValues()
-    }
 
     /**
      * Initializes an empty size.
@@ -37,17 +36,11 @@ class Size(
     constructor() : this(0, 0)
     constructor(size: Size) : this(size.width, size.height)
 
-    @Throws(LowerNumberException::class)
-    private fun validateNonNegativeValues() {
-        height.requirePositive()
-        width.requirePositive()
-    }
-
     override fun set(size: ImmutableSize) {
         set(size.width, size.height)
     }
 
-    override fun set(width: Int, height: Int) {
+    override fun set(width: Int, height: Int,) {
         this.width = width
         this.height = height
     }
@@ -73,5 +66,9 @@ class Size(
         var result = width
         result = 31 * result + height
         return result
+    }
+
+    override fun toString(): String {
+        return "Size(width=$width, height=$height)"
     }
 }

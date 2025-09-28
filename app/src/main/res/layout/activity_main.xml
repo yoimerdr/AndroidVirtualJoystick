@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/tvDirection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:text="@string/joystick_direction"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spnDirectionType" />
+        app:layout_constraintTop_toBottomOf="@+id/spnBounded" />
 
     <TextView
         android:id="@+id/tvPosition"
@@ -24,9 +25,9 @@
         android:layout_marginTop="16dp"
         android:text="@string/joystick_position"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/tvDirection"
-        app:layout_constraintStart_toStartOf="@+id/tvDirection"
-        app:layout_constraintTop_toBottomOf="@+id/tvDirection" />
+        app:layout_constraintEnd_toEndOf="@+id/tvMagnitude"
+        app:layout_constraintStart_toStartOf="@+id/tvMagnitude"
+        app:layout_constraintTop_toBottomOf="@+id/tvMagnitude" />
 
     <TextView
         android:id="@+id/tvNdcPosition"
@@ -39,14 +40,27 @@
         app:layout_constraintStart_toStartOf="@+id/tvPosition"
         app:layout_constraintTop_toBottomOf="@+id/tvPosition" />
 
-    <com.yoimerdr.android.virtualjoystick.views.JoystickView
-        android:id="@+id/vJoystick"
+    <TextView
+        android:id="@+id/tvMagnitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/joystick_magnitude"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/tvDirection"
+        app:layout_constraintStart_toStartOf="@+id/tvDirection"
+        app:layout_constraintTop_toBottomOf="@+id/tvDirection" />
+
+    <com.yoimerdr.android.virtualjoystick.views.JoystickView
+        android:id="@+id/vJoystick"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="32dp"
         app:arcControlDrawer_sweepAngle="100"
+        app:aspect="dpad_modern"
         app:controlDrawer_accentColor="#FFFFFF"
+        app:controlDrawer_bounded="false"
         app:controlDrawer_primaryColor="#FF0000"
         app:controlType="circle"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,6 +103,25 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tvAccentColor"
         app:layout_constraintTop_toBottomOf="@+id/tvAccentColor" />
+
+    <TextView
+        android:id="@+id/tvBounded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/joystick_bounded"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/spnAccentColor"
+        app:layout_constraintTop_toBottomOf="@+id/spnAccentColor" />
+
+    <Spinner
+        android:id="@+id/spnBounded"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/spnAccentColor"
+        app:layout_constraintStart_toStartOf="@+id/tvBounded"
+        app:layout_constraintTop_toBottomOf="@+id/tvBounded" />
 
     <androidx.constraintlayout.widget.Barrier
         android:layout_width="wrap_content"
@@ -135,10 +168,11 @@
         android:id="@+id/tvForceDirection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:text="@string/joystick_direction_type"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/vJoystick" />
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/vJoystick"
+        app:layout_constraintEnd_toEndOf="@+id/spnDirectionType"
+        app:layout_constraintTop_toBottomOf="@+id/tvNdcPosition" />
 
     <Spinner
         android:id="@+id/spnForceDirection"
@@ -148,16 +182,40 @@
         app:layout_constraintEnd_toEndOf="@+id/tvForceDirection"
         app:layout_constraintTop_toBottomOf="@+id/tvForceDirection" />
 
+    <TextView
+        android:id="@+id/tvForceMagnitude"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/joystick_magnitude"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/spnForceDirection"
+        app:layout_constraintStart_toStartOf="@+id/spnForceDirection"
+        app:layout_constraintTop_toBottomOf="@+id/spnForceDirection"
+        tools:text="@string/joystick_magnitude" />
+
+    <SeekBar
+        android:id="@+id/sbForceMagnitude"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="100"
+        android:progressTint="#13BCFF"
+        app:layout_constraintEnd_toEndOf="@+id/spnForceDirection"
+        app:layout_constraintStart_toStartOf="@+id/spnForceDirection"
+        app:layout_constraintTop_toBottomOf="@+id/tvForceMagnitude" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnForceDirection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:clickable="true"
+        android:contentDescription="@string/joystick_move_action"
         android:focusable="true"
-        android:contentDescription="Start move action"
+        app:backgroundTint="#13BCFF"
         app:layout_constraintEnd_toEndOf="@+id/spnForceDirection"
-        app:layout_constraintTop_toBottomOf="@+id/spnForceDirection"
+        app:layout_constraintTop_toBottomOf="@+id/sbForceMagnitude"
         app:srcCompat="@drawable/outline_play_arrow_24" />
 
 

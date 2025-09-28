@@ -1,17 +1,23 @@
 package com.yoimerdr.android.virtualjoystick.geometry
 
+import android.annotation.SuppressLint
+import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import com.yoimerdr.android.virtualjoystick.exceptions.LowerNumberException
 import com.yoimerdr.android.virtualjoystick.geometry.position.FixedPosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.ImmutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.MutablePosition
 import com.yoimerdr.android.virtualjoystick.geometry.position.Position
-import com.yoimerdr.android.virtualjoystick.utils.extensions.greaterThan
+import com.yoimerdr.android.virtualjoystick.extensions.greaterThan
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
 class Circle(
+    @FloatRange(
+        from = 0.0,
+        fromInclusive = false
+    )
     radius: Double,
     val center: MutablePosition,
 ) {
@@ -21,11 +27,17 @@ class Circle(
      * Getter and setter for the circle radius.
      *
      * If you use the setter, the value must be higher than zero.
-     * @throws IllegalArgumentException if in the setter, the value is lower or equal than zero.
+     * @throws LowerNumberException if in the setter, the value is lower or equal than zero.
      */
-    @set:Throws(IllegalArgumentException::class)
-    var radius: Double = radius
-        set(value) {
+    @set:Throws(LowerNumberException::class)
+    var radius: Double = radius.greaterThan(0.0)
+        set(
+            @FloatRange(
+                from = 0.0,
+                fromInclusive = false
+            )
+            value,
+        ) {
             validateRadius(value)
             field = value
         }
@@ -49,10 +61,6 @@ class Circle(
      * ```
      */
     val circumference: Double get() = PI * diameter
-
-    init {
-        validateRadius(radius)
-    }
 
     companion object {
         /**
@@ -106,12 +114,18 @@ class Circle(
         return distanceTo(FixedPosition(x, y))
     }
 
+    fun squaredDistanceTo(position: ImmutablePosition): Float =
+        Plane.squaredDistanceBetween(position, center)
+
+    fun squaredDistanceTo(x: Float, y: Float): Float = squaredDistanceTo(FixedPosition(x, y))
+
     /**
      * Calculates the angle formed from the given position and the circle center.
      * @param position The position with x and y coordinates.
      * @see [Plane.angleBetween]
      * @return A double value in the range from 0 to 2PI radians clockwise.
      */
+    @FloatRange(from = 0.0, to = RADIAN_SPIN)
     fun angleTo(position: ImmutablePosition): Double {
         return Plane.angleBetween(position, center)
     }
@@ -122,8 +136,21 @@ class Circle(
      * @param y The y coordinate of the position.
      * @return A double value in the range from 0 to 2PI radians clockwise.
      */
+    @FloatRange(from = 0.0, to = RADIAN_SPIN)
     fun angleTo(x: Float, y: Float): Double {
         return angleTo(FixedPosition(x, y))
+    }
+
+    @FloatRange(from = 0.0, to = 1.0)
+    fun magnitudeTo(position: ImmutablePosition): Double {
+        val distance = distanceTo(position)
+
+        return (distance / radius).coerceIn(0.0, 1.0)
+    }
+
+    @FloatRange(from = 0.0, to = 1.0)
+    fun magnitudeTo(x: Float, y: Float): Double {
+        return magnitudeTo(FixedPosition(x, y))
     }
 
     /**
@@ -131,7 +158,10 @@ class Circle(
      * @param angle The angle in the range from 0 to 2PI radians clockwise.
      * @return A [ImmutablePosition] instance with the calculates coordinates.
      */
-    fun parametricPositionOf(angle: Double): ImmutablePosition {
+    fun parametricPositionOf(
+        @FloatRange(from = 0.0, to = RADIAN_SPIN)
+        angle: Double,
+    ): ImmutablePosition {
         val x = radius * cos(angle) + center.x
         val y = radius * sin(angle) + center.y
 
@@ -150,6 +180,8 @@ class Circle(
      * otherwise, a value in the range 1 to 8.
      */
     @JvmOverloads
+    @IntRange(from = 1, to = 8)
+    @Throws(IllegalArgumentException::class)
     fun quadrantOf(
         position: ImmutablePosition,
         maxQuadrants: Plane.MaxQuadrants = Plane.MaxQuadrants.FOUR,
@@ -167,6 +199,8 @@ class Circle(
      * @return A value in the range 1 to 4.
      */
     @IntRange(from = 1, to = 4)
+    @SuppressLint("Range")
+    @Throws(IllegalArgumentException::class)
     fun quadrantOf(position: ImmutablePosition, useMiddle: Boolean): Int {
         return quadrantOf(position, Plane.MaxQuadrants.FOUR, useMiddle)
     }

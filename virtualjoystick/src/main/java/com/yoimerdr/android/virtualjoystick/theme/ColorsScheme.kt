@@ -16,7 +16,7 @@ class ColorsScheme(
      * The accent color of the schema.
      */
     @ColorInt
-    var accent: Int
+    var accent: Int,
 ) {
     constructor(@ColorInt color: Int) : this(color, color)
     constructor(colors: ColorsScheme) : this(colors.primary, colors.accent)
@@ -37,4 +37,10 @@ class ColorsScheme(
     fun setAccent(colors: ColorsScheme) {
         this.accent = colors.accent
     }
+
+    @Suppress("NOTHING_TO_INLINE")
+    inline operator fun component1(): Int = primary
+
+    @Suppress("NOTHING_TO_INLINE")
+    inline operator fun component2(): Int = accent
 }

@@ -8,4 +8,8 @@
     <string name="joystick_primary_color">Color primario</string>
     <string name="joystick_accent_color">Color de acento</string>
     <string name="joystick_drawer_type">Tipo de dibujante</string>
+    <string name="joystick_bounded">Limitado</string>
+    <string name="joystick_move_action">Iniciar acción de movimiento</string>
+    <string name="joystick_magnitude">Magnitude: %.2f</string>
+
 </resources>
