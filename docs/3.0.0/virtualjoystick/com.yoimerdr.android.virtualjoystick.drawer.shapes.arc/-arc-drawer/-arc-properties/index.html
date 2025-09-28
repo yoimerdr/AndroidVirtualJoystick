@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ArcProperties</title>
+    <link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+<link href="../../../../styles/vs-dark.css" rel="Stylesheet">
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../../index.html">
+                            virtualjoystick
+                    </a>
+            </div>
+            <div class="library-version">
+3.0.0            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":virtualjoystick:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="virtualjoystick::com.yoimerdr.android.virtualjoystick.drawer.shapes.arc/ArcDrawer.ArcProperties///PointingToDeclaration//338715815">
+  <div class="breadcrumbs"><a href="../../../../index.html">virtualjoystick</a><span class="delimiter">/</span><a href="../../index.html">com.yoimerdr.android.virtualjoystick.drawer.shapes.arc</a><span class="delimiter">/</span><a href="../index.html">ArcDrawer</a><span class="delimiter">/</span><span class="current">ArcProperties</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Arc</span><wbr></wbr><span><span>Properties</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">public </span><span class="token keyword"></span><span class="token keyword">class </span><a href="index.html">ArcProperties</a><span class="token keyword"> extends </span><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/index.html">ColorfulProperties</a></div><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>colors</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The colors for the drawer.</p></div></div></div></div><div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>stroke</span><wbr></wbr><span><span>Width</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The stroke width of the paint.</p></div></div></div></div><div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>sweep</span><wbr></wbr><span><span>Angle</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The arc sweep angle.</p></div></div></div></div><div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>is</span><wbr></wbr><span><span>Bounded</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Indicates whether the maximum distance is bounded.</p></div></div></div></div></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../-circle-arc-drawer/-circle-arc-properties/index.html">CircleArcProperties</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1810545196%2FConstructors%2F338715815" anchor-label="ArcDrawer.ArcProperties" id="-1810545196%2FConstructors%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-arc-drawer.-arc-properties.html"><span>ArcDrawer.</span><wbr></wbr><span>Arc</span><wbr></wbr><span><span>Properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1810545196%2FConstructors%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div><span class="token keyword">public </span><span class="token keyword"></span><a href="index.html">ArcDrawer.ArcProperties</a> <a href="-arc-drawer.-arc-properties.html"><span class="token function">ArcDrawer.ArcProperties</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.theme/-colors-scheme/index.html">ColorsScheme</a> colors<span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/FloatRange.html"><span class="token annotation builtin">FloatRange</span></a><span class="token punctuation">(</span><span>from<span class="token operator"> = </span><span class="breakable-word"><span class="token constant">5.0</span></span></span><wbr></wbr><span class="token punctuation">)</span> </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Float.html">Float</a> strokeWidth<span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/FloatRange.html"><span class="token annotation builtin">FloatRange</span></a><span class="token punctuation">(</span><span>from<span class="token operator"> = </span><span class="breakable-word"><span class="token constant">30.0</span></span><span class="token punctuation">, </span></span><wbr></wbr><span>to<span class="token operator"> = </span><span class="breakable-word"><span class="token constant">180.0</span></span></span><wbr></wbr><span class="token punctuation">)</span> </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Float.html">Float</a> sweepAngle<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> isBounded</span></span><span class="token punctuation">)</span></div><div class="symbol monospace block"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin.jvm/-jvm-overloads/index.html"><span class="token annotation builtin">JvmOverloads</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div><span class="token keyword">public </span><span class="token keyword"></span><a href="index.html">ArcDrawer.ArcProperties</a> <a href="-arc-drawer.-arc-properties.html"><span class="token function">ArcDrawer.ArcProperties</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.theme/-colors-scheme/index.html">ColorsScheme</a> colors<span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/FloatRange.html"><span class="token annotation builtin">FloatRange</span></a><span class="token punctuation">(</span><span>from<span class="token operator"> = </span><span class="breakable-word"><span class="token constant">5.0</span></span></span><wbr></wbr><span class="token punctuation">)</span> </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Float.html">Float</a> strokeWidth<span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/FloatRange.html"><span class="token annotation builtin">FloatRange</span></a><span class="token punctuation">(</span><span>from<span class="token operator"> = </span><span class="breakable-word"><span class="token constant">30.0</span></span><span class="token punctuation">, </span></span><wbr></wbr><span>to<span class="token operator"> = </span><span class="breakable-word"><span class="token constant">180.0</span></span></span><wbr></wbr><span class="token punctuation">)</span> </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Float.html">Float</a> sweepAngle</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1300819551%2FProperties%2F338715815" anchor-label="accentColor" id="-1300819551%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/-circle-properties/index.html#-1300819551%2FProperties%2F338715815"><span>accent</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1300819551%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Integer.html">Integer</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/-circle-properties/index.html#-1300819551%2FProperties%2F338715815">accentColor</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-298650192%2FProperties%2F338715815" anchor-label="colors" id="-298650192%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-298650192%2FProperties%2F338715815"><span><span>colors</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-298650192%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword">final </span><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.theme/-colors-scheme/index.html">ColorsScheme</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-298650192%2FProperties%2F338715815">colors</a></div><div class="brief "><p class="paragraph">The color scheme.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1820274287%2FProperties%2F338715815" anchor-label="colorsArray" id="-1820274287%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-1820274287%2FProperties%2F338715815"><span>colors</span><wbr></wbr><span><span>Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1820274287%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int-array/index.html">IntArray</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-1820274287%2FProperties%2F338715815">colorsArray</a></div><div class="brief "><p class="paragraph">An <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int-array/index.html">IntArray</a> of the current <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-298650192%2FProperties%2F338715815">colors</a> properties.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2087939122%2FProperties%2F338715815" anchor-label="hasChanged" id="-2087939122%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-2087939122%2FProperties%2F338715815"><span>has</span><wbr></wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2087939122%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-2087939122%2FProperties%2F338715815">hasChanged</a></div><div class="brief "><p class="paragraph">Flag indicating whether the properties have changed since the last resolution.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2118094963%2FProperties%2F338715815" anchor-label="isBounded" id="-2118094963%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-bounded.html"><span>is</span><wbr></wbr><span><span>Bounded</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2118094963%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="is-bounded.html">isBounded</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-884807844%2FProperties%2F338715815" anchor-label="paint" id="-884807844%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-884807844%2FProperties%2F338715815"><span><span>paint</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-884807844%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Paint.html">Paint</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-884807844%2FProperties%2F338715815">paint</a></div><div class="brief "><p class="paragraph">The paint.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="355098495%2FProperties%2F338715815" anchor-label="primaryColor" id="355098495%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/-circle-properties/index.html#355098495%2FProperties%2F338715815"><span>primary</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="355098495%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Integer.html">Integer</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/-circle-properties/index.html#355098495%2FProperties%2F338715815">primaryColor</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-646896942%2FProperties%2F338715815" anchor-label="strokeWidth" id="-646896942%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../-circle-arc-drawer/-circle-arc-properties/index.html#-646896942%2FProperties%2F338715815"><span>stroke</span><wbr></wbr><span><span>Width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-646896942%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Float.html">Float</a> <a href="../../-circle-arc-drawer/-circle-arc-properties/index.html#-646896942%2FProperties%2F338715815">strokeWidth</a></div><div class="brief "><p class="paragraph">The width of the arc line</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1749266893%2FProperties%2F338715815" anchor-label="sweepAngle" id="-1749266893%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../-circle-arc-drawer/-circle-arc-properties/index.html#-1749266893%2FProperties%2F338715815"><span>sweep</span><wbr></wbr><span><span>Angle</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1749266893%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Float.html">Float</a> <a href="../../-circle-arc-drawer/-circle-arc-properties/index.html#-1749266893%2FProperties%2F338715815">sweepAngle</a></div><div class="brief "><p class="paragraph">The sweep angle of the arc.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="868181470%2FFunctions%2F338715815" anchor-label="changed" id="868181470%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/-simple-properties/changed.html"><span><span>changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="868181470%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/-simple-properties/changed.html"><span class="token function">changed</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Checks if any property of the control drawer has changed since the last reset.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-7812099%2FFunctions%2F338715815" anchor-label="getAccentColor" id="-7812099%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/get-accent-color.html"><span>get</span><wbr></wbr><span>Accent</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-7812099%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/ColorInt.html"><span class="token annotation builtin">ColorInt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div><span class="token keyword">public </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Integer.html">Integer</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/get-accent-color.html"><span class="token function">getAccentColor</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Gets the accent color of <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-298650192%2FProperties%2F338715815">colors</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="781529556%2FFunctions%2F338715815" anchor-label="getColors" id="781529556%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/get-colors.html"><span>get</span><wbr></wbr><span><span>Colors</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="781529556%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.theme/-colors-scheme/index.html">ColorsScheme</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/get-colors.html"><span class="token function">getColors</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The color scheme.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-527266835%2FFunctions%2F338715815" anchor-label="getColorsArray" id="-527266835%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/get-colors-array.html"><span>get</span><wbr></wbr><span>Colors</span><wbr></wbr><span><span>Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-527266835%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/ColorInt.html"><span class="token annotation builtin">ColorInt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int-array/index.html">IntArray</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/get-colors-array.html"><span class="token function">getColorsArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2064468386%2FFunctions%2F338715815" anchor-label="getHasChanged" id="2064468386%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/-simple-properties/get-has-changed.html"><span>get</span><wbr></wbr><span>Has</span><wbr></wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2064468386%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/-simple-properties/get-has-changed.html"><span class="token function">getHasChanged</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Flag indicating whether the properties have changed since the last resolution.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-849963336%2FFunctions%2F338715815" anchor-label="getPaint" id="-849963336%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/get-paint.html"><span>get</span><wbr></wbr><span><span>Paint</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-849963336%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Paint.html">Paint</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/get-paint.html"><span class="token function">getPaint</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The paint.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1783623843%2FFunctions%2F338715815" anchor-label="getPrimaryColor" id="1783623843%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/get-primary-color.html"><span>get</span><wbr></wbr><span>Primary</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1783623843%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/ColorInt.html"><span class="token annotation builtin">ColorInt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div><span class="token keyword">public </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Integer.html">Integer</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/get-primary-color.html"><span class="token function">getPrimaryColor</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Gets the primary color of <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-298650192%2FProperties%2F338715815">colors</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="739333346%2FFunctions%2F338715815" anchor-label="getStrokeWidth" id="739333346%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-stroke-width.html"><span>get</span><wbr></wbr><span>Stroke</span><wbr></wbr><span><span>Width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="739333346%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Float.html">Float</a> <a href="get-stroke-width.html"><span class="token function">getStrokeWidth</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The width of the arc line</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="373660195%2FFunctions%2F338715815" anchor-label="getSweepAngle" id="373660195%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-sweep-angle.html"><span>get</span><wbr></wbr><span>Sweep</span><wbr></wbr><span><span>Angle</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="373660195%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Float.html">Float</a> <a href="get-sweep-angle.html"><span class="token function">getSweepAngle</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The sweep angle of the arc.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2118094963%2FFunctions%2F338715815" anchor-label="isBounded" id="-2118094963%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-bounded.html"><span>is</span><wbr></wbr><span><span>Bounded</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2118094963%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="is-bounded.html"><span class="token function">isBounded</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1449306714%2FFunctions%2F338715815" anchor-label="resolve" id="-1449306714%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/-simple-properties/resolve.html"><span><span>resolve</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1449306714%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/-simple-properties/resolve.html"><span class="token function">resolve</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Resets the changed state of the properties.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1435530138%2FFunctions%2F338715815" anchor-label="setAccentColor" id="-1435530138%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-accent-color.html"><span>set</span><wbr></wbr><span>Accent</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1435530138%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-accent-color.html"><span class="token function">setAccentColor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.theme/-colors-scheme/index.html">ColorsScheme</a> colors</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sets the accent color of <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-accent-color.html">colors</a> and paint.</p></div><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-accent-color.html"><span class="token function">setAccentColor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Integer.html">Integer</a> accentColor</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sets the accent color of <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-298650192%2FProperties%2F338715815">colors</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-234600668%2FFunctions%2F338715815" anchor-label="setBounded" id="-234600668%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-bounded.html"><span>set</span><wbr></wbr><span><span>Bounded</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-234600668%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="set-bounded.html"><span class="token function">setBounded</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> isBounded</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1050343733%2FFunctions%2F338715815" anchor-label="setColors" id="1050343733%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-colors.html"><span>set</span><wbr></wbr><span><span>Colors</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1050343733%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-colors.html"><span class="token function">setColors</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.theme/-colors-scheme/index.html">ColorsScheme</a> colors</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sets the primary and accent colors of drawer based on a schema.</p></div><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-colors.html"><span class="token function">setColors</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/ColorInt.html"><span class="token annotation builtin">ColorInt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span> </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Integer.html">Integer</a> primary<span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/ColorInt.html"><span class="token annotation builtin">ColorInt</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span> </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Integer.html">Integer</a> accent</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sets the primary and accent colors of drawer.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-662312485%2FFunctions%2F338715815" anchor-label="setHasChanged" id="-662312485%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/-simple-properties/set-has-changed.html"><span>set</span><wbr></wbr><span>Has</span><wbr></wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-662312485%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/-simple-properties/set-has-changed.html"><span class="token function">setHasChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> hasChanged</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Flag indicating whether the properties have changed since the last resolution.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="672636680%2FFunctions%2F338715815" anchor-label="setPrimaryColor" id="672636680%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-primary-color.html"><span>set</span><wbr></wbr><span>Primary</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="672636680%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-primary-color.html"><span class="token function">setPrimaryColor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.theme/-colors-scheme/index.html">ColorsScheme</a> colors</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sets the primary color of <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-primary-color.html">colors</a> and paint.</p></div><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-colorful-properties/set-primary-color.html"><span class="token function">setPrimaryColor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Integer.html">Integer</a> primaryColor</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sets the primary color of <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/-wedge-properties/index.html#-298650192%2FProperties%2F338715815">colors</a> and paint.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-33663873%2FFunctions%2F338715815" anchor-label="setStrokeWidth" id="-33663873%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-stroke-width.html"><span>set</span><wbr></wbr><span>Stroke</span><wbr></wbr><span><span>Width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-33663873%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="set-stroke-width.html"><span class="token function">setStrokeWidth</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Float.html">Float</a> strokeWidth</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sets the width of the arc line</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1134961832%2FFunctions%2F338715815" anchor-label="setSweepAngle" id="1134961832%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-sweep-angle.html"><span>set</span><wbr></wbr><span>Sweep</span><wbr></wbr><span><span>Angle</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1134961832%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="set-sweep-angle.html"><span class="token function">setSweepAngle</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Float.html">Float</a> sweepAngle</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Sets the sweep angle of the arc.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Yoimer Davila</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>CircleDrawer</title>
+    <link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+<link href="../../../../styles/vs-dark.css" rel="Stylesheet">
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../../index.html">
+                            virtualjoystick
+                    </a>
+            </div>
+            <div class="library-version">
+3.0.0            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":virtualjoystick:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="virtualjoystick::com.yoimerdr.android.virtualjoystick.drawer.shapes.arc/CircleArcDrawer.CircleDrawer///PointingToDeclaration//338715815">
+  <div class="breadcrumbs"><a href="../../../../index.html">virtualjoystick</a><span class="delimiter">/</span><a href="../../index.html">com.yoimerdr.android.virtualjoystick.drawer.shapes.arc</a><span class="delimiter">/</span><a href="../index.html">CircleArcDrawer</a><span class="delimiter">/</span><span class="current">CircleDrawer</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Circle</span><wbr></wbr><span><span>Drawer</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword"></span><span class="token keyword">class </span><a href="index.html">CircleDrawer</a><span class="token keyword"> extends </span><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/index.html">CircleDrawer</a></div><p class="paragraph">The custom circle drawer.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>root</span><wbr></wbr><span><span>Properties</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The root properties.</p></div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1154237425%2FConstructors%2F338715815" anchor-label="CircleArcDrawer.CircleDrawer" id="-1154237425%2FConstructors%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-circle-arc-drawer.-circle-drawer.html"><span>Circle</span><wbr></wbr><span>Arc</span><wbr></wbr><span>Drawer.</span><wbr></wbr><span>Circle</span><wbr></wbr><span><span>Drawer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1154237425%2FConstructors%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="index.html">CircleArcDrawer.CircleDrawer</a> <a href="-circle-arc-drawer.-circle-drawer.html"><span class="token function">CircleArcDrawer.CircleDrawer</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../-circle-arc-properties/index.html">CircleArcDrawer.CircleArcProperties</a> rootProperties</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1591453622%2FProperties%2F338715815" anchor-label="lastDirection" id="-1591453622%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/index.html#-1591453622%2FProperties%2F338715815"><span>last</span><wbr></wbr><span><span>Direction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1591453622%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword">final </span><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/-direction/index.html">Control.Direction</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/index.html#-1591453622%2FProperties%2F338715815">lastDirection</a></div><div class="brief "><p class="paragraph">The last recorded direction of the control.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1077780713%2FProperties%2F338715815" anchor-label="lastType" id="-1077780713%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/index.html#-1077780713%2FProperties%2F338715815"><span>last</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1077780713%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword">final </span><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/-direction-type/index.html">Control.DirectionType</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.path/-wedge-drawer/index.html#-1077780713%2FProperties%2F338715815">lastType</a></div><div class="brief "><p class="paragraph">The last recorded direction type of the control.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1238560054%2FProperties%2F338715815" anchor-label="properties" id="-1238560054%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/index.html#-1238560054%2FProperties%2F338715815"><span><span>properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1238560054%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword">final </span><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/-circle-properties/index.html">CircleDrawer.CircleProperties</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/index.html#-1238560054%2FProperties%2F338715815">properties</a></div><div class="brief "><p class="paragraph">The properties associated with this control drawer.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1020449475%2FProperties%2F338715815" anchor-label="rootProperties" id="1020449475%2FProperties%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1020449475%2FProperties%2F338715815"><span>root</span><wbr></wbr><span><span>Properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1020449475%2FProperties%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">private </span><span class="token keyword">final </span><span class="token keyword"></span><a href="../-circle-arc-properties/index.html">CircleArcDrawer.CircleArcProperties</a> <a href="index.html#1020449475%2FProperties%2F338715815">rootProperties</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-133574619%2FFunctions%2F338715815" anchor-label="canDraw" id="-133574619%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/can-draw.html"><span>can</span><wbr></wbr><span><span>Draw</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-133574619%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/can-draw.html"><span class="token function">canDraw</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/index.html">Control</a> control</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Determines if the drawer can draw.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="767774861%2FFunctions%2F338715815" anchor-label="configure" id="767774861%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/configure.html"><span><span>configure</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="767774861%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword">final </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/configure.html"><span class="token function">configure</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Called once to configure the drawer.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="381132706%2FFunctions%2F338715815" anchor-label="draw" id="381132706%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/draw.html"><span><span>draw</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="381132706%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/CallSuper.html"><span class="token annotation builtin">CallSuper</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div><span class="token keyword">public </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/draw.html"><span class="token function">draw</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Canvas.html">Canvas</a> canvas<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/index.html">Control</a> control</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Draw the control representation.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="598193035%2FFunctions%2F338715815" anchor-label="getCircleRadius" id="598193035%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/get-circle-radius.html"><span>get</span><wbr></wbr><span>Circle</span><wbr></wbr><span><span>Radius</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="598193035%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Double.html">Double</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/get-circle-radius.html"><span class="token function">getCircleRadius</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/index.html">Control</a> control</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Gets the circle radius.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1277279620%2FFunctions%2F338715815" anchor-label="getDirection" id="1277279620%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/get-direction.html"><span>get</span><wbr></wbr><span><span>Direction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1277279620%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/-direction/index.html">Control.Direction</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/get-direction.html"><span class="token function">getDirection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/index.html">Control</a> control</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Calculates the current direction of the control.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1840802708%2FFunctions%2F338715815" anchor-label="getLastDirection" id="1840802708%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/get-last-direction.html"><span>get</span><wbr></wbr><span>Last</span><wbr></wbr><span><span>Direction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1840802708%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/-direction/index.html">Control.Direction</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/get-last-direction.html"><span class="token function">getLastDirection</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The last recorded direction of the control.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-724703859%2FFunctions%2F338715815" anchor-label="getLastType" id="-724703859%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/get-last-type.html"><span>get</span><wbr></wbr><span>Last</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-724703859%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/-direction-type/index.html">Control.DirectionType</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/get-last-type.html"><span class="token function">getLastType</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The last recorded direction type of the control.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1857602661%2FFunctions%2F338715815" anchor-label="getMaxDistance" id="-1857602661%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-max-distance.html"><span>get</span><wbr></wbr><span>Max</span><wbr></wbr><span><span>Distance</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1857602661%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Double.html">Double</a> <a href="get-max-distance.html"><span class="token function">getMaxDistance</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/index.html">Control</a> control</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Calculate the maximum distance from the center that can be reached.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-487577607%2FFunctions%2F338715815" anchor-label="getPaintShader" id="-487577607%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/get-paint-shader.html"><span>get</span><wbr></wbr><span>Paint</span><wbr></wbr><span><span>Shader</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-487577607%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Shader.html">Shader</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/get-paint-shader.html"><span class="token function">getPaintShader</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/index.html">Control</a> control<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.geometry.position/-immutable-position/index.html">ImmutablePosition</a> position</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The <a href="https://developer.android.com/reference/kotlin/android/graphics/Shader.html">Shader</a> for the drawer paint.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-828262332%2FFunctions%2F338715815" anchor-label="getPosition" id="-828262332%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/get-position.html"><span>get</span><wbr></wbr><span><span>Position</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-828262332%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.geometry.position/-immutable-position/index.html">ImmutablePosition</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/get-position.html"><span class="token function">getPosition</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/index.html">Control</a> control</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Gets the current position where the control is located and that the drawer will take as center to draw the circle.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-122497580%2FFunctions%2F338715815" anchor-label="getProperties" id="-122497580%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/get-properties.html"><span>get</span><wbr></wbr><span><span>Properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-122497580%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/-circle-properties/index.html">CircleDrawer.CircleProperties</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/get-properties.html"><span class="token function">getProperties</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The properties associated with this control drawer.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="914524791%2FFunctions%2F338715815" anchor-label="getRootProperties" id="914524791%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-root-properties.html"><span>get</span><wbr></wbr><span>Root</span><wbr></wbr><span><span>Properties</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="914524791%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword">final </span><span class="token keyword"></span><a href="../-circle-arc-properties/index.html">CircleArcDrawer.CircleArcProperties</a> <a href="get-root-properties.html"><span class="token function">getRootProperties</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="528791724%2FFunctions%2F338715815" anchor-label="invalidate" id="528791724%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/invalidate.html"><span><span>invalidate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="528791724%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/CallSuper.html"><span class="token annotation builtin">CallSuper</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div><span class="token keyword">protected </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/invalidate.html"><span class="token function">invalidate</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invalidates the drawer, resetting the recorded values.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1504591577%2FFunctions%2F338715815" anchor-label="isValid" id="-1504591577%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/is-valid.html"><span>is</span><wbr></wbr><span><span>Valid</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1504591577%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/java/lang/Boolean.html">Boolean</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/is-valid.html"><span class="token function">isValid</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/index.html">Control</a> control</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Checks if the current control state is valid based on the recorded values.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-331813768%2FFunctions%2F338715815" anchor-label="onChange" id="-331813768%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/on-change.html"><span>on</span><wbr></wbr><span><span>Change</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-331813768%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/CallSuper.html"><span class="token annotation builtin">CallSuper</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div><span class="token keyword">protected </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/on-change.html"><span class="token function">onChange</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Called when the properties have changed.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1117041706%2FFunctions%2F338715815" anchor-label="onConfigured" id="1117041706%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/on-configured.html"><span>on</span><wbr></wbr><span><span>Configured</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1117041706%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/on-configured.html"><span class="token function">onConfigured</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Called once to configure the drawer.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1772343065%2FFunctions%2F338715815" anchor-label="onDraw" id="1772343065%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/on-draw.html"><span>on</span><wbr></wbr><span><span>Draw</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1772343065%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.shapes.circle/-circle-drawer/on-draw.html"><span class="token function">onDraw</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Canvas.html">Canvas</a> canvas<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/index.html">Control</a> control</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Called when the drawer is ready to draw.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="700669674%2FFunctions%2F338715815" anchor-label="onPrepare" id="700669674%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/on-prepare.html"><span>on</span><wbr></wbr><span><span>Prepare</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="700669674%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">protected </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/on-prepare.html"><span class="token function">onPrepare</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword"></span><a href="https://developer.android.com/reference/kotlin/android/graphics/Canvas.html">Canvas</a> canvas<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword"></span><a href="../../../com.yoimerdr.android.virtualjoystick.control/-control/index.html">Control</a> control</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Called when the control needs to be prepared due to it is invalid.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="269133836%2FFunctions%2F338715815" anchor-label="release" id="269133836%2FFunctions%2F338715815" data-filterable-set=":virtualjoystick:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":virtualjoystick:dokkaHtml/release" data-filterable-set=":virtualjoystick:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/release.html"><span><span>release</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="269133836%2FFunctions%2F338715815"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":virtualjoystick:dokkaHtml/release"><div class="symbol monospace block"><span class="token keyword">public </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a> <a href="../../../com.yoimerdr.android.virtualjoystick.drawer.core/-empty-drawer/release.html"><span class="token function">release</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Release cache properties.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Yoimer Davila</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
