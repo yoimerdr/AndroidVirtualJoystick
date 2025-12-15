@@ -1,7 +1,8 @@
-
 # Android virtual joystick
 
 A library made in kotlin for native android that exposes a view for a virtual joystick. Customizable and simple to use.
+
+> **Note:** There is an improved, multiplatform version using Jetpack Compose available at [compose-virtualjoystick-multiplatform](https://github.com/yoimerdr/compose-virtualjoystick-multiplatform).
 
 ## Installation
 
